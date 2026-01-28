@@ -8,7 +8,9 @@ import AboutUs from "./pages/customer/AboutUs.js";
 import Partners from "./pages/customer/Partners.js";
 import Menu from "./pages/customer/Menu.js";
 
+// @ts-expect-error ignore type error
 import "@fontsource/bangers";
+// @ts-expect-error ignore type error
 import "@fontsource/poppins";
 
 import "@mantine/core/styles.css";
