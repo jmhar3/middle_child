@@ -15,7 +15,7 @@ function AboutUs() {
   const isAi = pathname.includes("ai");
 
   return (
-    <PageLayout image={banner} title={isAi ? "Also About Us (AI)" : "About Us"}>
+    <PageLayout image={banner} title={isAi ? "AI About Us" : "About Us"}>
       <Box p="lg" maw="1440px">
         <Text>{isAi ? aboutUsAi : aboutUs}</Text>
       </Box>
