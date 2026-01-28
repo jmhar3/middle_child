@@ -27,8 +27,8 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 
       <Title
         pr={isMobile && !isMenu ? "lg" : undefined}
-        pt="lg"
-        pb="md"
+        pt={isMobile ? "md" : "lg"}
+        pb={isMobile ? "xs" : "md"}
         w="100%"
         lts="1.6px"
         ff="Bangers"

@@ -36,7 +36,7 @@ function Menu() {
 
       <MenuButton label="Nudes" path="" />
 
-      <Stack align="center" py="lg">
+      <Stack align="center" py="md" gap="xs">
         <Text>Open 8am - 2pm everyday</Text>
 
         <Link
