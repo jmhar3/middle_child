@@ -9,7 +9,6 @@ function NavButton() {
 
   return (
     <Button
-      px="lg"
       href="/"
       pos="fixed"
       color="red.9"
@@ -17,6 +16,7 @@ function NavButton() {
       variant="light"
       w="fit-content"
       leftSection={<CoffeeIcon />}
+      px={isMobile ? "sm" : "lg"}
       size={isMobile ? "sm" : "xl"}
       top={isMobile ? "20px" : "11px"}
       left={isMobile ? "20px" : "15px"}
