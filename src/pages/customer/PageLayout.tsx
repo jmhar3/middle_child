@@ -19,11 +19,21 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
+  const isMenu = pathname === "/";
+
   return (
     <Stack align="center" pb="lg" gap="3">
-      {pathname !== "/" && <NavButton />}
+      {!isMenu && <NavButton />}
 
-      <Title ff="Bangers" lts="1.6px" pt="lg" pb="md">
+      <Title
+        pl="lg"
+        pt="lg"
+        pb="md"
+        w="100%"
+        lts="1.6px"
+        ff="Bangers"
+        ta={isMobile && !isMenu ? "left" : "center"}
+      >
         {title || "Middle Child"}
       </Title>
 

@@ -44,6 +44,7 @@ function Partners() {
             radius="md"
             variant="light"
             target="_blank"
+            w="fit-content"
             h="fit-content"
             key={supplier.label}
             href={supplier.link}
