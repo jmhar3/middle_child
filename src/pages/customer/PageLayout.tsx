@@ -26,7 +26,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
       {!isMenu && <NavButton />}
 
       <Title
-        pr="lg"
+        pr={isMobile && !isMenu ? "lg" : undefined}
         pt="lg"
         pb="md"
         w="100%"
