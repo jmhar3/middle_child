@@ -9,7 +9,7 @@ function NavButton() {
       href="/"
       size="xl"
       top="11px"
-      right="15px"
+      left="15px"
       pos="fixed"
       color="red.9"
       component="a"

@@ -26,13 +26,13 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
       {!isMenu && <NavButton />}
 
       <Title
-        pl="lg"
+        pr="lg"
         pt="lg"
         pb="md"
         w="100%"
         lts="1.6px"
         ff="Bangers"
-        ta={isMobile && !isMenu ? "left" : "center"}
+        ta={isMobile && !isMenu ? "right" : "center"}
       >
         {title || "Middle Child"}
       </Title>
