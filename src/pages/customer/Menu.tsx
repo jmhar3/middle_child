@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Accordion, Button, Flex, Stack, Text } from "@mantine/core";
+import { Accordion, Button, em, Stack, Text } from "@mantine/core";
 
 import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/customer/MenuItemModal";
@@ -12,8 +12,11 @@ import type { Cart, OrderItem } from "../../helpers/cart";
 
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import PageLayout from "./PageLayout";
+import { useMediaQuery } from "@mantine/hooks";
 
 function Menu() {
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+
   const [isMenuItemModalOpen, setIsMenuItemModalOpen] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItemType | null>(
     null,
@@ -51,22 +54,25 @@ function Menu() {
     <PageLayout>
       {order && (
         <Button
-          w="100%"
           pos="fixed"
-          bottom="18px"
-          variant="contained"
+          color="red.9"
+          variant="filled"
+          w="fit-content"
+          px={isMobile ? "sm" : "lg"}
+          size={isMobile ? "sm" : "xl"}
+          bottom={isMobile ? "20px" : "11px"}
           onClick={() => setIsCartModalOpen(true)}
+          rightSection={<Text>${order.total.toFixed(2)}</Text>}
         >
-          <Flex miw="39vw" justify="space-between">
-            <Text>Review Order</Text>
-            <Text>${order.total.toFixed(2)}</Text>
-          </Flex>
+          Review Order
         </Button>
       )}
 
       <Stack w="100%">
         <Accordion
           styles={{
+            item: { borderColor: "slategray" },
+            content: { padding: 3, margin: 0 },
             control: {
               backgroundColor: "cornsilk",
             },
@@ -78,14 +84,15 @@ function Menu() {
                 <Text component="span">RECENTLY ORDERED</Text>
               </Accordion.Control>
               <Accordion.Panel>
-                {recentlyOrderedItems.map((order) => (
-                  <MenuItemButton
-                    key={order.menuItem.label}
-                    onClick={() => addItemToOrder(order)}
-                  >
-                    {order.menuItem.label} | ${order.menuItem.price}
-                  </MenuItemButton>
-                ))}
+                <Stack gap="3">
+                  {recentlyOrderedItems.map((order) => (
+                    <MenuItemButton
+                      menuItem={order.menuItem}
+                      key={order.menuItem.label}
+                      onClick={() => addItemToOrder(order)}
+                    />
+                  ))}
+                </Stack>
               </Accordion.Panel>
             </Accordion.Item>
           )}
@@ -96,14 +103,13 @@ function Menu() {
                 <Text component="span">{section.label.toUpperCase()}</Text>
               </Accordion.Control>
               <Accordion.Panel>
-                <Stack>
+                <Stack gap="3">
                   {section.items.map((menuItem) => (
                     <MenuItemButton
                       key={menuItem.label}
+                      menuItem={menuItem}
                       onClick={() => handleOpenMenuItemModal(menuItem)}
-                    >
-                      {menuItem.label} | ${menuItem.price}
-                    </MenuItemButton>
+                    />
                   ))}
                 </Stack>
               </Accordion.Panel>
