@@ -1,15 +1,16 @@
 import { Badge, Group } from "@mantine/core";
-import type { MenuItemType } from "../../helpers/menu";
+
+import type { Modifier } from "../../helpers/menu";
 
 interface IngredientsBadgesProps {
-  menuItem: MenuItemType;
+  ingredients: Modifier[];
 }
 
-function IngredientsBadges({ menuItem }: IngredientsBadgesProps) {
+function IngredientsBadges({ ingredients }: IngredientsBadgesProps) {
   return (
     <Group gap="2" style={{ overflow: "auto" }}>
-      {menuItem.ingredients?.map((ingredient) => (
-        <Badge radius="sm" color="red" variant="light" key={menuItem.label}>
+      {ingredients?.map((ingredient) => (
+        <Badge radius="sm" color="red" variant="light" key={ingredient.id}>
           {ingredient.label}
         </Badge>
       ))}
