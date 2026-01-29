@@ -17,7 +17,13 @@ function SignInModal(props: SignInModalProps) {
   } = props;
 
   return (
-    <Modal opened={isOpen} onClose={onClose}>
+    <Modal
+      fullScreen
+      radius={0}
+      opened={isOpen}
+      onClose={onClose}
+      transitionProps={{ transition: "fade", duration: 200 }}
+    >
       <Stack mih="100vh">
         <Stack gap={1} p={2} pt={6}>
           <LoginButton />
