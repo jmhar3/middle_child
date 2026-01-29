@@ -1,7 +1,7 @@
 import { Button, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
-interface MenuButtonProps {
+interface HomeButtonProps {
   label: string;
   path: string;
   image?: string;
@@ -9,7 +9,7 @@ interface MenuButtonProps {
   textAlign?: CanvasTextAlign;
 }
 
-function MenuButton(props: MenuButtonProps) {
+function HomeButton(props: HomeButtonProps) {
   const { label, path, isExternal, textAlign } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -32,4 +32,4 @@ function MenuButton(props: MenuButtonProps) {
   );
 }
 
-export default MenuButton;
+export default HomeButton;
