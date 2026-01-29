@@ -1,4 +1,4 @@
-import type { Modifier } from "./menu";
+import type { MenuItemType, Modifier } from "./menu";
 
 export interface User {
   name: string;
@@ -6,7 +6,7 @@ export interface User {
 }
 
 export interface OrderItem {
-  menuItem: MenuItem;
+  menuItem: MenuItemType;
   totalPrice: number;
   modifiers?: Modifier[];
   note?: string;
