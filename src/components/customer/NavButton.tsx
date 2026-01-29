@@ -1,4 +1,4 @@
-import { Button, em } from "@mantine/core";
+import { Box, Button, em } from "@mantine/core";
 
 import CoffeeIcon from "../../icons/CoffeeIcon";
 
@@ -8,22 +8,29 @@ function NavButton() {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   return (
-    <Button
-      href="/"
+    <Box
+      bdrs="sm"
       pos="fixed"
-      component="a"
-      variant="light"
+      bg="darkslategray"
       w="fit-content"
-      color="powderblue"
-      bd="powderblue 1px solid"
-      leftSection={<CoffeeIcon />}
-      px={isMobile ? "sm" : "lg"}
-      size={isMobile ? "sm" : "xl"}
       top={isMobile ? "20px" : "11px"}
       left={isMobile ? "20px" : "15px"}
     >
-      Menu
-    </Button>
+      <Button
+        href="/"
+        fullWidth
+        component="a"
+        w="fit-content"
+        variant="light"
+        color="powderblue"
+        bd="powderblue 1px solid"
+        leftSection={<CoffeeIcon />}
+        px={isMobile ? "sm" : "lg"}
+        size={isMobile ? "sm" : "xl"}
+      >
+        Menu
+      </Button>
+    </Box>
   );
 }
 
