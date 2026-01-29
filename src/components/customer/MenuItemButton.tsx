@@ -1,26 +1,49 @@
-import { Button, em } from "@mantine/core";
+import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import type { PropsWithChildren } from "react";
 
-interface MenuItemButtonProps extends PropsWithChildren {
+import type { MenuItemType } from "../../helpers/menu";
+
+interface MenuItemButtonProps {
   onClick: () => void;
+  menuItem: MenuItemType;
 }
 
 function MenuItemButton(props: MenuItemButtonProps) {
-  const { children, onClick } = props;
+  const { onClick, menuItem } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   return (
     <Button
       px="lg"
-      w="100%"
+      fullWidth
       color="red"
+      h="fit-content"
       variant="light"
+      justify="space-between"
       size={isMobile ? "md" : "lg"}
+      rightSection={<Text fw={700}>${menuItem.price}</Text>}
       onClick={onClick}
     >
-      {children}
+      <Stack
+        gap="3"
+        w="100%"
+        justify="center"
+        align="flex-start"
+        py={menuItem.ingredients ? "sm" : "sm"}
+      >
+        <Text fw={700}>{menuItem.label}</Text>
+
+        {menuItem.ingredients && (
+          <ScrollArea h="20px" w="100%">
+            <Text size="xs">
+              {menuItem.ingredients
+                ?.map((ingredient) => ingredient.label)
+                .join(", ")}
+            </Text>
+          </ScrollArea>
+        )}
+      </Stack>
     </Button>
   );
 }
