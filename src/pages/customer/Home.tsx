@@ -1,6 +1,6 @@
 import { Flex, Stack, Text } from "@mantine/core";
 
-import HomeButton from "../../components/HomeButton";
+import HomeButton from "../../components/customer/HomeButton";
 import Link from "../../components/Link";
 
 import PageLayout from "./PageLayout";

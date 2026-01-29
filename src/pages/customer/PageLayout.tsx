@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import type { PropsWithChildren } from "react";
 
-import NavButton from "../../components/NavButton";
+import NavButton from "../../components/customer/NavButton";
 
 import banner from "/assets/cafe-view.jpeg";
 import { useMediaQuery } from "@mantine/hooks";

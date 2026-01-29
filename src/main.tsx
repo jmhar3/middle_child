@@ -6,7 +6,7 @@ import { MantineProvider } from "@mantine/core";
 
 import AboutUs from "./pages/customer/AboutUs.js";
 import Partners from "./pages/customer/Partners.js";
-import Menu from "./pages/customer/Menu.js";
+import Home from "./pages/customer/Home.js";
 
 // @ts-expect-error ignore type error
 import "@fontsource/bangers";
@@ -15,6 +15,7 @@ import "@fontsource/poppins";
 
 import "@mantine/core/styles.css";
 import "./global.css";
+import CustomerMenu from "./pages/customer/Menu.js";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -28,10 +29,12 @@ createRoot(document.getElementById("root")!).render(
       >
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Menu />} />
+            {/* Customer Paths */}
+            <Route path="/" element={<Home />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/about-us/ai" element={<AboutUs />} />
             <Route path="/partners" element={<Partners />} />
+            <Route path="/menu" element={<CustomerMenu />} />
           </Routes>
         </BrowserRouter>
       </Auth0Provider>

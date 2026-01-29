@@ -1,6 +1,6 @@
 import { Button, em } from "@mantine/core";
 
-import CoffeeIcon from "../icons/CoffeeIcon";
+import CoffeeIcon from "../../icons/CoffeeIcon";
 
 import { useMediaQuery } from "@mantine/hooks";
 
