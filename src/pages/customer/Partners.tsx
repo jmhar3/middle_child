@@ -1,11 +1,14 @@
 import { Button, Group, em, Image } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
+import PageLayout from "./PageLayout";
+
 import backhausLogo from "/assets/backhaus-bakery-logo.webp";
 import criteriaLogo from "/assets/criteria-coffee-logo.png";
 import rumbleLogo from "/assets/rumble-coffee-logo.webp";
 import drunkenSailorLogo from "/assets/drunken-sailor-canning-co-logo.webp";
-import PageLayout from "./PageLayout";
+
+import banner from "/assets/cafe-wide.jpg";
 
 function Partners() {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -34,18 +37,18 @@ function Partners() {
   ];
 
   return (
-    <PageLayout hideImage title="Our Partners">
+    <PageLayout image={banner} title="Our Partners">
       <Group p="lg" maw="1440px" dir={isMobile ? "column" : "row"}>
         {suppliers.map((supplier) => (
           <Button
             p="3"
-            color="darkslategray"
-            component="a"
             radius="md"
+            component="a"
             variant="light"
             target="_blank"
             w="fit-content"
             h="fit-content"
+            color="darkslategray"
             key={supplier.label}
             href={supplier.link}
           >
