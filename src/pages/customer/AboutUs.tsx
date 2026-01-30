@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import PageLayout from "./PageLayout";
 
-import banner from "/assets/middle-child-banner.webp";
+import banner from "/assets/cafe-wide.jpg";
 
 function AboutUs() {
   const aboutUs =

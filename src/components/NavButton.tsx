@@ -11,10 +11,11 @@ function NavButton() {
     <Button
       href="/"
       pos="fixed"
-      color="red.9"
       component="a"
       variant="light"
       w="fit-content"
+      color="powderblue"
+      bd="powderblue 1px solid"
       leftSection={<CoffeeIcon />}
       px={isMobile ? "sm" : "lg"}
       size={isMobile ? "sm" : "xl"}

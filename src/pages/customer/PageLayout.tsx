@@ -1,11 +1,11 @@
-import { em, Image, Stack, Title } from "@mantine/core";
+import { Box, em, Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 
 import type { PropsWithChildren } from "react";
 
 import NavButton from "../../components/NavButton";
 
-import banner from "/assets/middle-child-banner.webp";
+import banner from "/assets/cafe-view.jpeg";
 import { useMediaQuery } from "@mantine/hooks";
 
 interface PageLayoutProps extends PropsWithChildren {
@@ -22,23 +22,32 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
   const isMenu = pathname === "/";
 
   return (
-    <Stack align="center" pb="lg" gap="3">
+    <Stack align="center" pb="lg" gap="0">
       {!isMenu && <NavButton />}
 
-      <Title
-        pr={isMobile && !isMenu ? "lg" : undefined}
+      <Box
+        w="100%"
+        bg="darkslategray"
         pt={isMobile ? "md" : "lg"}
         pb={isMobile ? "xs" : "md"}
-        w="100%"
-        lts="1.6px"
-        ff="Bangers"
-        ta={isMobile && !isMenu ? "right" : "center"}
+        pr={isMobile && !isMenu ? "lg" : undefined}
       >
-        {title || "Middle Child"}
-      </Title>
+        <Title
+          lts="1.6px"
+          ff="Bangers"
+          c="powderblue"
+          ta={isMobile && !isMenu ? "right" : "center"}
+        >
+          {title || "Middle Child"}
+        </Title>
+      </Box>
 
       {!hideImage && (
-        <Image h={isMobile ? "150px" : "300px"} src={image || banner} />
+        <Image
+          fit="cover"
+          h={isMobile ? "190px" : "300px"}
+          src={image || banner}
+        />
       )}
 
       {children}

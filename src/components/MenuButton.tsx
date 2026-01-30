@@ -18,10 +18,11 @@ function MenuButton(props: MenuButtonProps) {
     <Button
       px="lg"
       w="100%"
-      color="red"
       component="a"
       variant="light"
+      color="darkslategray"
       justify={textAlign}
+      bd="darkslategray 1px solid"
       size={isMobile ? "lg" : "xl"}
       target={isExternal ? "_blank" : undefined}
       href={path}

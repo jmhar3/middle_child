@@ -39,7 +39,7 @@ function Partners() {
         {suppliers.map((supplier) => (
           <Button
             p="3"
-            color="red"
+            color="darkslategray"
             component="a"
             radius="md"
             variant="light"
