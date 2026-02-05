@@ -1,4 +1,4 @@
-import { Box, em, Image, Stack, Title } from "@mantine/core";
+import { em, Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 
 import type { PropsWithChildren } from "react";
