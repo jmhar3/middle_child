@@ -17,8 +17,8 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background-color: powderblue;
-    color: darkslategray;
+    background-color: whitesmoke;
+    color: #3f5561;
 }
 
 p,
@@ -28,5 +28,5 @@ a {
 }
 
 .control {
-    background-color: beige;
+    background-color: whitesmoke;
 }

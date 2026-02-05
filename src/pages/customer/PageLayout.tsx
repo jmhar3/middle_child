@@ -27,7 +27,6 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 
       <Box
         w="100%"
-        bg="darkslategray"
         pt={isMobile ? "md" : "lg"}
         pb={isMobile ? "xs" : "md"}
         pr={isMobile && !isMenu ? "lg" : undefined}
@@ -35,7 +34,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
         <Title
           lts="1.6px"
           ff="Bangers"
-          c="powderblue"
+          c="#3f5561"
           ta={isMobile && !isMenu ? "right" : "center"}
         >
           {title || "Middle Child"}

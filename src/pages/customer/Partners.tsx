@@ -44,11 +44,12 @@ function Partners() {
             p="3"
             radius="md"
             component="a"
-            variant="light"
             target="_blank"
             w="fit-content"
             h="fit-content"
-            color="darkslategray"
+            color="#3f5561"
+            variant="outline"
+            bg="white"
             key={supplier.label}
             href={supplier.link}
           >

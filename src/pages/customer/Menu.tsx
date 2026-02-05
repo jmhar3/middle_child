@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Accordion, Button, em, Stack, Text } from "@mantine/core";
+import { Accordion, Button, Divider, em, Stack, Text } from "@mantine/core";
 
 import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/customer/MenuItemModal";
@@ -71,10 +71,10 @@ function Menu() {
       <Stack w="100%">
         <Accordion
           styles={{
-            item: { borderColor: "slategray" },
+            item: { borderColor: "#3f5561" },
             content: { padding: 3, margin: 0 },
             control: {
-              backgroundColor: "cornsilk",
+              backgroundColor: "whitesmoke",
             },
           }}
         >
@@ -103,13 +103,16 @@ function Menu() {
                 <Text component="span">{section.label.toUpperCase()}</Text>
               </Accordion.Control>
               <Accordion.Panel>
-                <Stack gap="3">
-                  {section.items.map((menuItem) => (
-                    <MenuItemButton
-                      key={menuItem.label}
-                      menuItem={menuItem}
-                      onClick={() => handleOpenMenuItemModal(menuItem)}
-                    />
+                <Stack gap="0">
+                  {section.items.map((menuItem, index) => (
+                    <>
+                      {index !== 0 && <Divider />}
+                      <MenuItemButton
+                        key={menuItem.label}
+                        menuItem={menuItem}
+                        onClick={() => handleOpenMenuItemModal(menuItem)}
+                      />
+                    </>
                   ))}
                 </Stack>
               </Accordion.Panel>

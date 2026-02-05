@@ -11,7 +11,7 @@ function NavButton() {
     <Box
       bdrs="sm"
       pos="fixed"
-      bg="darkslategray"
+      // bg="lightslategray"
       w="fit-content"
       top={isMobile ? "20px" : "11px"}
       left={isMobile ? "20px" : "15px"}
@@ -21,9 +21,8 @@ function NavButton() {
         fullWidth
         component="a"
         w="fit-content"
-        variant="light"
-        color="powderblue"
-        bd="powderblue 1px solid"
+        variant="filled"
+        color="#3f5561"
         leftSection={<CoffeeIcon />}
         px={isMobile ? "sm" : "lg"}
         size={isMobile ? "sm" : "xl"}
