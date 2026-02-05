@@ -25,22 +25,18 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
     <Stack align="center" pb="lg" gap="0">
       {!isMenu && <NavButton />}
 
-      <Box
+      <Title
         w="100%"
-        bg="darkslategray"
+        lts="1.6px"
+        ff="Bangers"
+        c="darkslategray"
         pt={isMobile ? "md" : "lg"}
         pb={isMobile ? "xs" : "md"}
         pr={isMobile && !isMenu ? "lg" : undefined}
+        ta={isMobile && !isMenu ? "right" : "center"}
       >
-        <Title
-          lts="1.6px"
-          ff="Bangers"
-          c="powderblue"
-          ta={isMobile && !isMenu ? "right" : "center"}
-        >
-          {title || "Middle Child"}
-        </Title>
-      </Box>
+        {title || "Middle Child"}
+      </Title>
 
       {!hideImage && (
         <Image

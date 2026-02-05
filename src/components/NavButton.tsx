@@ -12,10 +12,9 @@ function NavButton() {
       href="/"
       pos="fixed"
       component="a"
-      variant="light"
+      variant="filled"
       w="fit-content"
-      color="powderblue"
-      bd="powderblue 1px solid"
+      color="darkslategray"
       leftSection={<CoffeeIcon />}
       px={isMobile ? "sm" : "lg"}
       size={isMobile ? "sm" : "xl"}
