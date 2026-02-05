@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import PageLayout from "./PageLayout";
 
-import banner from "/assets/cafe-high-res.jpeg";
+import banner from "/assets/cafe-plants.jpg";
 
 function AboutUs() {
   const aboutUs =
