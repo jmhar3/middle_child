@@ -19,12 +19,12 @@ function HomeButton(props: HomeButtonProps) {
       px="lg"
       w="100%"
       component="a"
-      variant="light"
-      color="darkslategray"
-      justify={textAlign}
-      bd="darkslategray 1px solid"
+      variant="subtle"
+      color="#3f5561"
+      bd="lightslategray 1px solid"
       size={isMobile ? "lg" : "xl"}
       target={isExternal ? "_blank" : undefined}
+      justify={textAlign}
       href={path}
     >
       {label}

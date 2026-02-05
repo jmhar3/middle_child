@@ -1,6 +1,6 @@
 import { Flex, Stack, Text } from "@mantine/core";
 
-import HomeButton from "../../components/customer/HomeButton";
+import HomeButton from "../../components/customer/HomeMenuButton";
 import Link from "../../components/Link";
 
 import PageLayout from "./PageLayout";
@@ -9,11 +9,7 @@ function Home() {
   return (
     <PageLayout>
       <Stack w="100%" gap="3" p="3">
-        <HomeButton
-          label="Order Here for Pick Up"
-          path="https://heyyou.com.au/restaurant/8394/middle-child"
-          isExternal
-        />
+        <HomeButton label="Order Here for Pick Up" path="/menu" />
 
         <HomeButton label="About Us" path="/about-us" />
         <HomeButton label="Also About Us (AI)" path="/about-us/ai" />
