@@ -17,9 +17,10 @@ function MenuItemButton(props: MenuItemButtonProps) {
     <Button
       px="lg"
       fullWidth
+      radius="0"
       h="fit-content"
-      color="#3f5561"
-      variant="transparent"
+      variant="filled"
+      color="darkslategray"
       justify="space-between"
       size={isMobile ? "md" : "lg"}
       rightSection={<Text fw={700}>${menuItem.price}</Text>}

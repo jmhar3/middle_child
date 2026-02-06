@@ -19,9 +19,8 @@ function HomeButton(props: HomeButtonProps) {
       px="lg"
       w="100%"
       component="a"
-      variant="subtle"
-      color="#3f5561"
-      bd="lightslategray 1px solid"
+      variant="filled"
+      color="darkslategray"
       size={isMobile ? "lg" : "xl"}
       target={isExternal ? "_blank" : undefined}
       justify={textAlign}

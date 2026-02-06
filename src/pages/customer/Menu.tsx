@@ -71,8 +71,8 @@ function Menu() {
       <Stack w="100%">
         <Accordion
           styles={{
-            item: { borderColor: "#3f5561" },
-            content: { padding: 3, margin: 0 },
+            item: { borderColor: "darkslategray" },
+            content: { padding: 0, margin: 0, backgroundColor: "white" },
             control: {
               backgroundColor: "whitesmoke",
             },
@@ -85,12 +85,15 @@ function Menu() {
               </Accordion.Control>
               <Accordion.Panel>
                 <Stack gap="3">
-                  {recentlyOrderedItems.map((order) => (
-                    <MenuItemButton
-                      menuItem={order.menuItem}
-                      key={order.menuItem.label}
-                      onClick={() => addItemToOrder(order)}
-                    />
+                  {recentlyOrderedItems.map((order, index) => (
+                    <>
+                      {index !== 0 && <Divider />}
+                      <MenuItemButton
+                        menuItem={order.menuItem}
+                        key={order.menuItem.label}
+                        onClick={() => addItemToOrder(order)}
+                      />
+                    </>
                   ))}
                 </Stack>
               </Accordion.Panel>
