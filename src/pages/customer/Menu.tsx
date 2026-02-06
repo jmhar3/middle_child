@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Accordion, Button, Divider, em, Stack, Text } from "@mantine/core";
+import {
+  Accordion,
+  Box,
+  Button,
+  Divider,
+  em,
+  Stack,
+  Text,
+} from "@mantine/core";
 
 import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/customer/MenuItemModal";
@@ -25,7 +33,7 @@ function Menu() {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const recentlyOrderedItems: OrderItem[] | null = [
-    { menuItem: { label: "Latte", price: 5 }, totalPrice: 5 },
+    { menuItem: { label: "Latte", price: 5 }, totalPrice: 5, modifiers: [] },
   ];
 
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
@@ -53,19 +61,24 @@ function Menu() {
   return (
     <PageLayout>
       {order && (
-        <Button
+        <Box
+          w="100%"
           pos="fixed"
-          color="red.9"
-          variant="filled"
-          w="fit-content"
           px={isMobile ? "sm" : "lg"}
-          size={isMobile ? "sm" : "xl"}
           bottom={isMobile ? "20px" : "11px"}
-          onClick={() => setIsCartModalOpen(true)}
-          rightSection={<Text>${order.total.toFixed(2)}</Text>}
         >
-          Review Order
-        </Button>
+          <Button
+            fullWidth
+            variant="filled"
+            color="darkslategray"
+            justify="space-between"
+            size={isMobile ? "sm" : "xl"}
+            onClick={() => setIsCartModalOpen(true)}
+            rightSection={<Text>${order.total.toFixed(2)}</Text>}
+          >
+            Review Order {order.items && `( ${order.items.length} )`}
+          </Button>
+        </Box>
       )}
 
       <Stack w="100%">
