@@ -115,10 +115,10 @@ function MenuItemModal(props: MenuItemModalProps) {
         )}
 
         <Stack
-          px="lg"
           w="100%"
-          align="center"
           pos="fixed"
+          align="center"
+          px={isMobile ? "sm" : "lg"}
           bottom={isMobile ? "20px" : "11px"}
         >
           <Button.Group>
