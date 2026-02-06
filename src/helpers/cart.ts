@@ -8,7 +8,7 @@ export interface User {
 export interface OrderItem {
   menuItem: MenuItemType;
   totalPrice: number;
-  modifiers?: Modifier[];
+  modifiers: Modifier[];
   note?: string;
 }
 

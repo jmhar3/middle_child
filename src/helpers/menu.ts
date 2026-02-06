@@ -9,7 +9,6 @@ export interface Modifier {
 export interface ItemOptions {
   label: string;
   allowMultipleSelections: boolean;
-  defaultSelected?: string;
   modifiers: Modifier[];
 }
 
@@ -42,20 +41,16 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Temperature",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "63", label: "Standard" },
               { id: "3", label: "With Ice" },
               { id: "4", label: "Extra Hot" },
             ],
           },
           {
             label: "Strength",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "63", label: "Standard" },
               { id: "5", label: "Weak" },
               { id: "6", label: "Strong", price: 1 },
               { id: "8", label: "Decaf", isIngredient: true },
@@ -63,7 +58,6 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Milk",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
               { id: "9", label: "Full Cream", isIngredient: true },
@@ -76,15 +70,12 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Sugar / Sweetener",
-            defaultSelected: "15",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "15", label: "No Sweetener" },
               { id: "16", label: "1/2 Sugar" },
               { id: "17", label: "1 Sugar" },
               { id: "18", label: "2 Sugars" },
               { id: "19", label: "3 Sugars" },
-              { id: "20", label: "4 Sugars" },
               { id: "21", label: "1/2 Equal" },
               { id: "22", label: "1 Equal" },
               { id: "23", label: "2 Equals" },
@@ -104,20 +95,16 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Temperature",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "63", label: "Standard" },
               { id: "3", label: "With Ice" },
               { id: "4", label: "Extra Hot" },
             ],
           },
           {
             label: "Strength",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "63", label: "Standard" },
               { id: "5", label: "Weak" },
               { id: "6", label: "Strong", price: 1 },
               { id: "8", label: "Decaf", isIngredient: true },
@@ -125,7 +112,6 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Milk",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
               { id: "9", label: "Full Cream", isIngredient: true },
@@ -138,15 +124,12 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Sugar / Sweetener",
-            defaultSelected: "15",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "15", label: "No Sweetener" },
               { id: "16", label: "1/2 Sugar" },
               { id: "17", label: "1 Sugar" },
               { id: "18", label: "2 Sugars" },
               { id: "19", label: "3 Sugars" },
-              { id: "20", label: "4 Sugars" },
               { id: "21", label: "1/2 Equal" },
               { id: "22", label: "1 Equal" },
               { id: "23", label: "2 Equals" },
@@ -166,20 +149,16 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Temperature",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "63", label: "Standard" },
               { id: "3", label: "With Ice" },
               { id: "4", label: "Extra Hot" },
             ],
           },
           {
             label: "Strength",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "63", label: "Standard" },
               { id: "5", label: "Weak" },
               { id: "6", label: "Strong", price: 1 },
               { id: "8", label: "Decaf", isIngredient: true },
@@ -187,7 +166,6 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Milk",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
               { id: "9", label: "Full Cream", isIngredient: true },
@@ -200,15 +178,12 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Sugar / Sweetener",
-            defaultSelected: "15",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "15", label: "No Sweetener" },
               { id: "16", label: "1/2 Sugar" },
               { id: "17", label: "1 Sugar" },
               { id: "18", label: "2 Sugars" },
               { id: "19", label: "3 Sugars" },
-              { id: "20", label: "4 Sugars" },
               { id: "21", label: "1/2 Equal" },
               { id: "22", label: "1 Equal" },
               { id: "23", label: "2 Equals" },
@@ -228,15 +203,12 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Sugar / Sweetener",
-            defaultSelected: "15",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "15", label: "No Sweetener" },
               { id: "16", label: "1/2 Sugar" },
               { id: "17", label: "1 Sugar" },
               { id: "18", label: "2 Sugars" },
               { id: "19", label: "3 Sugars" },
-              { id: "20", label: "4 Sugars" },
               { id: "21", label: "1/2 Equal" },
               { id: "22", label: "1 Equal" },
               { id: "23", label: "2 Equals" },
@@ -260,15 +232,12 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Sugar / Sweetener",
-            defaultSelected: "15",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "15", label: "No Sweetener" },
               { id: "16", label: "1/2 Sugar" },
               { id: "17", label: "1 Sugar" },
               { id: "18", label: "2 Sugars" },
               { id: "19", label: "3 Sugars" },
-              { id: "20", label: "4 Sugars" },
               { id: "21", label: "1/2 Equal" },
               { id: "22", label: "1 Equal" },
               { id: "23", label: "2 Equals" },
@@ -289,7 +258,6 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Milk",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
               { id: "9", label: "Full Cream", isIngredient: true },
@@ -302,15 +270,12 @@ export const menu: MenuSection[] = [
           },
           {
             label: "Sugar / Sweetener",
-            defaultSelected: "15",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "15", label: "No Sweetener" },
               { id: "16", label: "1/2 Sugar" },
               { id: "17", label: "1 Sugar" },
               { id: "18", label: "2 Sugars" },
               { id: "19", label: "3 Sugars" },
-              { id: "20", label: "4 Sugars" },
               { id: "21", label: "1/2 Equal" },
               { id: "22", label: "1 Equal" },
               { id: "23", label: "2 Equals" },
@@ -331,7 +296,6 @@ export const menu: MenuSection[] = [
         modifierCategories: [
           {
             label: "Milk",
-            defaultSelected: "9",
             allowMultipleSelections: false,
             modifiers: [
               { id: "9", label: "Full Cream", isIngredient: true },

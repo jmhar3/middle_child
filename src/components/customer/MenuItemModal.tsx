@@ -2,49 +2,54 @@ import { useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
 import { Button, em, Modal, Stack, Text } from "@mantine/core";
 
-import ModifierSelect from "./ModifierSelect";
+import IngredientsBadges from "./IngredientsBadges";
+import ModifierCheckbox from "./ModifierCheckbox";
+import ModifierRadio from "./ModifierRadio";
 
 import type { MenuItemType, Modifier } from "../../helpers/menu";
 import type { OrderItem } from "../../helpers/cart";
-import IngredientsBadges from "./IngredientsBadges";
 
 interface MenuItemModalProps {
   isOpen: boolean;
   onClose: () => void;
   menuItem: MenuItemType;
   onAddToOrder: (item: OrderItem) => void;
+  orderItem?: OrderItem;
 }
 
 function MenuItemModal(props: MenuItemModalProps) {
-  const { isOpen, onClose, menuItem, onAddToOrder } = props;
+  const {
+    isOpen,
+    onClose,
+    menuItem,
+    onAddToOrder,
+    orderItem = {
+      menuItem: menuItem,
+      totalPrice: menuItem.price,
+      modifiers: [],
+    },
+  } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   const [value, { increment, decrement, reset }] = useCounter(1, { min: 1 });
 
-  const [selection, setSelection] = useState<OrderItem>({
-    menuItem: menuItem,
-    totalPrice: menuItem.price,
-  });
+  const [selection, setSelection] = useState<OrderItem>(orderItem);
 
   const onModalClose = () => {
     reset();
     onClose();
   };
 
-  const selectModifier = (modifier: Modifier) => {
-    setSelection((prevSelection) => ({
-      ...prevSelection,
-      modifiers: [...(prevSelection.modifiers || []), modifier],
-      totalPrice: modifier.price
-        ? prevSelection.totalPrice + modifier.price
-        : prevSelection.totalPrice,
-    }));
-  };
-
-  const onCheckboxChange = (modifier: Modifier, isChecked: boolean) => {
-    if (isChecked) {
-      selectModifier(modifier);
+  const onModifierSelect = (modifier: Modifier, isSelected: boolean) => {
+    if (isSelected) {
+      setSelection((prevSelection) => ({
+        ...prevSelection,
+        modifiers: [...(prevSelection.modifiers || []), modifier],
+        totalPrice: modifier.price
+          ? prevSelection.totalPrice + modifier.price
+          : prevSelection.totalPrice,
+      }));
     } else {
       setSelection((prevSelection) => ({
         ...prevSelection,
@@ -56,6 +61,11 @@ function MenuItemModal(props: MenuItemModalProps) {
     }
   };
 
+  const filterSelectedModifiers = (modifierOptions: Modifier[]) =>
+    selection.modifiers.filter((selectedModifier) =>
+      modifierOptions.includes(selectedModifier),
+    );
+
   return (
     <Modal
       fullScreen
@@ -65,59 +75,93 @@ function MenuItemModal(props: MenuItemModalProps) {
       title={menuItem.label.toUpperCase()}
       transitionProps={{ transition: "fade", duration: 200 }}
       styles={{
-        header: { background: "cornsilk" },
-        content: { background: "cornsilk" },
+        header: { background: "whitesmoke" },
+        content: { background: "whitesmoke" },
       }}
     >
-      <Stack gap="sm" p={2} pt={7} pb={20} align="center">
+      <Stack gap="sm" p={2} pt={7} pb={120} align="center">
         {menuItem.ingredients && (
           <IngredientsBadges ingredients={menuItem.ingredients} />
         )}
 
         {menuItem.modifiers && (
-          <ModifierSelect
-            label="Customise"
-            allowMultipleSelections
+          <ModifierCheckbox
             modifiers={menuItem.modifiers}
-            onModifierSelect={(selectedModifier) => selectedModifier}
+            selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
+            onModifierSelect={onModifierSelect}
           />
         )}
 
-        {menuItem.modifierCategories?.map((modifierCategory) => (
-          <ModifierSelect
-            key={modifierCategory.label}
-            onModifierSelect={(selectedModifier) => selectedModifier}
-            {...modifierCategory}
-          />
-        ))}
+        {menuItem.modifierCategories?.map((modifierCategory) =>
+          modifierCategory.allowMultipleSelections ? (
+            <ModifierCheckbox
+              key={modifierCategory.label}
+              selectedModifiers={filterSelectedModifiers(
+                modifierCategory.modifiers,
+              )}
+              onModifierSelect={onModifierSelect}
+              {...modifierCategory}
+            />
+          ) : (
+            <ModifierRadio
+              key={modifierCategory.label}
+              selectedModifiers={filterSelectedModifiers(
+                modifierCategory.modifiers,
+              )}
+              onModifierSelect={onModifierSelect}
+              {...modifierCategory}
+            />
+          ),
+        )}
 
-        <Button.Group>
-          <Button color="dark" variant="light" radius="md" onClick={decrement}>
-            -
-          </Button>
-          <Button.GroupSection color="dark" variant="light">
-            {value}
-          </Button.GroupSection>
-          <Button color="dark" variant="light" radius="md" onClick={increment}>
-            +
-          </Button>
-        </Button.Group>
-
-        <Button
+        <Stack
           px="lg"
-          fullWidth
-          color="red"
-          variant="light"
-          justify="space-between"
-          size={isMobile ? "md" : "lg"}
-          rightSection={<Text fw={700}>${selection.totalPrice}</Text>}
-          onClick={() => {
-            onAddToOrder(selection);
-            onModalClose();
-          }}
+          w="100%"
+          align="center"
+          pos="fixed"
+          bottom={isMobile ? "20px" : "11px"}
         >
-          Add to order
-        </Button>
+          <Button.Group>
+            <Button
+              radius="md"
+              variant="filled"
+              color="darkslategray"
+              onClick={decrement}
+            >
+              -
+            </Button>
+            <Button.GroupSection
+              bg="whitesmoke"
+              color="darkslategray"
+              variant="outline"
+            >
+              {value}
+            </Button.GroupSection>
+            <Button
+              radius="md"
+              variant="filled"
+              color="darkslategray"
+              onClick={increment}
+            >
+              +
+            </Button>
+          </Button.Group>
+
+          <Button
+            fullWidth
+            variant="filled"
+            color="darkslategray"
+            justify="space-between"
+            size={isMobile ? "md" : "lg"}
+            rightSection={<Text fw={700}>${selection.totalPrice}</Text>}
+            onClick={() => {
+              onAddToOrder(selection);
+              onModalClose();
+            }}
+          >
+            Add to order
+          </Button>
+        </Stack>
       </Stack>
     </Modal>
   );
