@@ -46,8 +46,21 @@ export const findExistingOrderItem = (
 ) => {
   return existingOrder.find(
     (existingItem) =>
-      existingItem.menuItem === newOrderItem.menuItem &&
-      existingItem.modifiers === newOrderItem.modifiers &&
+      existingItem.menuItem.id === newOrderItem.menuItem.id &&
+      JSON.stringify(existingItem.modifiers) ===
+        JSON.stringify(newOrderItem.modifiers) &&
       existingItem.note === newOrderItem.note,
   );
 };
+
+export const filterItemFromOrder = (
+  existingItems: OrderItem[],
+  filterItem: OrderItem,
+) =>
+  existingItems.filter(
+    (existingItem) =>
+      existingItem.menuItem.id !== filterItem.menuItem.id &&
+      JSON.stringify(existingItem.modifiers) !==
+        JSON.stringify(filterItem.modifiers) &&
+      existingItem.note !== filterItem.note,
+  );
