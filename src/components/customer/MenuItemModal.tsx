@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
 import { Box, Button, em, Modal, Stack } from "@mantine/core";
 
@@ -28,7 +28,6 @@ function MenuItemModal(props: MenuItemModalProps) {
     orderItem = {
       quantity: 1,
       menuItem: menuItem,
-      totalPrice: menuItem.price,
       modifiers: [],
     },
   } = props;
@@ -40,12 +39,8 @@ function MenuItemModal(props: MenuItemModalProps) {
     { min: 1 },
   );
 
-  const [note, setNote] = useState<string | undefined>();
+  const [note, setNote] = useState<string | undefined>(orderItem.note);
   const [selection, setSelection] = useState<OrderItem>(orderItem);
-
-  useEffect(() => {
-    setSelection((prevSelection) => ({ ...prevSelection, quantity: quantity }));
-  }, [quantity]);
 
   const onModalClose = () => {
     reset();
@@ -166,7 +161,7 @@ function MenuItemModal(props: MenuItemModalProps) {
             label="Add to order"
             price={menuItemPrice * quantity}
             onClick={() => {
-              onAddToOrder(selection);
+              onAddToOrder({ ...selection, note: note, quantity: quantity });
               onModalClose();
             }}
           />
