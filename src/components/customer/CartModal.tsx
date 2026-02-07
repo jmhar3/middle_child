@@ -83,12 +83,13 @@ function CartModal(props: CartModalProps) {
             {!items && <Text>Your cart is empty.</Text>}
             {items?.map((orderItem, index) => (
               <>
-                {index !== 0 && <Divider />}
+                {index === 0 && <Divider />}
                 <CartItem
                   orderItem={orderItem}
                   onDeleteClick={() => onDeleteOrderItem(orderItem)}
                   onEditClick={() => setOldOrderItem(orderItem)}
                 />
+                <Divider />
               </>
             ))}
           </Stack>
