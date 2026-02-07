@@ -16,6 +16,8 @@ import "@fontsource/poppins";
 import "@mantine/core/styles.css";
 import "./global.css";
 import CustomerMenu from "./pages/customer/Menu.js";
+import Orders from "./pages/portal/Orders.js";
+import EditMenu from "./pages/portal/EditMenu.js";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -29,12 +31,15 @@ createRoot(document.getElementById("root")!).render(
       >
         <BrowserRouter>
           <Routes>
-            {/* Customer Paths */}
+            {/* Customer Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/about-us/ai" element={<AboutUs />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/menu" element={<CustomerMenu />} />
+            {/* Private Portal */}
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/edit-menu" element={<EditMenu />} />
           </Routes>
         </BrowserRouter>
       </Auth0Provider>
