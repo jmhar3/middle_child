@@ -16,7 +16,11 @@ import { menu } from "../../helpers/menu";
 import { store } from "../../helpers/store";
 
 import type { MenuItemType } from "../../helpers/menu";
-import type { Cart, OrderItem } from "../../helpers/cart";
+import {
+  calculateOrderItemPrice,
+  type Cart,
+  type OrderItem,
+} from "../../helpers/cart";
 
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import PageLayout from "./PageLayout";
@@ -33,7 +37,10 @@ function Menu() {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const recentlyOrderedItems: OrderItem[] | null = [
-    { menuItem: { label: "Latte", price: 5 }, totalPrice: 5, modifiers: [] },
+    {
+      menuItem: { label: "Latte", price: 5 },
+      modifiers: [{ id: "1", label: "Make it a large", price: 1.5 }],
+    },
   ];
 
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
@@ -42,19 +49,17 @@ function Menu() {
   };
 
   const addItemToOrder = (item: OrderItem) => {
-    setOrder((prevOrder) =>
-      prevOrder
-        ? {
-            ...prevOrder,
-            items: [...prevOrder.items, item],
-            total: prevOrder.total + item.totalPrice,
-          }
-        : {
-            items: [item],
-            total: item.totalPrice,
-            pickUpTimeFromNow: store.currentOrderTime.short,
-          },
+    const orderItemPrice = calculateOrderItemPrice(
+      item.menuItem,
+      item.modifiers,
     );
+
+    setOrder((prevOrder) => ({
+      items: prevOrder ? [...prevOrder.items, item] : [item],
+      total: prevOrder ? prevOrder.total + orderItemPrice : orderItemPrice,
+      pickUpTimeFromNow: store.currentOrderTime.short,
+    }));
+
     setIsMenuItemModalOpen(false);
   };
 
@@ -102,9 +107,9 @@ function Menu() {
                     <>
                       {index !== 0 && <Divider />}
                       <MenuItemButton
-                        menuItem={order.menuItem}
                         key={order.menuItem.label}
                         onClick={() => addItemToOrder(order)}
+                        {...order}
                       />
                     </>
                   ))}

@@ -7,7 +7,6 @@ export interface User {
 
 export interface OrderItem {
   menuItem: MenuItemType;
-  totalPrice: number;
   modifiers: Modifier[];
   note?: string;
 }
@@ -29,3 +28,13 @@ export interface Order {
   isReadyToCollect: boolean;
   isCollected: boolean;
 }
+
+export const calculateOrderItemPrice = (
+  menuItem: MenuItemType,
+  modifiers: Modifier[],
+) => {
+  const modifiersTotalPrice = modifiers.reduce((accumulator, modifier) => {
+    return modifier.price ? accumulator + modifier.price : accumulator;
+  }, 0);
+  return modifiersTotalPrice + menuItem.price;
+};

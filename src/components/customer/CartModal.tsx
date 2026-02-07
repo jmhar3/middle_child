@@ -1,7 +1,8 @@
 import LoginButton from "../LoginButton";
 
-import type { Cart } from "../../helpers/cart";
-import { Button, Modal, Stack, Text } from "@mantine/core";
+import { calculateOrderItemPrice, type Cart } from "../../helpers/cart";
+import { Button, Modal, Stack, Text, Textarea } from "@mantine/core";
+import { useState } from "react";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ function SignInModal(props: SignInModalProps) {
     isOpen,
     order: { total, items },
   } = props;
+
+  const [note, setNote] = useState<string | undefined>(undefined);
 
   return (
     <Modal
@@ -30,25 +33,33 @@ function SignInModal(props: SignInModalProps) {
 
           <Stack>
             {!items && <Text>Your cart is empty.</Text>}
-            {items?.map((orderItem) => (
-              <Stack
-                key={orderItem.menuItem.label}
-                dir="row"
-                justify="space-between"
-              >
-                <Stack>
-                  <Text>{orderItem.menuItem.label}</Text>
-                  <Stack dir="row">
-                    {orderItem.modifiers?.map((modifier) => (
-                      <Text key={modifier.label}>{modifier.label}</Text>
-                    ))}
+            {items?.map((orderItem) => {
+              const orderItemPrice = calculateOrderItemPrice(
+                orderItem.menuItem,
+                orderItem.modifiers,
+              );
+              return (
+                <Stack
+                  key={orderItem.menuItem.label}
+                  dir="row"
+                  justify="space-between"
+                >
+                  <Stack>
+                    <Text>{orderItem.menuItem.label}</Text>
+                    <Stack dir="row">
+                      {orderItem.modifiers?.map((modifier) => (
+                        <Text key={modifier.label}>{modifier.label}</Text>
+                      ))}
+                    </Stack>
                   </Stack>
-                </Stack>
 
-                <Text>${orderItem.totalPrice.toFixed(2)}</Text>
-              </Stack>
-            ))}
+                  <Text>${orderItemPrice.toFixed(2)}</Text>
+                </Stack>
+              );
+            })}
           </Stack>
+
+          <Textarea value={note} onChange={(e) => setNote(e.target.value)} />
 
           <Button>Order Now ${total.toFixed(2)}</Button>
           <Text>Pay securely using Square</Text>

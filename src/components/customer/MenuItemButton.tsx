@@ -1,17 +1,23 @@
 import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
-import type { MenuItemType } from "../../helpers/menu";
+import type { MenuItemType, Modifier } from "../../helpers/menu";
+import { calculateOrderItemPrice } from "../../helpers/cart";
 
 interface MenuItemButtonProps {
   onClick: () => void;
   menuItem: MenuItemType;
+  modifiers?: Modifier[];
 }
 
 function MenuItemButton(props: MenuItemButtonProps) {
-  const { onClick, menuItem } = props;
+  const { onClick, menuItem, modifiers } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+
+  const totalPrice = modifiers
+    ? calculateOrderItemPrice(menuItem, modifiers)
+    : menuItem.price;
 
   return (
     <Button
@@ -23,7 +29,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
       color="darkslategray"
       justify="space-between"
       size={isMobile ? "md" : "lg"}
-      rightSection={<Text fw={700}>${menuItem.price}</Text>}
+      rightSection={<Text fw={700}>${totalPrice}</Text>}
       onClick={onClick}
     >
       <Stack
@@ -39,8 +45,16 @@ function MenuItemButton(props: MenuItemButtonProps) {
           <ScrollArea h="20px" w="100%">
             <Text size="xs">
               {menuItem.ingredients
-                ?.map((ingredient) => ingredient.label)
+                .map((ingredient) => ingredient.label)
                 .join(", ")}
+            </Text>
+          </ScrollArea>
+        )}
+
+        {modifiers && (
+          <ScrollArea h="20px" w="100%">
+            <Text size="xs">
+              {modifiers.map((ingredient) => ingredient.label).join(", ")}
             </Text>
           </ScrollArea>
         )}
