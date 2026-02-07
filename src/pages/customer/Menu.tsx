@@ -132,7 +132,7 @@ function Menu() {
         if (filteredOrderItems.length === 0) setIsCartModalOpen(false);
         return {
           items: filteredOrderItems,
-          total: orderItemPrice - orderItemPrice,
+          total: prevOrder.total - orderItemPrice,
           pickUpTimeFromNow: store.currentOrderTime.short,
         };
       }
