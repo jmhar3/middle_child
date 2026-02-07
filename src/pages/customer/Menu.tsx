@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  Accordion,
-  Box,
-  Button,
-  Divider,
-  em,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 
 import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/customer/MenuItemModal";
@@ -25,6 +17,7 @@ import {
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import PageLayout from "./PageLayout";
 import { useMediaQuery } from "@mantine/hooks";
+import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
 
 function Menu() {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -65,24 +58,20 @@ function Menu() {
 
   return (
     <PageLayout>
-      {order && (
+      {order && !isCartModalOpen && (
         <Box
           w="100%"
           pos="fixed"
           px={isMobile ? "sm" : "lg"}
           bottom={isMobile ? "20px" : "11px"}
+          style={{ zIndex: 9999 }}
         >
-          <Button
-            fullWidth
-            variant="filled"
-            color="darkslategray"
-            justify="space-between"
-            size={isMobile ? "sm" : "xl"}
+          <ButtonWithPrice
             onClick={() => setIsCartModalOpen(true)}
-            rightSection={<Text>${order.total.toFixed(2)}</Text>}
-          >
-            Review Order {order.items && `( ${order.items.length} )`}
-          </Button>
+            label={`Review Order ${order.items && `( ${order.items.length} )`}`}
+            price={order.total}
+            variant="outline"
+          />
         </Box>
       )}
 
@@ -90,7 +79,11 @@ function Menu() {
         <Accordion
           styles={{
             item: { borderColor: "darkslategray" },
-            content: { padding: 0, margin: 0, backgroundColor: "white" },
+            content: {
+              padding: 0,
+              margin: 0,
+              backgroundColor: "white",
+            },
             control: {
               backgroundColor: "whitesmoke",
             },
