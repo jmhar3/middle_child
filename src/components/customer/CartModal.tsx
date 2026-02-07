@@ -1,67 +1,143 @@
+import { Button, Divider, Modal, Stack, Text } from "@mantine/core";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useCounter } from "@mantine/hooks";
+import { useMemo, useState } from "react";
+
+import ButtonWithPrice from "./ButtonWithPrice";
+import LoyaltyPoints from "./LoyaltyPoints";
 import LoginButton from "../LoginButton";
+import NoteInput from "./NoteInput";
+import CartItem from "./CartItem";
 
-import { calculateOrderItemPrice, type Cart } from "../../helpers/cart";
-import { Button, Modal, Stack, Text, Textarea } from "@mantine/core";
-import { useState } from "react";
+import type { Cart, OrderItem } from "../../helpers/cart";
 
-interface SignInModalProps {
+interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
   order: Cart;
 }
 
-function SignInModal(props: SignInModalProps) {
+interface OrderListItem extends OrderItem {
+  quantity: number;
+}
+
+function CartModal(props: CartModalProps) {
   const {
     onClose,
     isOpen,
-    order: { total, items },
+    order: { total, items, pickUpTimeFromNow },
   } = props;
 
+  const { isAuthenticated } = useAuth0();
+
   const [note, setNote] = useState<string | undefined>(undefined);
+
+  const [quantity, { increment, decrement, reset }] = useCounter(
+    pickUpTimeFromNow,
+    { min: pickUpTimeFromNow },
+  );
+
+  const onModalClose = () => {
+    reset();
+    onClose();
+  };
+
+  const orderList: OrderListItem[] = useMemo(() => {
+    const orderWithQuantities: OrderListItem[] = [];
+    items.forEach((targetItem) => {
+      const quantity = items.filter((item) => item === targetItem).length;
+      orderWithQuantities.push({ ...targetItem, quantity: quantity });
+    });
+    return orderWithQuantities.filter((value, index) => {
+      const _value = JSON.stringify(value);
+      return (
+        index ===
+        orderWithQuantities.findIndex((obj) => {
+          return JSON.stringify(obj) === _value;
+        })
+      );
+    });
+  }, [items]);
+
+  const additionalLoyaltyPoints = useMemo(
+    () => items.filter((item) => item.menuItem.isLoyaltyApplicable).length,
+    [items],
+  );
+
+  const onClaimFreeCoffee = () => {};
+
+  const onDeleteOrderItem = (orderItem: OrderListItem) => {};
+
+  const onEditOrderItem = (orderItem: OrderListItem) => {};
 
   return (
     <Modal
       fullScreen
       radius={0}
       opened={isOpen}
-      onClose={onClose}
+      onClose={onModalClose}
+      title="CART"
       transitionProps={{ transition: "fade", duration: 200 }}
+      styles={{
+        header: { background: "whitesmoke" },
+        content: { background: "whitesmoke" },
+      }}
     >
-      <Stack mih="100vh">
-        <Stack gap={1} p={2} pt={6}>
+      <Stack mih="100vh" align="center">
+        <Stack w="100%">
+          {!items && <Text>Your cart is empty.</Text>}
+          {orderList?.map((orderItem, index) => (
+            <>
+              {index !== 0 && <Divider />}
+              <CartItem
+                orderItem={orderItem}
+                onDeleteClick={() => onDeleteOrderItem(orderItem)}
+                onEditClick={() => onEditOrderItem(orderItem)}
+              />
+            </>
+          ))}
+        </Stack>
+
+        <NoteInput label="Notes" note={note} setNote={setNote} />
+
+        <Button.Group>
+          <Button
+            radius="md"
+            variant="filled"
+            color="darkslategray"
+            onClick={decrement}
+            disabled={quantity === pickUpTimeFromNow}
+          >
+            -
+          </Button>
+          <Button.GroupSection
+            bg="white"
+            color="darkslategray"
+            variant="outline"
+          >
+            Pick Up in {quantity} Minutes
+          </Button.GroupSection>
+          <Button
+            radius="md"
+            variant="filled"
+            color="darkslategray"
+            onClick={increment}
+          >
+            +
+          </Button>
+        </Button.Group>
+
+        {isAuthenticated ? (
+          <LoyaltyPoints
+            additionalPoints={additionalLoyaltyPoints}
+            onClaimFreeCoffee={onClaimFreeCoffee}
+          />
+        ) : (
           <LoginButton />
+        )}
 
-          <Stack>
-            {!items && <Text>Your cart is empty.</Text>}
-            {items?.map((orderItem) => {
-              const orderItemPrice = calculateOrderItemPrice(
-                orderItem.menuItem,
-                orderItem.modifiers,
-              );
-              return (
-                <Stack
-                  key={orderItem.menuItem.label}
-                  dir="row"
-                  justify="space-between"
-                >
-                  <Stack>
-                    <Text>{orderItem.menuItem.label}</Text>
-                    <Stack dir="row">
-                      {orderItem.modifiers?.map((modifier) => (
-                        <Text key={modifier.label}>{modifier.label}</Text>
-                      ))}
-                    </Stack>
-                  </Stack>
-
-                  <Text>${orderItemPrice.toFixed(2)}</Text>
-                </Stack>
-              );
-            })}
-          </Stack>
-
-          <Textarea value={note} onChange={(e) => setNote(e.target.value)} />
-
-          <Button>Order Now ${total.toFixed(2)}</Button>
+        <Stack gap="3" w="100%" align="center">
+          <ButtonWithPrice onClick={() => ""} label="Order Now" price={total} />
           <Text>Pay securely using Square</Text>
         </Stack>
       </Stack>
@@ -69,4 +145,4 @@ function SignInModal(props: SignInModalProps) {
   );
 }
 
-export default SignInModal;
+export default CartModal;
