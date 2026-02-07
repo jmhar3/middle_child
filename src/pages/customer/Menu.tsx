@@ -171,7 +171,7 @@ function Menu() {
           </Box>
         )}
 
-      <Stack w="100%">
+      <Stack w="100%" pb="60">
         <Accordion
           styles={{
             item: { borderColor: "darkslategray" },
