@@ -25,20 +25,14 @@ function MenuItemButton(props: MenuItemButtonProps) {
       fullWidth
       radius="0"
       h="fit-content"
-      variant="filled"
+      variant="transparent"
       color="darkslategray"
       justify="space-between"
-      size={isMobile ? "md" : "lg"}
+      size={isMobile ? "sm" : "lg"}
       rightSection={<Text fw={700}>${totalPrice}</Text>}
       onClick={onClick}
     >
-      <Stack
-        gap="3"
-        w="100%"
-        justify="center"
-        align="flex-start"
-        py={menuItem.ingredients ? "sm" : "sm"}
-      >
+      <Stack gap="3" w="100%" justify="center" align="flex-start" py="xs">
         <Text fw={700}>{menuItem.label}</Text>
 
         {menuItem.ingredients && (
