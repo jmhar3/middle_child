@@ -3,6 +3,7 @@ import { Button } from "@mantine/core";
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
+
   return (
     <Button onClick={() => loginWithRedirect()}>
       Log In to Earn Loyalty Points
