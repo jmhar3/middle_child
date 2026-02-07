@@ -1,22 +1,20 @@
 import { ActionIcon, Flex } from "@mantine/core";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import StorefrontIcon from "@mui/icons-material/Storefront";
-import TableChartIcon from "@mui/icons-material/TableChart";
 
 import type { PropsWithChildren } from "react";
+import CoffeeIcon from "../../icons/CoffeeIcon";
 
 function Nav(props: PropsWithChildren) {
   return (
     <Flex gap={4} pos="fixed" justify="space-between">
       <Flex>
         <ActionIcon component="a" aria-label="Home" href="/portal">
-          <StorefrontIcon />
+          <CoffeeIcon />
         </ActionIcon>
         <ActionIcon component="a" aria-label="Menu" href="/portal/menu">
-          <EditNoteIcon />
+          <CoffeeIcon />
         </ActionIcon>
         <ActionIcon component="a" aria-label="Orders" href="/portal/orders">
-          <TableChartIcon />
+          <CoffeeIcon />
         </ActionIcon>
       </Flex>
       {props.children}
