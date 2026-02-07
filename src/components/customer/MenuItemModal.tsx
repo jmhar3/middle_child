@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
-import { Button, em, Modal, Stack, Text } from "@mantine/core";
+import { Box, Button, em, Modal, Stack } from "@mantine/core";
 
 import IngredientsBadges from "./IngredientsBadges";
 import ModifierCheckbox from "./ModifierCheckbox";
 import ModifierRadio from "./ModifierRadio";
 
 import type { MenuItemType, Modifier } from "../../helpers/menu";
-import type { OrderItem } from "../../helpers/cart";
+import { calculateOrderItemPrice, type OrderItem } from "../../helpers/cart";
+import ButtonWithPrice from "./ButtonWithPrice";
+import NoteInput from "./NoteInput";
 
 interface MenuItemModalProps {
   isOpen: boolean;
@@ -32,8 +34,9 @@ function MenuItemModal(props: MenuItemModalProps) {
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
-  const [value, { increment, decrement, reset }] = useCounter(1, { min: 1 });
+  const [quantity, { increment, decrement, reset }] = useCounter(1, { min: 1 });
 
+  const [note, setNote] = useState<string | undefined>();
   const [selection, setSelection] = useState<OrderItem>(orderItem);
 
   const onModalClose = () => {
@@ -46,17 +49,11 @@ function MenuItemModal(props: MenuItemModalProps) {
       setSelection((prevSelection) => ({
         ...prevSelection,
         modifiers: [...(prevSelection.modifiers || []), modifier],
-        totalPrice: modifier.price
-          ? prevSelection.totalPrice + modifier.price
-          : prevSelection.totalPrice,
       }));
     } else {
       setSelection((prevSelection) => ({
         ...prevSelection,
         modifiers: prevSelection.modifiers?.filter((m) => m.id !== modifier.id),
-        totalPrice: modifier.price
-          ? prevSelection.totalPrice - modifier.price
-          : prevSelection.totalPrice,
       }));
     }
   };
@@ -65,6 +62,11 @@ function MenuItemModal(props: MenuItemModalProps) {
     selection.modifiers.filter((selectedModifier) =>
       modifierOptions.includes(selectedModifier),
     );
+
+  const menuItemPrice = useMemo(
+    () => calculateOrderItemPrice(selection.menuItem, selection.modifiers),
+    [selection],
+  );
 
   return (
     <Modal
@@ -79,7 +81,7 @@ function MenuItemModal(props: MenuItemModalProps) {
         content: { background: "whitesmoke" },
       }}
     >
-      <Stack gap="sm" p={2} pt={7} pb={120} align="center">
+      <Stack pb={60} align="center">
         {menuItem.ingredients && (
           <IngredientsBadges ingredients={menuItem.ingredients} />
         )}
@@ -114,54 +116,55 @@ function MenuItemModal(props: MenuItemModalProps) {
           ),
         )}
 
-        <Stack
-          w="100%"
-          pos="fixed"
-          align="center"
-          px={isMobile ? "sm" : "lg"}
-          bottom={isMobile ? "20px" : "11px"}
-        >
-          <Button.Group>
-            <Button
-              radius="md"
-              variant="filled"
-              color="darkslategray"
-              onClick={decrement}
-            >
-              -
-            </Button>
-            <Button.GroupSection
-              bg="whitesmoke"
-              color="darkslategray"
-              variant="outline"
-            >
-              {value}
-            </Button.GroupSection>
-            <Button
-              radius="md"
-              variant="filled"
-              color="darkslategray"
-              onClick={increment}
-            >
-              +
-            </Button>
-          </Button.Group>
+        <NoteInput label="Notes" note={note} setNote={setNote} />
 
+        <Button.Group w="100%" pt="3">
           <Button
             fullWidth
+            radius="sm"
             variant="filled"
             color="darkslategray"
-            justify="space-between"
-            size={isMobile ? "md" : "lg"}
-            rightSection={<Text fw={700}>${selection.totalPrice}</Text>}
+            onClick={decrement}
+          >
+            -
+          </Button>
+          <Button.GroupSection
+            w="100%"
+            bg="white"
+            color="darkslategray"
+            variant="outline"
+          >
+            {quantity}
+          </Button.GroupSection>
+          <Button
+            fullWidth
+            radius="sm"
+            variant="filled"
+            color="darkslategray"
+            onClick={increment}
+          >
+            +
+          </Button>
+        </Button.Group>
+
+        <Box
+          w="100%"
+          pos="fixed"
+          bottom="0"
+          px={isMobile ? "md" : "lg"}
+          pb={isMobile ? "md" : "lg"}
+        >
+          <ButtonWithPrice
+            label="Add to order"
+            price={menuItemPrice * quantity}
             onClick={() => {
-              onAddToOrder(selection);
+              for (let i = 0; i < quantity; i++) {
+                onAddToOrder(selection);
+              }
               onModalClose();
             }}
-          >
-            Add to order
-          </Button>
-        </Stack>
+          />
+        </Box>
       </Stack>
     </Modal>
   );
