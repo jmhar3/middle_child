@@ -16,10 +16,12 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
   return (
     <Stack w="100%" gap="6">
       {label && <Text pl="3">{label}</Text>}
+
       <Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
         <Button.Group w="100%" orientation="vertical">
           {modifiers.map((modifier, index) => {
             const isSelected = selectedModifiers.includes(modifier);
+
             return (
               <>
                 {index !== 0 && <Divider />}
