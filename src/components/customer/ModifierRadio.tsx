@@ -21,21 +21,9 @@ function ModifierRadio(props: ModifierRadioProps) {
   };
 
   return (
-    // <Select
-    //   w="100%"
-    //   label={label}
-    //   data={modifiers.map((modifier) => ({
-    //     value: modifier.id,
-    //     label: modifier.price
-    //       ? `${modifier.label} +$${modifier.price}`
-    //       : modifier.label,
-    //   }))}
-    //   value={selectedModifiers[0]?.id}
-    //   onChange={() => onModifierSelect(selectedModifiers[0], true)}
-    // />
     <Stack w="100%" gap="6">
       {label && <Text pl="3">{label}</Text>}
-      <Box bdrs="sm" w="100%" bd="darkslategray solid 1px">
+      <Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
         <Button.Group w="100%" orientation="vertical">
           {modifiers.map((modifier, index) => {
             const selectedModifier = selectedModifiers[0];
@@ -54,7 +42,7 @@ function ModifierRadio(props: ModifierRadioProps) {
                       ? onModifierSelect(modifier, false)
                       : onSelection(modifier)
                   }
-                  rightSection={modifier.price && `+$${modifier.price}`}
+                  rightSection={modifier.price && `+ $${modifier.price}`}
                   variant={isSelected ? "filled" : "transparent"}
                 >
                   {modifier.label}

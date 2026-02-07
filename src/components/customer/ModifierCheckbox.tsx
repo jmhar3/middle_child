@@ -16,7 +16,7 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
   return (
     <Stack w="100%" gap="6">
       {label && <Text pl="3">{label}</Text>}
-      <Box bdrs="sm" w="100%" bd="darkslategray solid 1px">
+      <Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
         <Button.Group w="100%" orientation="vertical">
           {modifiers.map((modifier, index) => {
             const isSelected = selectedModifiers.includes(modifier);
@@ -30,7 +30,7 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
                   color="darkslategray"
                   justify="space-between"
                   onClick={() => onModifierSelect(modifier, !isSelected)}
-                  rightSection={modifier.price && `+$${modifier.price}`}
+                  rightSection={modifier.price && `+ $${modifier.price}`}
                   variant={isSelected ? "filled" : "transparent"}
                 >
                   {modifier.label}{" "}
