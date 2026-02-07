@@ -101,12 +101,13 @@ function Menu() {
 
     setOrder((prevOrder) => {
       if (prevOrder) {
-        const filteredPrevOrderItems = prevOrder.items.filter(
-          (item) => item === oldOrderItem,
+        const filteredOrderItems = filterItemFromOrder(
+          prevOrder.items,
+          oldOrderItem,
         );
 
         return {
-          items: [...filteredPrevOrderItems, newOrderItem],
+          items: [...filteredOrderItems, newOrderItem],
           total: prevOrder.total - oldOrderItemPrice + newOrderItemPrice,
           pickUpTimeFromNow: store.currentOrderTime.short,
         };
