@@ -5,21 +5,17 @@ import { useMemo, useState } from "react";
 
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
+import MenuItemModal from "./MenuItemModal";
 import LoginButton from "../LoginButton";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
 
 import type { Cart, OrderItem } from "../../helpers/cart";
-import MenuItemModal from "./MenuItemModal";
-
-interface OrderListItem extends OrderItem {
-  quantity: number;
-}
 
 interface CartModalProps {
+  order: Cart;
   isOpen: boolean;
   onClose: () => void;
-  order: Cart;
   onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
   onDeleteOrderItem: (orderItem: OrderItem) => void;
 }
@@ -39,7 +35,7 @@ function CartModal(props: CartModalProps) {
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
 
-  const [quantity, { increment, decrement, reset }] = useCounter(
+  const [pickUpTime, { increment, decrement, reset }] = useCounter(
     pickUpTimeFromNow,
     { min: pickUpTimeFromNow },
   );
@@ -48,23 +44,6 @@ function CartModal(props: CartModalProps) {
     reset();
     onClose();
   };
-
-  const orderList: OrderListItem[] = useMemo(() => {
-    const orderWithQuantities: OrderListItem[] = [];
-    items.forEach((targetItem) => {
-      const quantity = items.filter((item) => item === targetItem).length;
-      orderWithQuantities.push({ ...targetItem, quantity: quantity });
-    });
-    return orderWithQuantities.filter((value, index) => {
-      const _value = JSON.stringify(value);
-      return (
-        index ===
-        orderWithQuantities.findIndex((obj) => {
-          return JSON.stringify(obj) === _value;
-        })
-      );
-    });
-  }, [items]);
 
   const additionalLoyaltyPoints = useMemo(
     () => items.filter((item) => item.menuItem.isLoyaltyApplicable).length,
@@ -86,6 +65,7 @@ function CartModal(props: CartModalProps) {
           }
         />
       )}
+
       <Modal
         fullScreen
         radius={0}
@@ -101,7 +81,7 @@ function CartModal(props: CartModalProps) {
         <Stack mih="100vh" align="center">
           <Stack w="100%">
             {!items && <Text>Your cart is empty.</Text>}
-            {orderList?.map((orderItem, index) => (
+            {items?.map((orderItem, index) => (
               <>
                 {index !== 0 && <Divider />}
                 <CartItem
@@ -121,7 +101,7 @@ function CartModal(props: CartModalProps) {
               variant="filled"
               color="darkslategray"
               onClick={decrement}
-              disabled={quantity === pickUpTimeFromNow}
+              disabled={pickUpTime === pickUpTimeFromNow}
             >
               -
             </Button>
@@ -130,7 +110,7 @@ function CartModal(props: CartModalProps) {
               color="darkslategray"
               variant="outline"
             >
-              Pick Up in {quantity} Minutes
+              Pick Up in {pickUpTime} Minutes
             </Button.GroupSection>
             <Button
               radius="md"
