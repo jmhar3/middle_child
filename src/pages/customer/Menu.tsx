@@ -1,23 +1,23 @@
 import { useState } from "react";
+import { useMediaQuery } from "@mantine/hooks";
 import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 
+import PageLayout from "./PageLayout";
 import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/customer/MenuItemModal";
+import MenuItemButton from "../../components/customer/MenuItemButton";
+import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
 
 import { menu } from "../../helpers/menu";
 import { store } from "../../helpers/store";
 
-import type { MenuItemType } from "../../helpers/menu";
 import {
   calculateOrderItemPrice,
-  type Cart,
-  type OrderItem,
+  findExistingOrderItem,
 } from "../../helpers/cart";
 
-import MenuItemButton from "../../components/customer/MenuItemButton";
-import PageLayout from "./PageLayout";
-import { useMediaQuery } from "@mantine/hooks";
-import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
+import type { MenuItemType } from "../../helpers/menu";
+import type { Cart, OrderItem } from "../../helpers/cart";
 
 function Menu() {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -31,6 +31,7 @@ function Menu() {
 
   const recentlyOrderedItems: OrderItem[] | null = [
     {
+      quantity: 1,
       menuItem: { label: "Latte", price: 5 },
       modifiers: [{ id: "1", label: "Make it a large", price: 1.5 }],
     },
@@ -42,23 +43,88 @@ function Menu() {
   };
 
   const addItemToOrder = (item: OrderItem) => {
-    const orderItemPrice = calculateOrderItemPrice(
-      item.menuItem,
-      item.modifiers,
-    );
+    const orderItemPrice =
+      calculateOrderItemPrice(item.menuItem, item.modifiers) * item.quantity;
 
-    setOrder((prevOrder) => ({
-      items: prevOrder ? [...prevOrder.items, item] : [item],
-      total: prevOrder ? prevOrder.total + orderItemPrice : orderItemPrice,
-      pickUpTimeFromNow: store.currentOrderTime.short,
-    }));
+    setOrder((prevOrder) => {
+      if (prevOrder) {
+        const existingOrderItem = findExistingOrderItem(prevOrder.items, item);
+
+        return {
+          // if matching order item exists, update quantity
+          items: existingOrderItem
+            ? [
+                ...prevOrder.items,
+                {
+                  ...existingOrderItem,
+                  quantity: existingOrderItem.quantity + item.quantity,
+                },
+              ]
+            : [...prevOrder.items, item],
+          total: prevOrder.total + orderItemPrice,
+          pickUpTimeFromNow: store.currentOrderTime.short,
+        };
+      } else {
+        return {
+          items: [item],
+          total: orderItemPrice,
+          pickUpTimeFromNow: store.currentOrderTime.short,
+        };
+      }
+    });
 
     setIsMenuItemModalOpen(false);
   };
 
+  const onEditOrderItem = (
+    oldOrderItem: OrderItem,
+    newOrderItem: OrderItem,
+  ) => {
+    const oldOrderItemPrice =
+      calculateOrderItemPrice(oldOrderItem.menuItem, oldOrderItem.modifiers) *
+      oldOrderItem.quantity;
+
+    const newOrderItemPrice =
+      calculateOrderItemPrice(newOrderItem.menuItem, newOrderItem.modifiers) *
+      newOrderItem.quantity;
+
+    setOrder((prevOrder) => {
+      if (prevOrder) {
+        const filteredPrevOrderItems = prevOrder.items.filter(
+          (item) => item === oldOrderItem,
+        );
+
+        return {
+          items: [...filteredPrevOrderItems, newOrderItem],
+          total: prevOrder.total - oldOrderItemPrice + newOrderItemPrice,
+          pickUpTimeFromNow: store.currentOrderTime.short,
+        };
+      } else {
+        return null;
+      }
+    });
+
+    setIsMenuItemModalOpen(false);
+  };
+
+  const onDeleteOrderItem = (orderItem: OrderItem) => {
+    const orderItemPrice =
+      calculateOrderItemPrice(orderItem.menuItem, orderItem.modifiers) *
+      orderItem.quantity;
+
+    setOrder(
+      (prevOrder) =>
+        prevOrder && {
+          items: prevOrder.items.filter((item) => orderItem === item),
+          total: orderItemPrice - orderItemPrice,
+          pickUpTimeFromNow: store.currentOrderTime.short,
+        },
+    );
+  };
+
   return (
     <PageLayout>
-      {order && !isCartModalOpen && (
+      {order && !isCartModalOpen && !isMenuItemModalOpen && (
         <Box
           w="100%"
           pos="fixed"
@@ -149,6 +215,8 @@ function Menu() {
           order={order}
           isOpen={isCartModalOpen}
           onClose={() => setIsCartModalOpen(false)}
+          onEditOrderItem={onEditOrderItem}
+          onDeleteOrderItem={onDeleteOrderItem}
         />
       )}
     </PageLayout>

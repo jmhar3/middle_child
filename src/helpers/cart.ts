@@ -8,6 +8,7 @@ export interface User {
 export interface OrderItem {
   menuItem: MenuItemType;
   modifiers: Modifier[];
+  quantity: number;
   note?: string;
 }
 
@@ -37,4 +38,16 @@ export const calculateOrderItemPrice = (
     return modifier.price ? accumulator + modifier.price : accumulator;
   }, 0);
   return modifiersTotalPrice + menuItem.price;
+};
+
+export const findExistingOrderItem = (
+  existingOrder: OrderItem[],
+  newOrderItem: OrderItem,
+) => {
+  return existingOrder.find(
+    (existingItem) =>
+      existingItem.menuItem === newOrderItem.menuItem &&
+      existingItem.modifiers === newOrderItem.modifiers &&
+      existingItem.note === newOrderItem.note,
+  );
 };
