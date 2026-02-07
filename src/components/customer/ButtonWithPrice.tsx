@@ -20,7 +20,7 @@ function ButtonWithPrice(props: ButtonWithPriceProps) {
       color="darkslategray"
       justify="space-between"
       size={isMobile ? "md" : "xl"}
-      bg={variant === "outline" ? "whitesmoke" : undefined}
+      bg={variant === "outline" ? "white" : undefined}
       rightSection={<Text fw={700}>${price.toFixed(2)}</Text>}
       onClick={onClick}
     >
