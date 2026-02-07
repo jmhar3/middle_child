@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import type { PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../components/Loading";
 
 function ProtectedRoute({ children }: PropsWithChildren) {
   const { isAuthenticated, isLoading } = useAuth0();
