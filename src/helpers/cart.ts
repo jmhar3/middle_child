@@ -56,11 +56,4 @@ export const findExistingOrderItem = (
 export const filterItemFromOrder = (
   existingItems: OrderItem[],
   filterItem: OrderItem,
-) =>
-  existingItems.filter(
-    (existingItem) =>
-      existingItem.menuItem.id !== filterItem.menuItem.id &&
-      JSON.stringify(existingItem.modifiers) !==
-        JSON.stringify(filterItem.modifiers) &&
-      existingItem.note !== filterItem.note,
-  );
+) => existingItems.filter((existingItem) => existingItem !== filterItem);
