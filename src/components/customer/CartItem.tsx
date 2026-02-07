@@ -16,7 +16,7 @@ interface CartItemProps {
 
 function CartItem(props: CartItemProps) {
   const { orderItem, onEditClick, onDeleteClick } = props;
-  const { modifiers, menuItem, quantity } = orderItem;
+  const { modifiers, menuItem, quantity, note } = orderItem;
 
   const orderItemPrice = calculateOrderItemPrice(menuItem, modifiers);
 
@@ -58,6 +58,7 @@ function CartItem(props: CartItemProps) {
           </Text>
         </ScrollArea>
       )}
+      {note && <Text fz="xs">Note: {note}</Text>}
     </Stack>
   );
 }
