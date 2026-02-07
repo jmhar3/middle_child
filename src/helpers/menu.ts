@@ -13,6 +13,7 @@ export interface ItemOptions {
 }
 
 export interface MenuItemType {
+  id: string;
   label: string;
   price: number;
   isInStock?: boolean;
@@ -32,6 +33,7 @@ export const menu: MenuSection[] = [
     label: "Coffee / Drinks",
     items: [
       {
+        id: "1",
         label: "Latte",
         price: 5,
         isLoyaltyApplicable: true,
@@ -87,6 +89,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "2",
         label: "Flat White",
         price: 5,
         isLoyaltyApplicable: true,
@@ -142,6 +145,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "3",
         label: "Cappuccino",
         price: 5,
         isLoyaltyApplicable: true,
@@ -197,6 +201,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "4",
         label: "Espresso",
         price: 5,
         isLoyaltyApplicable: true,
@@ -223,6 +228,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "5",
         label: "Long Black",
         price: 5,
         isLoyaltyApplicable: true,
@@ -253,6 +259,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "6",
         label: "Hot Chocolate",
         price: 5,
         modifiers: [
@@ -296,6 +303,7 @@ export const menu: MenuSection[] = [
     label: "Milkshakes / Smoothies",
     items: [
       {
+        id: "7",
         label: "Milkshake",
         price: 5,
         modifiers: [{ id: "1", label: "Make it a large", price: 1.5 }],
@@ -328,6 +336,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "8",
         label: "Jewel Smoothie",
         price: 5,
         ingredients: [
@@ -338,6 +347,7 @@ export const menu: MenuSection[] = [
         ],
       },
       {
+        id: "9",
         label: "Daisy Smoothie",
         price: 5,
         ingredients: [
@@ -356,37 +366,22 @@ export const menu: MenuSection[] = [
     label: "Pastries",
     items: [
       {
+        id: "10",
         label: "Croissant",
         price: 5,
         isInStock: true,
         modifiers: [{ id: "45", label: "Warmed up" }],
       },
       {
+        id: "11",
         label: "Almond Croissant",
         price: 5,
         isInStock: true,
         modifiers: [{ id: "45", label: "Warmed up" }],
       },
       {
+        id: "12",
         label: "Hazelnut Cruffin",
-        price: 5,
-        isInStock: true,
-        modifiers: [{ id: "45", label: "Warmed up" }],
-      },
-      {
-        label: "Pistachio Cruffin",
-        price: 5,
-        isInStock: true,
-        modifiers: [{ id: "45", label: "Warmed up" }],
-      },
-      {
-        label: "Apple Danish",
-        price: 5,
-        isInStock: true,
-        modifiers: [{ id: "45", label: "Warmed up" }],
-      },
-      {
-        label: "Cinnamon Scroll",
         price: 5,
         isInStock: true,
         modifiers: [{ id: "45", label: "Warmed up" }],
@@ -397,6 +392,7 @@ export const menu: MenuSection[] = [
     label: "Brunch",
     items: [
       {
+        id: "13",
         label: "Bacon & Egg Roll",
         price: 5,
         ingredients: [
