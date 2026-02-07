@@ -19,6 +19,7 @@ export interface MenuItemType {
   ingredients?: Modifier[];
   modifiers?: Modifier[];
   modifierCategories?: ItemOptions[];
+  isLoyaltyApplicable?: boolean;
 }
 
 export interface MenuSection {
@@ -33,6 +34,7 @@ export const menu: MenuSection[] = [
       {
         label: "Latte",
         price: 5,
+        isLoyaltyApplicable: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -87,6 +89,7 @@ export const menu: MenuSection[] = [
       {
         label: "Flat White",
         price: 5,
+        isLoyaltyApplicable: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -141,6 +144,7 @@ export const menu: MenuSection[] = [
       {
         label: "Cappuccino",
         price: 5,
+        isLoyaltyApplicable: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -195,6 +199,7 @@ export const menu: MenuSection[] = [
       {
         label: "Espresso",
         price: 5,
+        isLoyaltyApplicable: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -220,6 +225,7 @@ export const menu: MenuSection[] = [
       {
         label: "Long Black",
         price: 5,
+        isLoyaltyApplicable: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
