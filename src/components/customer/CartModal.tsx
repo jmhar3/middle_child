@@ -57,7 +57,10 @@ function CartModal(props: CartModalProps) {
       {oldOrderItem && (
         <MenuItemModal
           isOpen={showMenuItemModal}
-          onClose={() => setShowMenuItemModal(false)}
+          onClose={() => {
+            setOldOrderItem(undefined);
+            setShowMenuItemModal(false);
+          }}
           menuItem={oldOrderItem.menuItem}
           orderItem={oldOrderItem}
           onAddToOrder={(newOrderItem: OrderItem) =>
@@ -69,16 +72,16 @@ function CartModal(props: CartModalProps) {
       <Modal
         fullScreen
         radius={0}
+        title="CART"
         opened={isOpen}
         onClose={onModalClose}
-        title="CART"
         transitionProps={{ transition: "fade", duration: 200 }}
         styles={{
           header: { background: "whitesmoke" },
           content: { background: "whitesmoke" },
         }}
       >
-        <Stack mih="100vh" align="center">
+        <Stack mih="100%" align="center">
           <Stack w="100%">
             {!items && <Text>Your cart is empty.</Text>}
             {items?.map((orderItem, index) => (
@@ -87,7 +90,10 @@ function CartModal(props: CartModalProps) {
                 <CartItem
                   orderItem={orderItem}
                   onDeleteClick={() => onDeleteOrderItem(orderItem)}
-                  onEditClick={() => setOldOrderItem(orderItem)}
+                  onEditClick={() => {
+                    setOldOrderItem(orderItem);
+                    setShowMenuItemModal(true);
+                  }}
                 />
                 <Divider />
               </>
