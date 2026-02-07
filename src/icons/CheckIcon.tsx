@@ -10,7 +10,6 @@ function CheckIcon() {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="icon icon-tabler icons-tabler-outline icon-tabler-check"
     >
       <title>Check</title>
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
