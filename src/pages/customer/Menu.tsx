@@ -33,15 +33,18 @@ function Menu() {
   const recentlyOrderedItems: OrderItem[] | null = [
     {
       quantity: 1,
-      menuItem: {
-        id: "1",
-        price: 5,
-        label: "Latte",
-        isLoyaltyApplicable: true,
-      },
-      modifiers: [{ id: "1", label: "Make it a large", price: 1.5 }],
+      menuItem: menu[0].items[0],
+      modifiers: [],
     },
   ];
+
+  const totalItemsInOrder = useMemo(
+    () =>
+      order?.items.reduce((accumulator, currentItem) => {
+        return accumulator + currentItem.quantity;
+      }, 0),
+    [order],
+  );
 
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
     setSelectedMenuItem(menuItem);
@@ -60,28 +63,47 @@ function Menu() {
           existingOrderItem &&
           filterItemFromOrder(prevOrder.items, existingOrderItem);
 
-        return {
-          // if matching item exists in order, return filtered order + update quantity on item
-          items:
-            existingOrderItem && filteredOrderItems
-              ? [
-                  ...filteredOrderItems,
-                  {
-                    ...existingOrderItem,
-                    quantity: existingOrderItem.quantity + item.quantity,
-                  },
-                ]
-              : [...prevOrder.items, item],
-          total: prevOrder.total + orderItemPrice,
-          pickUpTimeFromNow: store.currentOrderTime.short,
-        };
-      } else {
+        if (existingOrderItem && filteredOrderItems) {
+          const newOrderItems = [
+            ...filteredOrderItems,
+            {
+              ...existingOrderItem,
+              quantity: existingOrderItem.quantity + item.quantity,
+            },
+          ];
+
+          const hasManyItems = totalItemsInOrder && totalItemsInOrder > 5;
+          const hasItemsWithLongPrepTime = newOrderItems.find(
+            (item: OrderItem) => item.menuItem.hasLongPrepTime || false,
+          );
+          const orderTime =
+            hasItemsWithLongPrepTime || hasManyItems
+              ? store.currentOrderTime.long
+              : store.currentOrderTime.short;
+
+          return {
+            // if matching item exists in order, return filtered order + update quantity on item
+            items:
+              existingOrderItem && filteredOrderItems
+                ? newOrderItems
+                : [...prevOrder.items, item],
+            total: prevOrder.total + orderItemPrice,
+            pickUpTimeFromNow: orderTime,
+          };
+        }
+
         return {
           items: [item],
           total: orderItemPrice,
           pickUpTimeFromNow: store.currentOrderTime.short,
         };
       }
+
+      return {
+        items: [item],
+        total: orderItemPrice,
+        pickUpTimeFromNow: store.currentOrderTime.short,
+      };
     });
 
     setIsMenuItemModalOpen(false);
@@ -140,14 +162,6 @@ function Menu() {
       return null;
     });
   };
-
-  const totalItemsInOrder = useMemo(
-    () =>
-      order?.items.reduce((accumulator, currentItem) => {
-        return accumulator + currentItem.quantity;
-      }, 0),
-    [order],
-  );
 
   return (
     <PageLayout>

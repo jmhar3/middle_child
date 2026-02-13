@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
-import { Box, Button, em, Modal, Stack } from "@mantine/core";
+import { Box, Button, em, Image, Modal, Stack } from "@mantine/core";
 
 import IngredientsBadges from "./IngredientsBadges";
 import ModifierCheckbox from "./ModifierCheckbox";
@@ -85,6 +85,8 @@ function MenuItemModal(props: MenuItemModalProps) {
       }}
     >
       <Stack pb={60} align="center">
+        {menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
+
         {menuItem.ingredients && (
           <IngredientsBadges ingredients={menuItem.ingredients} />
         )}

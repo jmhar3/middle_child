@@ -1,4 +1,4 @@
-import { Badge, Group } from "@mantine/core";
+import { Badge, Group, Stack, Text } from "@mantine/core";
 
 import type { Modifier } from "../../helpers/menu";
 
@@ -8,13 +8,22 @@ interface IngredientsBadgesProps {
 
 function IngredientsBadges({ ingredients }: IngredientsBadgesProps) {
   return (
-    <Group gap="2" style={{ overflow: "auto" }}>
-      {ingredients?.map((ingredient) => (
-        <Badge radius="sm" color="red" variant="light" key={ingredient.id}>
-          {ingredient.label}
-        </Badge>
-      ))}
-    </Group>
+    <Stack gap="6" w="100%">
+      <Text>Ingredients</Text>
+
+      <Group gap="6" style={{ overflow: "auto" }}>
+        {ingredients?.map((ingredient) => (
+          <Badge
+            radius="sm"
+            color="darkslategray"
+            variant="filled"
+            key={ingredient.id}
+          >
+            {ingredient.label}
+          </Badge>
+        ))}
+      </Group>
+    </Stack>
   );
 }
 

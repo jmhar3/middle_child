@@ -16,11 +16,13 @@ export interface MenuItemType {
   id: string;
   label: string;
   price: number;
+  image?: string;
   isInStock?: boolean;
   ingredients?: Modifier[];
+  hasLongPrepTime?: boolean;
+  isLoyaltyApplicable?: boolean;
   modifiers?: Modifier[];
   modifierCategories?: ItemOptions[];
-  isLoyaltyApplicable?: boolean;
 }
 
 export interface MenuSection {
@@ -393,8 +395,11 @@ export const menu: MenuSection[] = [
     items: [
       {
         id: "13",
-        label: "Bacon & Egg Roll",
         price: 5,
+        label: "Bacon & Egg Roll",
+        hasLongPrepTime: true,
+        image:
+          "https://lh3.googleusercontent.com/gps-cs-s/AHVAwepCZ8V_FAiAumjIZC805KGY74ETVdk1E4UlVkASH86p-Ob3TakPO-yHTctdwoRDJvC6QoaAItNlxC57fk3cSTnA6TfasIfsn_7wezM7Otg8bdY9D_QkhZeiAmIMiDkwp5Vwttg=s1360-w1360-h1020-rw",
         ingredients: [
           { id: "46", label: "Bacon", isIngredient: true },
           { id: "47", label: "Egg", isIngredient: true },

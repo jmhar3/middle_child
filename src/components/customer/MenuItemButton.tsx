@@ -1,8 +1,9 @@
 import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
-import type { MenuItemType, Modifier } from "../../helpers/menu";
 import { calculateOrderItemPrice } from "../../helpers/cart";
+
+import type { MenuItemType, Modifier } from "../../helpers/menu";
 
 interface MenuItemButtonProps {
   onClick: () => void;
