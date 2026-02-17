@@ -19,11 +19,9 @@ function AboutUs() {
               the river.
             </Text>
             <Text>
-              <Text fw={700}>
-                Focus: Known for exceptional specialty coffee (Rumble Coffee
-                beans), fresh pastries, and its community-focused, dog-friendly
-                atmosphere.
-              </Text>
+              <Text fw={700}>Focus:</Text> Known for exceptional specialty
+              coffee (Rumble Coffee beans), fresh pastries, and its
+              community-focused, dog-friendly atmosphere.
             </Text>
             <Text>
               <Text fw={700}>Notable Features:</Text> Offers popular
