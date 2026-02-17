@@ -8,11 +8,9 @@ import criteriaLogo from "/assets/criteria-coffee-logo.png";
 import rumbleLogo from "/assets/rumble-coffee-logo.webp";
 import drunkenSailorLogo from "/assets/drunken-sailor-canning-co-logo.webp";
 
-import banner from "/assets/cafe-wide.jpg";
+import banner from "/assets/partners.jpg";
 
 function Partners() {
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
-
   const suppliers = [
     {
       image: rumbleLogo,
@@ -38,7 +36,7 @@ function Partners() {
 
   return (
     <PageLayout image={banner} title="Our Partners">
-      <Group p="lg" maw="1440px" dir={isMobile ? "column" : "row"}>
+      <Group p="lg" gap="lg" maw="1440px" align="center" justify="center">
         {suppliers.map((supplier) => (
           <Button
             p="3"
