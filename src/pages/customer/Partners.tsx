@@ -1,5 +1,5 @@
-import { Button, Group, em, Image } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { Button, em, Group, Image } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
 
