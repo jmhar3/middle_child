@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import PageLayout from "./PageLayout";
 
-import banner from "/assets/cafe-plants.jpg";
+import banner from "/assets/partners.jpg";
 
 function AboutUs() {
   const { pathname } = useLocation();
