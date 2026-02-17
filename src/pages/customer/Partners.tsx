@@ -1,5 +1,4 @@
-import { Button, Group, em, Image } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Button, Group, Image } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
 
@@ -7,7 +6,6 @@ import backhausLogo from "/assets/backhaus-bakery-logo.webp";
 import criteriaLogo from "/assets/criteria-coffee-logo.png";
 import rumbleLogo from "/assets/rumble-coffee-logo.webp";
 import drunkenSailorLogo from "/assets/drunken-sailor-canning-co-logo.webp";
-
 import banner from "/assets/partners.jpg";
 
 function Partners() {
