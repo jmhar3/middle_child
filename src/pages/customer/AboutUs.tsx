@@ -15,10 +15,20 @@ function AboutUs() {
         {isAi ? (
           <Stack>
             <Text>
-              This is AI generated. It's always been about the coffee. Well at
-              least it has been once I figured out how to make one. We opened
-              back in 2016 with a real intent to do things differently. Hang on
-              a sec,
+              A beloved local "hole-in-the-wall" style coffee shop situated near
+              the river.
+            </Text>
+            <Text>
+              <Text fw={700}>
+                Focus: Known for exceptional specialty coffee (Rumble Coffee
+                beans), fresh pastries, and its community-focused, dog-friendly
+                atmosphere.
+              </Text>
+            </Text>
+            <Text>
+              <Text fw={700}>Notable Features:</Text> Offers popular
+              "puppacinos" with lactose-free milk and ground dog treats for
+              visiting pets.
             </Text>
           </Stack>
         ) : (
