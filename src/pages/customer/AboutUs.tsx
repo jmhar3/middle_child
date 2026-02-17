@@ -14,6 +14,10 @@ function AboutUs() {
       <Box p="lg" maw="1440px">
         {isAi ? (
           <Stack>
+            <Text fs="italic">
+              Disclaimer: The following text is AI-generated. It contains
+              incorrect information.
+            </Text>
             <Text>
               Welcome to Middle Child, the most pretentious coffee shop in Ascot
               Vale – and somehow also the friendliest.
