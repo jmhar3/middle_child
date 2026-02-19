@@ -1,7 +1,7 @@
 import { Button, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
-interface HomeButtonProps {
+interface NavButtonProps {
   label: string;
   path: string;
   image?: string;
@@ -9,7 +9,7 @@ interface HomeButtonProps {
   textAlign?: CanvasTextAlign;
 }
 
-function HomeButton(props: HomeButtonProps) {
+function NavButton(props: NavButtonProps) {
   const { label, path, isExternal, textAlign } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -31,4 +31,4 @@ function HomeButton(props: HomeButtonProps) {
   );
 }
 
-export default HomeButton;
+export default NavButton;
