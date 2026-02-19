@@ -7,22 +7,34 @@ interface NavButtonProps {
   image?: string;
   isExternal?: boolean;
   textAlign?: CanvasTextAlign;
+  isDisabled?: boolean;
+  variant?: string;
+  width?: string;
 }
 
 function NavButton(props: NavButtonProps) {
-  const { label, path, isExternal, textAlign } = props;
+  const {
+    label,
+    path,
+    textAlign,
+    isExternal,
+    isDisabled,
+    width = "100%",
+    variant = "filled",
+  } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   return (
     <Button
       px="lg"
-      w="100%"
+      w={width}
       component="a"
-      variant="filled"
+      variant={variant}
       color="darkslategray"
       size={isMobile ? "lg" : "xl"}
       target={isExternal ? "_blank" : undefined}
+      disabled={isDisabled}
       justify={textAlign}
       href={path}
     >
