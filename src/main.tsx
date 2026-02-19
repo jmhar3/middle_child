@@ -20,6 +20,7 @@ import "@fontsource/poppins";
 
 import "@mantine/core/styles.css";
 import "./global.css";
+import Stats from "./pages/portal/Stats.js";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -46,7 +47,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="portal">
               <Route index element={<Portal />} />
               <Route path="orders" element={<Orders />} />
-              <Route path="edit-menu" element={<EditMenu />} />
+              <Route path="menu" element={<EditMenu />} />
+              <Route path="stats" element={<Stats />} />
             </Route>
           </Routes>
         </BrowserRouter>
