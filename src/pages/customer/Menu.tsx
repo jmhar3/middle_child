@@ -37,13 +37,42 @@ function Menu() {
 
         <MenuButton label="Nudes" path="" />
 
-        <Stack align="center" py="md" gap="xs">
-          <Text>Open 8am - 2pm everyday</Text>
+        <Stack align="center" py="md" gap="sm">
+          <Stack align="center" gap="0">
+            <Text>BREWING HOURS</Text>
+            <Flex gap="md">
+              <Stack align="flex-end" gap="0">
+                <Text>Mon - Fri</Text>
+                <Text>Sat - Sun</Text>
+              </Stack>
+              <Stack align="flex-start" gap="0">
+                <Text>7:30am - 1pm</Text>
+                <Text>7:30am - 2pm</Text>
+              </Stack>
+            </Flex>
+          </Stack>
 
-          <Link
-            link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
-            label="327 Maribyrnong Rd, Ascot Vale VIC 3032"
-          />
+          <Stack align="center" gap="0">
+            <Text>HOLIDAY HOURS</Text>
+            <Flex gap="md">
+              <Stack align="flex-end" gap="0">
+                <Text>Christmas Day</Text>
+                <Text>Jan 26 - Jan 31st</Text>
+              </Stack>
+              <Stack align="flex-start" gap="0">
+                <Text>8am - Midday</Text>
+                <Text>8am - 2pm</Text>
+              </Stack>
+            </Flex>
+          </Stack>
+
+          <Stack align="center" gap="0">
+            <Text>FIND US AT</Text>
+            <Link
+              link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
+              label="327 Maribyrnong Rd, Ascot Vale VIC 3032"
+            />
+          </Stack>
         </Stack>
       </Stack>
     </PageLayout>
