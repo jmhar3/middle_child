@@ -46,7 +46,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
           </ScrollArea>
         )}
 
-        {modifiers && (
+        {modifiers && modifiers.length > 0 && (
           <ScrollArea h="20px" w="100%">
             <Text size="xs">
               {modifiers.map((ingredient) => ingredient.label).join(", ")}
