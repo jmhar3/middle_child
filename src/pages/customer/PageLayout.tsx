@@ -1,12 +1,11 @@
-import { Box, em, Image, Stack, Title } from "@mantine/core";
+import { Box, Button, em, Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 
 import type { PropsWithChildren } from "react";
 
-import NavButton from "../../components/customer/NavButton";
-
 import banner from "/assets/cafe-view.jpeg";
 import { useMediaQuery } from "@mantine/hooks";
+import CoffeeIcon from "../../icons/CoffeeIcon";
 
 interface PageLayoutProps extends PropsWithChildren {
   hideImage?: boolean;
@@ -23,7 +22,23 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 
   return (
     <Stack align="center" pb="lg" gap="0">
-      {!isMenu && <NavButton />}
+      {!isMenu && (
+        <Button
+          href="/"
+          pos="fixed"
+          component="a"
+          w="fit-content"
+          variant="filled"
+          color="darkslategray"
+          leftSection={<CoffeeIcon />}
+          px={isMobile ? "sm" : "lg"}
+          size={isMobile ? "sm" : "xl"}
+          top={isMobile ? "20px" : "11px"}
+          left={isMobile ? "20px" : "15px"}
+        >
+          Menu
+        </Button>
+      )}
 
       <Box
         w="100%"
