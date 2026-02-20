@@ -1,12 +1,13 @@
-import { Image, Stack, Title } from "@mantine/core";
+import { Box, Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
+import { useMediaQuery } from "@mantine/hooks";
 
 import type { PropsWithChildren } from "react";
 
 import NavButton from "../../components/NavButton";
+import Weather from "../../components/Weather";
 
 import banner from "/assets/cafe-view.jpeg";
-import { useMediaQuery } from "@mantine/hooks";
 
 interface PageLayoutProps extends PropsWithChildren {
   hideImage?: boolean;
@@ -24,6 +25,12 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
   return (
     <Stack align="center" gap="0">
       {!isMenu && <NavButton />}
+
+      {isMenu && (
+        <Box top="0px" right="0px" pos="fixed" w="fit-content">
+          <Weather />
+        </Box>
+      )}
 
       <Title
         w="100%"
