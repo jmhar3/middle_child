@@ -150,7 +150,7 @@ function Weather() {
         <Text fw="600" w="fit-content" variant="transparent" c="darkslategray">
           {Math.round(weatherData?.temperature)}°C
         </Text>
-        <Image h="30px" p="0" src={weatherCode?.image} />
+        <Image h="30px" w="30px" p="0" src={weatherCode?.image} />
       </Flex>
     )
   );
