@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mantine/core";
+import { Box, em, Stack } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 import Nav from "../../components/portal/Nav";
@@ -10,7 +10,7 @@ interface PageLayoutProps extends PropsWithChildren {
 }
 
 function PageLayout({ children, navComponents }: PageLayoutProps) {
-  const isMobile = useMediaQuery(`(max-width: 750px)`);
+  const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
   return (
     <Box mih="100vh">
