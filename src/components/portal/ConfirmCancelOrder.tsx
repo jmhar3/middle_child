@@ -16,9 +16,9 @@ function ConfirmCancelOrder({
   const [showCancelInput, setShowCancelInput] = useState(false);
 
   return showCancelInput ? (
-    <Flex gap="sm" align="center">
+    <Flex gap="0" align="center">
       <TextInput
-        size="md"
+        px="4px"
         value={message}
         onChange={(event) => setMessage(event.target.value)}
         placeholder="Reason for cancellation"
@@ -26,6 +26,7 @@ function ConfirmCancelOrder({
       <StyledButton
         radius="0"
         label="Confirm Cancel Order"
+        isDisabled={message.length === 0}
         onClick={() => {
           onCancelOrder(message);
           setShowCancelInput(false);
@@ -36,7 +37,7 @@ function ConfirmCancelOrder({
     <>
       <StyledButton
         radius="0"
-        variant="outline"
+        variant="transparent"
         label="Cancel Order"
         onClick={() => setShowCancelInput(true)}
       />
