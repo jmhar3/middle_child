@@ -23,7 +23,7 @@ function NavButton(props: NavButtonProps) {
     variant = "filled",
   } = props;
 
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
   return (
     <Button
@@ -32,7 +32,7 @@ function NavButton(props: NavButtonProps) {
       component="a"
       variant={variant}
       color="darkslategray"
-      size={isMobile ? "lg" : "xl"}
+      size={isMobile ? "md" : "lg"}
       target={isExternal ? "_blank" : undefined}
       disabled={isDisabled}
       justify={textAlign}

@@ -6,14 +6,22 @@ interface StyledButtonProps {
   image?: string;
   onClick: () => void;
   textAlign?: CanvasTextAlign;
+  isDisabled?: boolean;
   variant?: string;
   radius?: string;
 }
 
 function StyledButton(props: StyledButtonProps) {
-  const { label, onClick, textAlign, variant = "filled", radius } = props;
+  const {
+    label,
+    onClick,
+    textAlign,
+    variant = "filled",
+    radius,
+    isDisabled,
+  } = props;
 
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
   return (
     <Button
@@ -21,7 +29,8 @@ function StyledButton(props: StyledButtonProps) {
       radius={radius}
       variant={variant}
       color="darkslategray"
-      size={isMobile ? "lg" : "xl"}
+      size={isMobile ? "md" : "lg"}
+      disabled={isDisabled}
       justify={textAlign}
       onClick={onClick}
     >
