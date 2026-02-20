@@ -98,7 +98,7 @@ function Home() {
             </Flex>
 
             <Flex
-              dir={isMobile ? "column" : "row"}
+              direction={isMobile ? "column" : "row"}
               gap={isMobile ? "sm" : "md"}
             >
               <Link
