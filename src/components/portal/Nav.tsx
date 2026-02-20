@@ -15,7 +15,9 @@ function Nav(props: PropsWithChildren) {
       w="100vw"
       top="0px"
       pos="fixed"
+      bg="whitesmoke"
       justify="space-between"
+      style={{ zIndex: 999 }}
     >
       <Group gap="sm">
         <NavButton
