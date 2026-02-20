@@ -1,11 +1,11 @@
-import { Button, em } from "@mantine/core";
+import { Button } from "@mantine/core";
 
 import CoffeeIcon from "../icons/CoffeeIcon";
 
 import { useMediaQuery } from "@mantine/hooks";
 
 function NavButton() {
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: 750px)`);
 
   return (
     <Button

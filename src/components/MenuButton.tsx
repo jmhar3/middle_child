@@ -1,4 +1,4 @@
-import { Button, em } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 interface MenuButtonProps {
@@ -12,7 +12,7 @@ interface MenuButtonProps {
 function MenuButton(props: MenuButtonProps) {
   const { label, path, isExternal, textAlign } = props;
 
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: 750px)`);
 
   return (
     <Button

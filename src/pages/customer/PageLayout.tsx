@@ -1,4 +1,4 @@
-import { em, Image, Stack, Title } from "@mantine/core";
+import { Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 
 import type { PropsWithChildren } from "react";
@@ -17,7 +17,7 @@ interface PageLayoutProps extends PropsWithChildren {
 function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
   const { pathname } = useLocation();
 
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: 750px)`);
 
   const isMenu = pathname === "/";
 
