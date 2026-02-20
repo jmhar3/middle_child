@@ -1,63 +1,57 @@
-import { useState } from "react";
-import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
+import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
 
 import ConfirmCancelOrder from "./ConfirmCancelOrder";
+import StyledButton from "../StyledButton";
 
 import type { OrderType } from "../../helpers/cart";
-import StyledButton from "../StyledButton";
-import dayjs from "dayjs";
+import OrderBadge from "./OrderBadge";
 
 dayjs.extend(relativeTime);
 
 interface OrderProps {
   order: OrderType;
+  updateOrder: (order: OrderType) => void;
 }
 
 function Order(props: OrderProps) {
-  const [order, setOrder] = useState(props.order);
+  const { order, updateOrder } = props;
 
   const {
     user,
-    dueAt,
     items,
     notes,
     isAccepted,
-    isReadyToCollect,
     isComplete,
+    isReadyToCollect,
+    cancellationMessage,
   } = order;
 
   const onAcceptOrder = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      isAccepted: true,
-    }));
+    updateOrder({ ...order, isAccepted: true });
   };
 
   const onCancelOrder = (message: string) => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      isAccepted: false,
-      cancellationMessage: message,
-    }));
+    updateOrder({ ...order, isAccepted: false, cancellationMessage: message });
   };
 
   const onReadyToCollect = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      isReadyToCollect: true,
-    }));
+    updateOrder({ ...order, isReadyToCollect: true });
   };
 
   const onComplete = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      isComplete: true,
-    }));
+    updateOrder({ ...order, isReadyToCollect: true, isComplete: true });
   };
 
   return (
-    <Stack bg="white" bdrs="sm" bd="solid 1px darkslategray">
+    <Stack
+      gap="0"
+      bg="white"
+      bdrs="sm"
+      bd="solid 1px darkslategray"
+      opacity={cancellationMessage || isComplete ? "50%" : "100%"}
+    >
       <Flex
         w="100%"
         h="fit-content"
@@ -65,15 +59,9 @@ function Order(props: OrderProps) {
         justify="space-between"
         style={{ borderBottom: "solid 1px darkslategray" }}
       >
-        <Flex p="sm" gap="sm" align="center">
-          <Badge
-            radius="sm"
-            size="lg"
-            color={dayjs().isBefore(dayjs(dueAt)) ? "green" : "red"}
-          >
-            {dayjs(dueAt).fromNow()}
-          </Badge>
-          <Text fw="700" size="1.4em">
+        <Flex pl="sm" py="8px" gap="sm" align="center">
+          <OrderBadge order={order} />
+          <Text fw="700" size="1.2em">
             {user.name}
           </Text>
         </Flex>
@@ -88,7 +76,7 @@ function Order(props: OrderProps) {
           {isAccepted && !isReadyToCollect && (
             <StyledButton
               radius="0"
-              variant="outline"
+              variant="transparent"
               label="Ready To Collect"
               onClick={onReadyToCollect}
             />
@@ -103,11 +91,11 @@ function Order(props: OrderProps) {
         </Flex>
       </Flex>
 
-      <Stack p="sm" pt="0">
+      <Stack p="sm" gap="xs">
         {items.map((item, index) => (
           <>
             {index > 0 && <Divider w="100%" />}
-            <Flex gap="sm" justify="space-between">
+            <Flex key={item.id} gap="sm" justify="space-between">
               <Stack gap="0">
                 <Text>
                   {item.quantity} x {item.menuItem.label}
@@ -116,7 +104,12 @@ function Order(props: OrderProps) {
               </Stack>
               <Flex gap="sm">
                 {item.modifiers.map((modifier) => (
-                  <Badge radius="sm" size="lg" key={modifier.id}>
+                  <Badge
+                    radius="sm"
+                    size="lg"
+                    color={modifier.color}
+                    key={modifier.id}
+                  >
                     {modifier.label}
                   </Badge>
                 ))}

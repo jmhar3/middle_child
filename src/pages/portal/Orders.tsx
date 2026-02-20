@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Group, Stack } from "@mantine/core";
+import { Group } from "@mantine/core";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import PageLayout from "./PageLayout";
-import Order from "../../components/portal/Order";
 import StyledButton from "../../components/StyledButton";
+import OrdersList from "../../components/portal/OrdersList";
 import ToggleStoreOpenModal from "../../components/portal/ToggleStoreOpenModal";
 
 import { orderTimes, store } from "../../helpers/store";
@@ -73,14 +73,7 @@ function Orders() {
         ))}
       </Group>
 
-      <Stack w="100%" px="sm">
-        {mockOrders.map(
-          (order) =>
-            !order.cancellationMessage && (
-              <Order key={order.id} order={order} />
-            ),
-        )}
-      </Stack>
+      <OrdersList orders={mockOrders} />
     </PageLayout>
   );
 }
