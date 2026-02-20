@@ -9,6 +9,7 @@ export interface User {
 }
 
 export interface OrderItem {
+  id: string;
   menuItem: MenuItemType;
   modifiers: Modifier[];
   quantity: number;
@@ -44,17 +45,20 @@ export const mockOrders: OrderType[] = [
     notes: "Chuck em in a carry tray pls",
     items: [
       {
+        id: "1",
         menuItem: menu[0].items[0],
-        modifiers: [{ id: "2", label: "BYO Keep Cup" }],
+        modifiers: [{ id: "2", label: "BYO Keep Cup", color: "darkgreen" }],
         quantity: 2,
         note: "Extra honey pls :)",
       },
       {
+        id: "2",
         menuItem: menu[0].items[2],
         modifiers: [],
         quantity: 1,
       },
       {
+        id: "3",
         menuItem: menu[0].items[4],
         modifiers: [],
         quantity: 1,
@@ -70,11 +74,13 @@ export const mockOrders: OrderType[] = [
     total: 6.5,
     items: [
       {
+        id: "4",
         menuItem: menu[0].items[2],
-        modifiers: [],
+        modifiers: [{ id: "6", label: "Strong", price: 1, color: "dark" }],
         quantity: 1,
       },
       {
+        id: "5",
         menuItem: menu[0].items[5],
         modifiers: [],
         quantity: 1,
@@ -90,13 +96,18 @@ export const mockOrders: OrderType[] = [
     total: 12,
     items: [
       {
+        id: "6",
         menuItem: menu[0].items[3],
-        modifiers: [{ id: "2", label: "BYO Keep Cup" }],
+        modifiers: [
+          { id: "2", label: "BYO Keep Cup", color: "darkgreen" },
+          { id: "6", label: "Strong", price: 1, color: "dark" },
+        ],
         quantity: 1,
       },
       {
+        id: "7",
         menuItem: menu[1].items[1],
-        modifiers: [],
+        modifiers: [{ id: "6", label: "Strong", price: 1, color: "dark" }],
         quantity: 1,
       },
     ],

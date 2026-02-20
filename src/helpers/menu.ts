@@ -4,6 +4,7 @@ export interface Modifier {
   price?: number;
   isInStock?: boolean;
   isIngredient?: boolean;
+  color?: string;
 }
 
 export interface ItemOptions {

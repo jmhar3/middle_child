@@ -32,6 +32,7 @@ function Menu() {
 
   const recentlyOrderedItems: OrderItem[] | null = [
     {
+      id: "1",
       quantity: 1,
       menuItem: menu[0].items[0],
       modifiers: [],
