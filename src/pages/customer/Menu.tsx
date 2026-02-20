@@ -68,7 +68,7 @@ function Menu() {
             </Flex>
           </Stack>
 
-          <Stack gap="sm">
+          <Stack gap="sm" px="sm">
             <Link
               icon={<MapPinIcon />}
               link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
