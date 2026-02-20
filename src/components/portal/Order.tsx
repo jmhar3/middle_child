@@ -78,7 +78,7 @@ function Order(props: OrderProps) {
           </Text>
         </Flex>
 
-        <Flex>
+        <Flex style={{ borderLeft: "solid 1px darkslategray" }}>
           {isAccepted === undefined && (
             <ConfirmCancelOrder
               onAcceptOrder={onAcceptOrder}
