@@ -1,4 +1,5 @@
-import { Flex, Stack, Text } from "@mantine/core";
+import { Divider, em, Flex, Stack, Text } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 import PageLayout from "./PageLayout";
 import Link from "../../components/Link";
@@ -8,6 +9,8 @@ import MapPinIcon from "../../icons/MapPinIcon";
 import InstagramIcon from "../../icons/InstagramIcon";
 
 function Menu() {
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+
   return (
     <PageLayout>
       <Stack w="100%" gap="3" p="3">
@@ -39,36 +42,45 @@ function Menu() {
 
         <MenuButton label="Nudes" path="" />
 
-        <Stack align="center" py="md" gap="sm">
-          <Stack align="center" gap="0">
-            <Text>BREWING HOURS</Text>
-            <Flex gap="md">
-              <Stack align="flex-end" gap="0">
-                <Text>Mon - Fri</Text>
-                <Text>Sat - Sun</Text>
-              </Stack>
-              <Stack align="flex-start" gap="0">
-                <Text>7:30am - 1pm</Text>
-                <Text>7:30am - 2pm</Text>
-              </Stack>
-            </Flex>
-          </Stack>
+        <Stack align="center" gap="sm" pb={isMobile ? undefined : "lg"}>
+          <Flex
+            py="md"
+            align="center"
+            gap={isMobile ? "sm" : "xl"}
+            dir={isMobile ? "column" : "row"}
+          >
+            <Stack align="center" gap="0">
+              <Text>BREWING HOURS</Text>
+              <Flex gap="md">
+                <Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
+                  <Text>Mon - Fri</Text>
+                  <Text>Sat - Sun</Text>
+                </Stack>
+                <Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
+                  <Text>7:30am - 1pm</Text>
+                  <Text>7:30am - 2pm</Text>
+                </Stack>
+              </Flex>
+            </Stack>
 
-          <Stack align="center" gap="0">
-            <Text>HOLIDAY HOURS</Text>
-            <Flex gap="md">
-              <Stack align="flex-end" gap="0">
-                <Text>Christmas Day</Text>
-                <Text>Jan 26 - Jan 31st</Text>
-              </Stack>
-              <Stack align="flex-start" gap="0">
-                <Text>8am - Midday</Text>
-                <Text>8am - 2pm</Text>
-              </Stack>
-            </Flex>
-          </Stack>
+            {!isMobile && <Divider orientation="vertical" />}
 
-          <Stack gap="sm" px="sm">
+            <Stack align="center" gap="0">
+              <Text>HOLIDAY HOURS</Text>
+              <Flex gap="md">
+                <Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
+                  <Text>Christmas Day</Text>
+                  <Text>Jan 26 - Jan 31st</Text>
+                </Stack>
+                <Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
+                  <Text>8am - Midday</Text>
+                  <Text>8am - 2pm</Text>
+                </Stack>
+              </Flex>
+            </Stack>
+          </Flex>
+
+          <Flex dir={isMobile ? "column" : "row"} gap={isMobile ? "sm" : "md"}>
             <Link
               icon={<MapPinIcon />}
               link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
@@ -80,7 +92,7 @@ function Menu() {
               link="https://ig.me/m/middlechild_cafe"
               label="GOT ANY QUESTIONS? GET IN TOUCH"
             />
-          </Stack>
+          </Flex>
         </Stack>
       </Stack>
     </PageLayout>
