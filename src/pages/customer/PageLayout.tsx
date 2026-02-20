@@ -26,11 +26,11 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
     <Stack align="center" gap="0">
       {!isMenu && <NavButton />}
 
-      {isMenu && (
+      {/*{isMenu && (
         <Box top="0px" right="0px" pos="fixed" w="fit-content">
           <Weather />
         </Box>
-      )}
+      )}*/}
 
       <Title
         w="100%"
