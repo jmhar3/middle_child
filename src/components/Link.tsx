@@ -1,20 +1,20 @@
-import { Text } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
+import { Button } from "@mantine/core";
 
-function Link(props: { link: string; label: string }) {
-	const { hovered, ref } = useHover();
+import type { ReactElement } from "react";
 
-	return (
-		<Text
-			ref={ref}
-			component="a"
-			target="_blank"
-			href={props.link}
-			c={hovered ? "red.9" : undefined}
-		>
-			{props.label}
-		</Text>
-	);
+function Link(props: { link: string; label: string; icon?: ReactElement }) {
+  return (
+    <Button
+      component="a"
+      target="_blank"
+      variant="light"
+      href={props.link}
+      leftSection={props.icon}
+      color="darkslategray"
+    >
+      {props.label.toUpperCase()}
+    </Button>
+  );
 }
 
 export default Link;
