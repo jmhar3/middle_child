@@ -39,7 +39,7 @@ export const mockOrders: OrderType[] = [
   {
     id: "1",
     user: { id: "1", name: "Jess", loyaltyPoints: 3 },
-    dueAt: dayjs().subtract(12, "minutes"),
+    dueAt: dayjs().subtract(2, "minutes"),
     total: 15,
     notes: "Chuck em in a carry tray pls",
     items: [
@@ -48,6 +48,16 @@ export const mockOrders: OrderType[] = [
         modifiers: [{ id: "2", label: "BYO Keep Cup" }],
         quantity: 2,
         note: "Extra honey pls :)",
+      },
+      {
+        menuItem: menu[0].items[2],
+        modifiers: [],
+        quantity: 1,
+      },
+      {
+        menuItem: menu[0].items[4],
+        modifiers: [],
+        quantity: 1,
       },
     ],
     isComplete: false,
@@ -64,6 +74,11 @@ export const mockOrders: OrderType[] = [
         modifiers: [],
         quantity: 1,
       },
+      {
+        menuItem: menu[0].items[5],
+        modifiers: [],
+        quantity: 1,
+      },
     ],
     isComplete: false,
     isReadyToCollect: false,
@@ -77,6 +92,11 @@ export const mockOrders: OrderType[] = [
       {
         menuItem: menu[0].items[3],
         modifiers: [{ id: "2", label: "BYO Keep Cup" }],
+        quantity: 1,
+      },
+      {
+        menuItem: menu[1].items[1],
+        modifiers: [],
         quantity: 1,
       },
     ],
