@@ -1,17 +1,20 @@
 import { useState } from "react";
-// import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { Group, Stack } from "@mantine/core";
+// import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import PageLayout from "./PageLayout";
 import Order from "../../components/portal/Order";
 import StyledButton from "../../components/StyledButton";
-import ToggleStoreOpen from "../../components/portal/ToggleStoreOpen";
+import ToggleStoreOpenModal from "../../components/portal/ToggleStoreOpenModal";
 
-import { orderTimes, store, type OrderTime } from "../../helpers/store";
+import { orderTimes, store } from "../../helpers/store";
 import { mockOrders } from "../../helpers/cart";
+
+import type { OrderTime } from "../../helpers/store";
 
 function Orders() {
   const [storeInfo, setStoreInfo] = useState(store);
+  const [showConfirmOpenDialog, setShowConfirmOpenDialog] = useState(false);
 
   const onUpdateStockClick = () => {};
 
@@ -19,6 +22,14 @@ function Orders() {
     setStoreInfo((prevStore) => ({
       ...prevStore,
       currentOrderTime: orderTime,
+    }));
+  };
+
+  const onToggleStoreOpen = () => {
+    setShowConfirmOpenDialog(false);
+    setStoreInfo((prevInfo) => ({
+      ...prevInfo,
+      isOpen: !prevInfo.isOpen,
     }));
   };
 
@@ -32,15 +43,23 @@ function Orders() {
             onClick={onUpdateStockClick}
           />
 
-          <ToggleStoreOpen
-            isOpen={storeInfo.isOpen}
-            toggleStoreOpen={(isOpen: boolean) =>
-              setStoreInfo((prevStore) => ({ ...prevStore, isOpen }))
-            }
-          />
+          {storeInfo.isOpen && (
+            <StyledButton
+              variant="outline"
+              label="Close Store"
+              onClick={() => setShowConfirmOpenDialog(true)}
+            />
+          )}
         </>
       }
     >
+      <ToggleStoreOpenModal
+        isOpen={storeInfo.isOpen}
+        showConfirmationDialog={showConfirmOpenDialog}
+        setShowConfirmationDialog={(isOpen) => setShowConfirmOpenDialog(isOpen)}
+        onConfirmToggle={onToggleStoreOpen}
+      />
+
       <Group w="100%" grow p="sm" bg="white">
         {orderTimes.map((orderTime) => (
           <StyledButton
