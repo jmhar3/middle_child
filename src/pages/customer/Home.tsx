@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Flex, Stack, Text } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { Divider, em, Flex, Stack, Text } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
 import NavButton from "../../components/NavButton";
@@ -13,6 +14,8 @@ import MapPinIcon from "../../icons/MapPinIcon";
 import InstagramIcon from "../../icons/InstagramIcon";
 
 function Home() {
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+
   const dispatch = useAppDispatch();
   const userStatus = useAppSelector(selectUserStatus);
   const user = useAppSelector(selectUser);
@@ -56,46 +59,60 @@ function Home() {
         <NavButton label="Nudes" path="" />
 
         <Stack align="center" py="md" gap="xs">
-          <Stack align="center" gap="0">
-            <Text>BREWING HOURS</Text>
-            <Flex gap="md">
-              <Stack align="flex-end" gap="0">
-                <Text>Mon - Fri</Text>
-                <Text>Sat - Sun</Text>
+          <Stack align="center" gap="sm" pb={isMobile ? undefined : "lg"}>
+            <Flex
+              py="md"
+              align="center"
+              gap={isMobile ? "sm" : "xl"}
+              dir={isMobile ? "column" : "row"}
+            >
+              <Stack align="center" gap="0">
+                <Text>BREWING HOURS</Text>
+                <Flex gap="md">
+                  <Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
+                    <Text>Mon - Fri</Text>
+                    <Text>Sat - Sun</Text>
+                  </Stack>
+                  <Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
+                    <Text>7:30am - 1pm</Text>
+                    <Text>7:30am - 2pm</Text>
+                  </Stack>
+                </Flex>
               </Stack>
-              <Stack align="flex-start" gap="0">
-                <Text>7:30am - 1pm</Text>
-                <Text>7:30am - 2pm</Text>
+
+              {!isMobile && <Divider orientation="vertical" />}
+
+              <Stack align="center" gap="0">
+                <Text>HOLIDAY HOURS</Text>
+                <Flex gap="md">
+                  <Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
+                    <Text>Christmas Day</Text>
+                    <Text>Jan 26 - Jan 31st</Text>
+                  </Stack>
+                  <Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
+                    <Text>8am - Midday</Text>
+                    <Text>8am - 2pm</Text>
+                  </Stack>
+                </Flex>
               </Stack>
             </Flex>
-          </Stack>
 
-          <Stack align="center" gap="0">
-            <Text>HOLIDAY HOURS</Text>
-            <Flex gap="md">
-              <Stack align="flex-end" gap="0">
-                <Text>Christmas Day</Text>
-                <Text>Jan 26 - Jan 31st</Text>
-              </Stack>
-              <Stack align="flex-start" gap="0">
-                <Text>8am - Midday</Text>
-                <Text>8am - 2pm</Text>
-              </Stack>
+            <Flex
+              dir={isMobile ? "column" : "row"}
+              gap={isMobile ? "sm" : "md"}
+            >
+              <Link
+                icon={<MapPinIcon />}
+                link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
+                label="327 Maribyrnong Rd, Ascot Vale VIC 3032"
+              />
+
+              <Link
+                icon={<InstagramIcon />}
+                link="https://ig.me/m/middlechild_cafe"
+                label="GOT ANY QUESTIONS? GET IN TOUCH"
+              />
             </Flex>
-          </Stack>
-
-          <Stack gap="sm" px="sm">
-            <Link
-              icon={<MapPinIcon />}
-              link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
-              label="327 Maribyrnong Rd, Ascot Vale VIC 3032"
-            />
-
-            <Link
-              icon={<InstagramIcon />}
-              link="https://ig.me/m/middlechild_cafe"
-              label="GOT ANY QUESTIONS? GET IN TOUCH"
-            />
           </Stack>
         </Stack>
       </Stack>

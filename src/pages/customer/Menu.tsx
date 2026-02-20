@@ -267,6 +267,7 @@ function Menu() {
             />
           </Box>
         )}
+
       <Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
         {storeIsOpen ? (
           <Text>
@@ -295,7 +296,9 @@ function Menu() {
           <Text>Start drinking to earn free coffee!</Text>
         )}
       </Stack>
+
       <Divider w="100%" />
+
       <Stack w="100%" pb="60">
         <Accordion
           styles={{
@@ -372,6 +375,7 @@ function Menu() {
           )}
         </Accordion>
       </Stack>
+
       {selectedMenuItem && (
         <MenuItemModal
           isOpen={isMenuItemModalOpen}
@@ -383,6 +387,7 @@ function Menu() {
           onAddToOrder={addItemToOrder}
         />
       )}
+
       {orderItems && orderItems.length > 0 && (
         <CartModal
           items={orderItems}
@@ -393,6 +398,7 @@ function Menu() {
           onSuccess={onOrderSuccess}
         />
       )}
+
       {placedOrder && (
         <PlacedOrderModal
           order={placedOrder}
