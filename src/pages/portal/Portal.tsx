@@ -1,5 +1,5 @@
 import { Stack } from "@mantine/core";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
+// import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import NavButton from "../../components/NavButton";
 
@@ -13,6 +13,8 @@ function Portal() {
   );
 }
 
-const ProtectedPortal = withAuthenticationRequired(Portal);
+export default Portal;
 
-export default ProtectedPortal;
+// const ProtectedPortal = withAuthenticationRequired(Portal);
+
+// export default ProtectedPortal;
