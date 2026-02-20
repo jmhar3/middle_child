@@ -1,9 +1,11 @@
 import { Flex, Stack, Text } from "@mantine/core";
 
-import MenuButton from "../../components/MenuButton";
-import Link from "../../components/Link";
-
 import PageLayout from "./PageLayout";
+import Link from "../../components/Link";
+import MenuButton from "../../components/MenuButton";
+
+import MapPinIcon from "../../icons/MapPinIcon";
+import InstagramIcon from "../../icons/InstagramIcon";
 
 function Menu() {
   return (
@@ -66,11 +68,17 @@ function Menu() {
             </Flex>
           </Stack>
 
-          <Stack align="center" gap="0">
-            <Text>FIND US AT</Text>
+          <Stack gap="sm">
             <Link
+              icon={<MapPinIcon />}
               link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
               label="327 Maribyrnong Rd, Ascot Vale VIC 3032"
+            />
+
+            <Link
+              icon={<InstagramIcon />}
+              link="https://ig.me/m/middlechild_cafe"
+              label="GOT ANY QUESTIONS? GET IN TOUCH"
             />
           </Stack>
         </Stack>
