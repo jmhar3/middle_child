@@ -1,4 +1,4 @@
-import { Divider, em, Flex, Stack, Text } from "@mantine/core";
+import { Divider, Flex, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 import PageLayout from "./PageLayout";
@@ -9,7 +9,7 @@ import MapPinIcon from "../../icons/MapPinIcon";
 import InstagramIcon from "../../icons/InstagramIcon";
 
 function Menu() {
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: 750px)`);
 
   return (
     <PageLayout>
@@ -47,7 +47,7 @@ function Menu() {
             py="md"
             align="center"
             gap={isMobile ? "sm" : "xl"}
-            dir={isMobile ? "column" : "row"}
+            direction={isMobile ? "column" : "row"}
           >
             <Stack align="center" gap="0">
               <Text>BREWING HOURS</Text>
@@ -80,7 +80,10 @@ function Menu() {
             </Stack>
           </Flex>
 
-          <Flex dir={isMobile ? "column" : "row"} gap={isMobile ? "sm" : "md"}>
+          <Flex
+            direction={isMobile ? "column" : "row"}
+            gap={isMobile ? "sm" : "md"}
+          >
             <Link
               icon={<MapPinIcon />}
               link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
