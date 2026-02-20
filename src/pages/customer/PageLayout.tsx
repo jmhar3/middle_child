@@ -46,8 +46,9 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
             {title || "Middle Child"}
           </Title>
         ) : (
-          <Flex w="100%" pos="fixed" justify="center">
+          <Flex style={{ zIndex: 1 }} w="100%" pos="fixed" justify="center">
             <Title
+              pr="lg"
               lts="1.6px"
               ff="Bangers"
               c="darkslategray"
