@@ -29,6 +29,6 @@ export const orderTimes: OrderTime[] = [
 ];
 
 export const store: Store = {
-  isOpen: false,
+  isOpen: true,
   currentOrderTime: orderTimes[0],
 };
