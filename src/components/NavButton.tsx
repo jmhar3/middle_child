@@ -10,16 +10,13 @@ function NavButton() {
   return (
     <Button
       href="/"
-      pos="fixed"
       component="a"
       variant="filled"
       w="fit-content"
       color="darkslategray"
       leftSection={<CoffeeIcon />}
-      px={isMobile ? "sm" : "lg"}
-      size={isMobile ? "sm" : "xl"}
-      top={isMobile ? "20px" : "11px"}
-      left={isMobile ? "20px" : "15px"}
+      px="md"
+      size="sm"
     >
       Menu
     </Button>

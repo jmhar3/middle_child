@@ -1,4 +1,4 @@
-import { Box, Image, Stack, Title } from "@mantine/core";
+import { Flex, Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -23,27 +23,42 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
   const isMenu = pathname === "/";
 
   return (
-    <Stack align="center" gap="0">
-      {!isMenu && <NavButton />}
-
-      {/*{isMenu && (
-        <Box top="0px" right="0px" pos="fixed" w="fit-content">
-          <Weather />
-        </Box>
-      )}*/}
-
-      <Title
+    <Stack align="center" gap="0" pt="4em">
+      <Flex
+        pt="sm"
+        pb="xs"
         w="100%"
-        lts="1.6px"
-        ff="Bangers"
-        c="darkslategray"
-        pt={isMobile ? "md" : "lg"}
-        pb={isMobile ? "xs" : "md"}
-        pr={isMobile && !isMenu ? "lg" : undefined}
-        ta={isMobile && !isMenu ? "right" : "center"}
+        top="0"
+        left="0"
+        pos="fixed"
+        align="center"
+        bg="whitesmoke"
+        justify="space-between"
+        pl={isMobile ? "md" : "lg"}
+        pr={isMobile ? "md" : "lg"}
       >
-        {title || "Middle Child"}
-      </Title>
+        {!isMenu && <NavButton />}
+
+        {isMenu && <Weather />}
+
+        {isMobile ? (
+          <Title lts="1.6px" ff="Bangers" c="darkslategray">
+            {title || "Middle Child"}
+          </Title>
+        ) : (
+          <Flex w="100%" pos="fixed" justify="center">
+            <Title
+              lts="1.6px"
+              ff="Bangers"
+              c="darkslategray"
+              pt={isMobile ? "md" : "lg"}
+              pb={isMobile ? "xs" : "md"}
+            >
+              {title || "Middle Child"}
+            </Title>
+          </Flex>
+        )}
+      </Flex>
 
       {!hideImage && (
         <Image
