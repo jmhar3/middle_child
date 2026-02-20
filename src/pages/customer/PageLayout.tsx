@@ -22,7 +22,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
   const isMenu = pathname === "/";
 
   return (
-    <Stack align="center" pb="lg" gap="0">
+    <Stack align="center" gap="0">
       {!isMenu && <NavButton />}
 
       <Title
