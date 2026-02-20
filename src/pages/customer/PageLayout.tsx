@@ -1,4 +1,4 @@
-import { Box, Button, Image, Stack, Title } from "@mantine/core";
+import { Box, Button, Flex, Image, Stack, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -8,6 +8,7 @@ import banner from "/assets/cafe-view.jpeg";
 import CoffeeIcon from "../../icons/CoffeeIcon";
 
 import type { PropsWithChildren } from "react";
+import NavButton from "../../components/NavButton";
 
 interface PageLayoutProps extends PropsWithChildren {
   hideImage?: boolean;
@@ -23,50 +24,42 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
   const isMenu = pathname === "/";
 
   return (
-    <Stack align="center" pb="lg" gap="0">
-      {!isMenu && (
-        <Button
-          href="/"
-          pos="fixed"
-          c="white"
-          component="a"
-          w="fit-content"
-          variant="filled"
-          color="darkslategray"
-          leftSection={<CoffeeIcon />}
-          px={isMobile ? "sm" : "lg"}
-          size={isMobile ? "sm" : "xl"}
-          top={isMobile ? "20px" : "11px"}
-          left={isMobile ? "20px" : "15px"}
-        >
-          Menu
-        </Button>
-      )}
-
-      <Box
+    <Stack align="center" gap="0" pt="4em">
+      <Flex
+        pt="sm"
+        pb="xs"
         w="100%"
-        pt={isMobile ? "md" : "lg"}
-        pb={isMobile ? "xs" : "md"}
-        pr={isMobile && !isMenu ? "lg" : undefined}
+        top="0"
+        left="0"
+        pos="fixed"
+        align="center"
+        bg="whitesmoke"
+        justify="space-between"
+        pl={isMobile ? "md" : "lg"}
+        pr={isMobile ? "md" : "lg"}
       >
-        {isMenu && (
-          <Box top="0px" right="0px" pos="fixed" w="fit-content">
-            <Weather />
-          </Box>
+        {!isMenu && <NavButton label="Menu" path="/" />}
+
+        {isMenu && <Weather />}
+
+        {isMobile ? (
+          <Title lts="1.6px" ff="Bangers" c="darkslategray">
+            {title || "Middle Child"}
+          </Title>
+        ) : (
+          <Flex w="100%" pos="fixed" justify="center">
+            <Title
+              lts="1.6px"
+              ff="Bangers"
+              c="darkslategray"
+              pt={isMobile ? "md" : "lg"}
+              pb={isMobile ? "xs" : "md"}
+            >
+              {title || "Middle Child"}
+            </Title>
+          </Flex>
         )}
-        <Title
-          w="100%"
-          lts="1.6px"
-          ff="Bangers"
-          c="darkslategray"
-          pt={isMobile ? "md" : "lg"}
-          pb={isMobile ? "xs" : "md"}
-          pr={isMobile && !isMenu ? "lg" : undefined}
-          ta={isMobile && !isMenu ? "right" : "center"}
-        >
-          {title || "Middle Child"}
-        </Title>
-      </Box>
+      </Flex>
 
       {!hideImage && (
         <Image
