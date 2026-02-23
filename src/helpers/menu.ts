@@ -462,3 +462,53 @@ export const ingredients: Modifier[] = [
   { id: "48", label: "Cheese", isIngredient: true },
   { id: "49", label: "Spinach", isIngredient: true },
 ];
+
+export const modifierCategories = [
+  {
+    id: "1",
+    label: "Temperature",
+    allowMultipleSelections: false,
+    modifiers: [
+      { id: "3", label: "With Ice" },
+      { id: "4", label: "Extra Hot" },
+    ],
+  },
+  {
+    id: "2",
+    label: "Strength",
+    allowMultipleSelections: false,
+    modifiers: [
+      { id: "5", label: "Weak" },
+      { id: "6", label: "Strong", price: 1 },
+      { id: "8", label: "Decaf", isIngredient: true },
+    ],
+  },
+  {
+    id: "3",
+    label: "Milk",
+    allowMultipleSelections: false,
+    modifiers: [
+      { id: "9", label: "Full Cream", isIngredient: true },
+      { id: "10", label: "Skinny", isIngredient: true },
+      { id: "11", label: "Lactose Free", isIngredient: true },
+      { id: "12", label: "Soy", isIngredient: true },
+      { id: "13", label: "Oat", isIngredient: true },
+      { id: "14", label: "Almond", isIngredient: true },
+    ],
+  },
+  {
+    id: "4",
+    label: "Sugar / Sweetener",
+    allowMultipleSelections: false,
+    modifiers: [
+      { id: "16", label: "1/2 Sugar" },
+      { id: "17", label: "1 Sugar" },
+      { id: "18", label: "2 Sugars" },
+      { id: "19", label: "3 Sugars" },
+      { id: "21", label: "1/2 Equal" },
+      { id: "22", label: "1 Equal" },
+      { id: "23", label: "2 Equals" },
+      { id: "26", label: "Honey" },
+    ],
+  },
+];

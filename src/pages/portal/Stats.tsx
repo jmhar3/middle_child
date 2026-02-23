@@ -1,17 +1,21 @@
 import { Title, Stack } from "@mantine/core";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
+import PageLayout from "./PageLayout";
+
 function Stats() {
   return (
-    <Stack>
+    <PageLayout>
       <Stack>
-        <Title>Analytics</Title>
-      </Stack>
+        <Stack>
+          <Title>Analytics</Title>
+        </Stack>
 
-      <Stack>
-        <Title>Reports</Title>
+        <Stack>
+          <Title>Reports</Title>
+        </Stack>
       </Stack>
-    </Stack>
+    </PageLayout>
   );
 }
 

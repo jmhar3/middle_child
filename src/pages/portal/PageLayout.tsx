@@ -6,7 +6,7 @@ import Nav from "../../components/portal/Nav";
 import type { PropsWithChildren, ReactNode } from "react";
 
 interface PageLayoutProps extends PropsWithChildren {
-  navComponents: ReactNode;
+  navComponents?: ReactNode;
 }
 
 function PageLayout({ children, navComponents }: PageLayoutProps) {
