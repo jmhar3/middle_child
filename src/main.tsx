@@ -12,6 +12,7 @@ import CustomerMenu from "./pages/customer/Menu.js";
 import Orders from "./pages/portal/Orders.js";
 import EditMenu from "./pages/portal/Menu.js";
 import Portal from "./pages/portal/Portal.js";
+import Stats from "./pages/portal/Stats.js";
 
 // @ts-expect-error ignore type error
 import "@fontsource/bangers";
@@ -19,12 +20,15 @@ import "@fontsource/bangers";
 import "@fontsource/poppins";
 
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import "./global.css";
-import Stats from "./pages/portal/Stats.js";
+import { Notifications } from "@mantine/notifications";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MantineProvider>
+      <Notifications />
+
       <Auth0Provider
         domain={import.meta.env.VITE_AUTH0_DOMAIN}
         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
