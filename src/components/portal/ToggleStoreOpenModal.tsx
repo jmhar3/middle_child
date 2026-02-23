@@ -26,11 +26,12 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
       <Modal
         pt="6em"
         centered
+        onClose={() => {}}
         opened={!isOpen || showConfirmationDialog}
         withCloseButton={false}
         overlayProps={{
           opacity: 0,
-          pointerEvents: "none",
+          style: { pointerEvents: "none" },
         }}
       >
         <Stack>

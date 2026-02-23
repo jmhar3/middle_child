@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
 
-import ConfirmCancelOrder from "./ConfirmCancelOrder";
 import StyledButton from "../StyledButton";
 
 import type { OrderType } from "../../helpers/cart";
@@ -12,37 +11,13 @@ dayjs.extend(relativeTime);
 
 interface OrderProps {
   order: OrderType;
-  updateOrder: (order: OrderType) => void;
+  onCompleteOrder: () => void;
 }
 
 function Order(props: OrderProps) {
-  const { order, updateOrder } = props;
+  const { order, onCompleteOrder } = props;
 
-  const {
-    user,
-    items,
-    notes,
-    isAccepted,
-    isComplete,
-    isReadyToCollect,
-    cancellationMessage,
-  } = order;
-
-  const onAcceptOrder = () => {
-    updateOrder({ ...order, isAccepted: true });
-  };
-
-  const onCancelOrder = (message: string) => {
-    updateOrder({ ...order, isAccepted: false, cancellationMessage: message });
-  };
-
-  const onReadyToCollect = () => {
-    updateOrder({ ...order, isReadyToCollect: true });
-  };
-
-  const onComplete = () => {
-    updateOrder({ ...order, isReadyToCollect: true, isComplete: true });
-  };
+  const { user, items, notes, isComplete, cancellationMessage } = order;
 
   return (
     <Stack
@@ -66,29 +41,11 @@ function Order(props: OrderProps) {
           </Text>
         </Flex>
 
-        <Flex style={{ borderLeft: "solid 1px darkslategray" }}>
-          {isAccepted === undefined && (
-            <ConfirmCancelOrder
-              onAcceptOrder={onAcceptOrder}
-              onCancelOrder={onCancelOrder}
-            />
-          )}
-          {isAccepted && !isReadyToCollect && (
-            <StyledButton
-              radius="0"
-              variant="transparent"
-              label="Ready To Collect"
-              onClick={onReadyToCollect}
-            />
-          )}
-          {isAccepted && !isComplete && (
-            <StyledButton
-              radius="0"
-              label="Complete Order"
-              onClick={onComplete}
-            />
-          )}
-        </Flex>
+        <StyledButton
+          radius="0"
+          label="Complete Order"
+          onClick={onCompleteOrder}
+        />
       </Flex>
 
       <Stack p="sm" gap="xs">

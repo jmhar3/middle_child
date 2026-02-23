@@ -30,9 +30,7 @@ export interface OrderType {
   total: number;
   notes?: string;
   items: OrderItem[];
-  isAccepted?: boolean;
   isComplete: boolean;
-  isReadyToCollect: boolean;
   cancellationMessage?: string;
 }
 
@@ -65,7 +63,6 @@ export const mockOrders: OrderType[] = [
       },
     ],
     isComplete: false,
-    isReadyToCollect: false,
   },
   {
     id: "2",
@@ -87,7 +84,6 @@ export const mockOrders: OrderType[] = [
       },
     ],
     isComplete: false,
-    isReadyToCollect: false,
   },
   {
     id: "3",
@@ -112,7 +108,6 @@ export const mockOrders: OrderType[] = [
       },
     ],
     isComplete: false,
-    isReadyToCollect: false,
   },
 ];
 
