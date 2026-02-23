@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
+import { Analytics } from "@vercel/analytics/next";
 
 import Auth from "./pages/Auth.js";
 import Portal from "./pages/portal/Portal.js";
@@ -15,9 +16,7 @@ import Account from "./pages/customer/Account.js";
 
 import { store } from "./state/store.js";
 
-// @ts-expect-error ignore type error
 import "@fontsource/bangers";
-// @ts-expect-error ignore type error
 import "@fontsource/poppins";
 
 import "@mantine/core/styles.css";
@@ -29,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
 		<Provider store={store}>
 			<MantineProvider>
 				<Notifications />
+				<Analytics />
 				<BrowserRouter>
 					<Routes>
 						<Route path="*" element={<Auth />} />
