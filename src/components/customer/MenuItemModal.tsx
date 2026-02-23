@@ -26,6 +26,7 @@ function MenuItemModal(props: MenuItemModalProps) {
     menuItem,
     onAddToOrder,
     orderItem = {
+      id: "1",
       quantity: 1,
       menuItem: menuItem,
       modifiers: [],
