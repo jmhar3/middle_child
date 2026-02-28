@@ -6,10 +6,11 @@ interface ButtonWithPriceProps {
   label: string;
   price: number;
   variant?: "filled" | "outline";
+  isDisabled?: boolean;
 }
 
 function ButtonWithPrice(props: ButtonWithPriceProps) {
-  const { onClick, label, price, variant = "filled" } = props;
+  const { onClick, label, price, variant = "filled", isDisabled } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
@@ -17,6 +18,7 @@ function ButtonWithPrice(props: ButtonWithPriceProps) {
     <Button
       fullWidth
       variant={variant}
+      disabled={isDisabled}
       color="darkslategray"
       justify="space-between"
       size={isMobile ? "md" : "xl"}
