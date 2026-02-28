@@ -6,7 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 import PageLayout from "./PageLayout";
 import StyledButton from "../../components/StyledButton";
-import OrdersList from "../../components/portal/OrdersList";
+import OrdersList from "../../components/portal/orders/OrdersList";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 import ToggleStoreOpenModal from "../../components/portal/ToggleStoreOpenModal";
 
