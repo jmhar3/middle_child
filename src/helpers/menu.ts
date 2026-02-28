@@ -8,6 +8,7 @@ export interface Modifier {
 }
 
 export interface ItemOptions {
+  id: string;
   label: string;
   allowMultipleSelections: boolean;
   modifiers: Modifier[];
@@ -29,6 +30,8 @@ export interface MenuItemType {
 export interface MenuSection {
   label: string;
   items: MenuItemType[];
+  defaultModifiers?: Modifier[];
+  defaultModifierCategories?: ItemOptions[];
 }
 
 export const menu: MenuSection[] = [
@@ -47,6 +50,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "1",
             label: "Temperature",
             allowMultipleSelections: false,
             modifiers: [
@@ -55,6 +59,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "2",
             label: "Strength",
             allowMultipleSelections: false,
             modifiers: [
@@ -64,6 +69,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "3",
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
@@ -76,6 +82,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "4",
             label: "Sugar / Sweetener",
             allowMultipleSelections: false,
             modifiers: [
@@ -103,6 +110,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "1",
             label: "Temperature",
             allowMultipleSelections: false,
             modifiers: [
@@ -111,6 +119,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "2",
             label: "Strength",
             allowMultipleSelections: false,
             modifiers: [
@@ -120,6 +129,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "3",
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
@@ -132,6 +142,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "4",
             label: "Sugar / Sweetener",
             allowMultipleSelections: false,
             modifiers: [
@@ -159,6 +170,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "1",
             label: "Temperature",
             allowMultipleSelections: false,
             modifiers: [
@@ -167,6 +179,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "2",
             label: "Strength",
             allowMultipleSelections: false,
             modifiers: [
@@ -176,6 +189,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "3",
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
@@ -188,6 +202,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "4",
             label: "Sugar / Sweetener",
             allowMultipleSelections: false,
             modifiers: [
@@ -215,6 +230,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "4",
             label: "Sugar / Sweetener",
             allowMultipleSelections: false,
             modifiers: [
@@ -246,6 +262,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "4",
             label: "Sugar / Sweetener",
             allowMultipleSelections: false,
             modifiers: [
@@ -273,6 +290,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "3",
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
@@ -285,6 +303,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "4",
             label: "Sugar / Sweetener",
             allowMultipleSelections: false,
             modifiers: [
@@ -312,6 +331,7 @@ export const menu: MenuSection[] = [
         modifiers: [{ id: "1", label: "Make it a large", price: 1.5 }],
         modifierCategories: [
           {
+            id: "4",
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
@@ -324,6 +344,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "5",
             label: "Flavours",
             allowMultipleSelections: true,
             modifiers: [
@@ -409,6 +430,7 @@ export const menu: MenuSection[] = [
         ],
         modifierCategories: [
           {
+            id: "6",
             label: "Add Ons",
             allowMultipleSelections: false,
             modifiers: [
@@ -417,6 +439,7 @@ export const menu: MenuSection[] = [
             ],
           },
           {
+            id: "7",
             label: "Remove",
             allowMultipleSelections: false,
             modifiers: [
@@ -463,7 +486,7 @@ export const ingredients: Modifier[] = [
   { id: "49", label: "Spinach", isIngredient: true },
 ];
 
-export const modifierCategories = [
+export const modifierCategories: ItemOptions[] = [
   {
     id: "1",
     label: "Temperature",
@@ -511,4 +534,26 @@ export const modifierCategories = [
       { id: "26", label: "Honey" },
     ],
   },
+];
+
+export const modifiers: Modifier[] = [
+  { id: "3", label: "With Ice" },
+  { id: "4", label: "Extra Hot" },
+  { id: "5", label: "Weak" },
+  { id: "6", label: "Strong", price: 1 },
+  { id: "8", label: "Decaf", isIngredient: true },
+  { id: "9", label: "Full Cream", isIngredient: true },
+  { id: "10", label: "Skinny", isIngredient: true },
+  { id: "11", label: "Lactose Free", isIngredient: true },
+  { id: "12", label: "Soy", isIngredient: true },
+  { id: "13", label: "Oat", isIngredient: true },
+  { id: "14", label: "Almond", isIngredient: true },
+  { id: "16", label: "1/2 Sugar" },
+  { id: "17", label: "1 Sugar" },
+  { id: "18", label: "2 Sugars" },
+  { id: "19", label: "3 Sugars" },
+  { id: "21", label: "1/2 Equal" },
+  { id: "22", label: "1 Equal" },
+  { id: "23", label: "2 Equals" },
+  { id: "26", label: "Honey" },
 ];
