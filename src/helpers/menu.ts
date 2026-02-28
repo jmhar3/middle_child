@@ -76,9 +76,9 @@ export const menu: MenuSection[] = [
               { id: "9", label: "Full Cream", isIngredient: true },
               { id: "10", label: "Skinny", isIngredient: true },
               { id: "11", label: "Lactose Free", isIngredient: true },
-              { id: "12", label: "Soy", isIngredient: true },
+              { id: "12", label: "Soy", isIngredient: true, color: "red" },
               { id: "13", label: "Oat", isIngredient: true },
-              { id: "14", label: "Almond", isIngredient: true },
+              { id: "14", label: "Almond", isIngredient: true, color: "green" },
             ],
           },
           {
