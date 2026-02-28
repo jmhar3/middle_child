@@ -3,21 +3,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
-import {
-  Accordion,
-  Divider,
-  Flex,
-  Group,
-  MultiSelect,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Accordion, Divider, Flex, Group, Stack, Text } from "@mantine/core";
 
 import StyledButton from "../../components/StyledButton";
 import EditableMenuItem from "../../components/portal/EditableMenuItem";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 
 import { menu, modifierCategories, modifiers } from "../../helpers/menu";
+import EditableMenuSectionModifier from "../../components/portal/EditableMenuSectionModifier";
 
 function Menu() {
   const [
@@ -86,37 +79,39 @@ function Menu() {
             <Accordion.Panel>
               <Stack>
                 <Flex
-                  w="100%"
                   p="sm"
                   gap="sm"
-                  align="flex-end"
+                  w="100%"
                   justify="space-between"
+                  align="flex-end"
                 >
-                  <MultiSelect
-                    size="md"
-                    searchable
-                    label="Default Modifiers"
-                    defaultValue={["1", "2", "3", "4"]}
-                    data={modifierCategories.map((category) => ({
-                      value: category.id,
-                      label: category.label,
-                    }))}
-                  />
+                  <Stack>
+                    <EditableMenuSectionModifier
+                      label="Default Modifiers"
+                      defaultValue={["1", "2", "3", "4"]}
+                      data={modifiers.map((category) => ({
+                        value: category.id,
+                        label: category.label,
+                      }))}
+                    />
 
-                  <MultiSelect
-                    size="md"
-                    searchable
-                    label="Default Modifier Categories"
-                    defaultValue={["3", "4"]}
-                    data={modifiers.map((modifier) => ({
-                      value: modifier.id,
-                      label: modifier.label,
-                    }))}
-                  />
+                    <Divider />
 
-                  <Divider orientation="vertical" />
+                    <EditableMenuSectionModifier
+                      label="Default Modifier Categories"
+                      defaultValue={["3", "4"]}
+                      data={modifierCategories.map((category) => ({
+                        value: category.id,
+                        label: category.label,
+                      }))}
+                    />
+                  </Stack>
 
-                  <StyledButton label="Add Menu Item" onClick={() => {}} />
+                  <Flex gap="sm" justify="flex-end" h="100%">
+                    <Divider orientation="vertical" />
+
+                    <StyledButton label="Add Menu Item" onClick={() => {}} />
+                  </Flex>
                 </Flex>
 
                 <Stack gap="0">
