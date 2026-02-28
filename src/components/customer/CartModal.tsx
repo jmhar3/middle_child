@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
-import MenuItemModal from "./MenuItemModal";
+import MenuItemModal from "../MenuItemModal";
 import LoginButton from "../LoginButton";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
