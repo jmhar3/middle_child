@@ -1,11 +1,14 @@
 import { Button, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import type { ReactElement } from "react";
 
 interface StyledButtonProps {
   label: string;
   image?: string;
   onClick: () => void;
   textAlign?: CanvasTextAlign;
+  rightSection?: ReactElement;
+  leftSection?: ReactElement;
   isDisabled?: boolean;
   variant?: string;
   radius?: string;
@@ -19,6 +22,8 @@ function StyledButton(props: StyledButtonProps) {
     variant = "filled",
     radius,
     isDisabled,
+    rightSection,
+    leftSection,
   } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -29,6 +34,8 @@ function StyledButton(props: StyledButtonProps) {
       radius={radius}
       variant={variant}
       color="darkslategray"
+      leftSection={leftSection}
+      rightSection={rightSection}
       size={isMobile ? "md" : "lg"}
       disabled={isDisabled}
       justify={textAlign}
