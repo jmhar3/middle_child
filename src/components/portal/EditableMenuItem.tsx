@@ -31,14 +31,16 @@ function EditableMenuItem(props: EditableMenuItemProps) {
   const [file, setFile] = useState<File | null>(null);
   const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
 
-  const [showItemEdit, { open: openItemEdit, close: closeItemEdit }] =
-    useDisclosure(false);
+  const [
+    showEditableMenuItem,
+    { open: openEditableMenuItem, close: closeEditableMenuItem },
+  ] = useDisclosure(false);
   const [showItemPreview, { open: openItemPreview, close: closeItemPreview }] =
     useDisclosure(false);
 
   const imageUrl = file && URL.createObjectURL(file);
 
-  return showItemEdit ? (
+  return showEditableMenuItem ? (
     <>
       <MenuItemModal
         menuItem={editedMenuItem}
@@ -140,13 +142,13 @@ function EditableMenuItem(props: EditableMenuItemProps) {
               variant="outline"
               onClick={openItemPreview}
             />
-            <StyledButton label="Save" onClick={closeItemEdit} />
+            <StyledButton label="Save" onClick={closeEditableMenuItem} />
           </Flex>
         </Flex>
       </Stack>
     </>
   ) : (
-    <MenuItem onEditItemClick={openItemEdit} menuItem={menuItem} />
+    <MenuItem onEditItemClick={openEditableMenuItem} menuItem={menuItem} />
   );
 }
 
