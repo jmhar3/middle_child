@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   Divider,
   Drawer,
@@ -9,8 +11,9 @@ import {
 
 import StyledButton from "../StyledButton";
 
-import { ingredients, menu, type Modifier } from "../../helpers/menu";
-import { useState } from "react";
+import { ingredients, menu } from "../../helpers/menu";
+
+import type { Modifier } from "../../helpers/menu";
 
 interface UpdateStockDrawerProps {
   isOpen: boolean;
