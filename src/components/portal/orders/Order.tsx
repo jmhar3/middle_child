@@ -2,10 +2,10 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
 
-import StyledButton from "../StyledButton";
-
-import type { OrderType } from "../../helpers/cart";
+import StyledButton from "../../StyledButton";
 import OrderBadge from "./OrderBadge";
+
+import type { OrderType } from "../../../helpers/cart";
 
 dayjs.extend(relativeTime);
 
