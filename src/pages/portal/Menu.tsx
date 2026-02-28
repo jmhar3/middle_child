@@ -2,15 +2,13 @@ import PageLayout from "./PageLayout";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
-
-import { Accordion, Divider, Flex, Group, Stack, Text } from "@mantine/core";
+import { Group, Accordion } from "@mantine/core";
 
 import StyledButton from "../../components/StyledButton";
-import EditableMenuItem from "../../components/portal/EditableMenuItem";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
+import Section from "../../components/portal/Menu/Section";
 
-import { menu, modifierCategories, modifiers } from "../../helpers/menu";
-import EditableMenuSectionModifier from "../../components/portal/EditableMenuSectionModifier";
+import { menu } from "../../helpers/menu";
 
 function Menu() {
   const [
@@ -31,18 +29,11 @@ function Menu() {
   return (
     <PageLayout
       navComponents={
-        <>
-          <StyledButton
-            variant="outline"
-            label="Update Stock"
-            onClick={openUpdateStockDrawer}
-          />
-          <StyledButton
-            variant="outline"
-            label="Preview Menu"
-            onClick={openUpdateStockDrawer}
-          />
-        </>
+        <StyledButton
+          variant="outline"
+          label="Update Stock"
+          onClick={openUpdateStockDrawer}
+        />
       }
     >
       <UpdateStockDrawer
@@ -71,60 +62,7 @@ function Menu() {
         </Group>
 
         {menu.map((section) => (
-          <Accordion.Item key={section.label} value={section.label}>
-            <Accordion.Control>
-              <Text component="span">{section.label.toUpperCase()}</Text>
-            </Accordion.Control>
-
-            <Accordion.Panel>
-              <Stack>
-                <Flex
-                  p="sm"
-                  gap="sm"
-                  w="100%"
-                  justify="space-between"
-                  align="flex-end"
-                >
-                  <Stack>
-                    <EditableMenuSectionModifier
-                      label="Default Modifiers"
-                      defaultValue={["1", "2", "3", "4"]}
-                      data={modifiers.map((category) => ({
-                        value: category.id,
-                        label: category.label,
-                      }))}
-                    />
-
-                    <Divider />
-
-                    <EditableMenuSectionModifier
-                      label="Default Modifier Categories"
-                      defaultValue={["3", "4"]}
-                      data={modifierCategories.map((category) => ({
-                        value: category.id,
-                        label: category.label,
-                      }))}
-                    />
-                  </Stack>
-
-                  <Flex gap="sm" justify="flex-end" h="100%">
-                    <Divider orientation="vertical" />
-
-                    <StyledButton label="Add Menu Item" onClick={() => {}} />
-                  </Flex>
-                </Flex>
-
-                <Stack gap="0">
-                  {section.items.map((menuItem) => (
-                    <>
-                      <Divider />
-                      <EditableMenuItem menuItem={menuItem} />
-                    </>
-                  ))}
-                </Stack>
-              </Stack>
-            </Accordion.Panel>
-          </Accordion.Item>
+          <Section key={section.id} section={section} />
         ))}
       </Accordion>
     </PageLayout>
