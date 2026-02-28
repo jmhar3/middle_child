@@ -2,14 +2,16 @@ import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
 import { Box, Button, em, Image, Modal, Stack } from "@mantine/core";
 
-import IngredientsBadges from "./IngredientsBadges";
-import ModifierCheckbox from "./ModifierCheckbox";
-import ModifierRadio from "./ModifierRadio";
+import ModifierCheckbox from "./customer/ModifierCheckbox";
+import ButtonWithPrice from "./customer/ButtonWithPrice";
+import ModifierRadio from "./customer/ModifierRadio";
+import Badges from "./Badges";
+import NoteInput from "./customer/NoteInput";
 
-import type { MenuItemType, Modifier } from "../../helpers/menu";
-import { calculateOrderItemPrice, type OrderItem } from "../../helpers/cart";
-import ButtonWithPrice from "./ButtonWithPrice";
-import NoteInput from "./NoteInput";
+import { calculateOrderItemPrice } from "../helpers/cart";
+
+import type { MenuItemType, Modifier } from "../helpers/menu";
+import type { OrderItem } from "../helpers/cart";
 
 interface MenuItemModalProps {
   isOpen: boolean;
@@ -89,7 +91,7 @@ function MenuItemModal(props: MenuItemModalProps) {
         {menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
 
         {menuItem.ingredients && (
-          <IngredientsBadges ingredients={menuItem.ingredients} />
+          <Badges label="Ingredients" badges={menuItem.ingredients} />
         )}
 
         {menuItem.modifiers && (

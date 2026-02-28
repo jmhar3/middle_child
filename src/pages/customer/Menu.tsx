@@ -4,7 +4,7 @@ import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
 import CartModal from "../../components/customer/CartModal";
-import MenuItemModal from "../../components/customer/MenuItemModal";
+import MenuItemModal from "../../components/MenuItemModal";
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
 
