@@ -46,8 +46,6 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
     );
   };
 
-  console.log(outOfStockIngredients);
-
   return (
     <Drawer
       offset={12}
