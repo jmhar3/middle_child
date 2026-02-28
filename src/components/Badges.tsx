@@ -9,14 +9,14 @@ interface BadgesProps {
 
 function Badges({ label, badges, onEditBadges }: BadgesProps) {
   return (
-    <Stack gap="6" w="100%">
-      <Flex gap="sm">
-        <Text>{label}</Text>
+    <Stack gap="xs" w="100%">
+      <Flex gap="sm" align="flex-end">
         {onEditBadges && (
           <ActionIcon color="darkslategray" onClick={onEditBadges}>
             <EditIcon />
           </ActionIcon>
         )}
+        <Text fw="600">{label.toUpperCase()}</Text>
       </Flex>
 
       <Group gap="6" style={{ overflow: "auto" }}>
@@ -24,7 +24,7 @@ function Badges({ label, badges, onEditBadges }: BadgesProps) {
           <Badge
             radius="sm"
             color={badge.color ? badge.color : "darkslategray"}
-            variant="filled"
+            variant="outline"
             key={badge.id}
           >
             {badge.label}
