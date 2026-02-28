@@ -17,7 +17,7 @@ import StyledButton from "../../components/StyledButton";
 import EditableMenuItem from "../../components/portal/EditableMenuItem";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 
-import { menu, modifierCategories } from "../../helpers/menu";
+import { menu, modifierCategories, modifiers } from "../../helpers/menu";
 
 function Menu() {
   const [
@@ -98,8 +98,19 @@ function Menu() {
                     label="Default Modifiers"
                     defaultValue={["1", "2", "3", "4"]}
                     data={modifierCategories.map((category) => ({
-                      value: category.label,
+                      value: category.id,
                       label: category.label,
+                    }))}
+                  />
+
+                  <MultiSelect
+                    size="md"
+                    searchable
+                    label="Default Modifier Categories"
+                    defaultValue={["3", "4"]}
+                    data={modifiers.map((modifier) => ({
+                      value: modifier.id,
+                      label: modifier.label,
                     }))}
                   />
 
