@@ -19,9 +19,18 @@ function Section(props: SectionProps) {
   const {
     section: { label, items, defaultModifiers, defaultModifierCategories },
   } = props;
+  const blankMenuItem = {
+    id: "99",
+    label: "",
+    price: 0,
+    modifiers: defaultModifiers,
+    modifierCategories: defaultModifierCategories,
+  };
 
-  const [newMenuItem, setNewMenuItem] = useState<MenuItemType>();
   const [menuItems, setMenuItems] = useState<MenuItemType[]>(items);
+  const [newMenuItem, setNewMenuItem] = useState<MenuItemType | null>(
+    menuItems.length === 0 ? blankMenuItem : null,
+  );
 
   return (
     <Accordion.Item key={label} value={label}>
@@ -68,15 +77,7 @@ function Section(props: SectionProps) {
 
                 <StyledButton
                   label="Add Menu Item"
-                  onClick={() =>
-                    setNewMenuItem({
-                      id: "99",
-                      label: "",
-                      price: 0,
-                      modifiers: defaultModifiers,
-                      modifierCategories: defaultModifierCategories,
-                    })
-                  }
+                  onClick={() => setNewMenuItem(blankMenuItem)}
                 />
               </Flex>
             </Flex>
