@@ -13,34 +13,34 @@ import {
   TextInput,
 } from "@mantine/core";
 
-import MenuItemModal from "../MenuItemModal";
-import StyledButton from "../StyledButton";
-import MenuItem from "./MenuItem";
+import MenuItemModal from "../../MenuItemModal";
+import StyledButton from "../../StyledButton";
 
-import { ingredients, modifierCategories, modifiers } from "../../helpers/menu";
+import {
+  ingredients,
+  modifierCategories,
+  modifiers,
+} from "../../../helpers/menu";
 
-import type { MenuItemType } from "../../helpers/menu";
+import type { MenuItemType } from "../../../helpers/menu";
 
-interface EditableMenuItemProps {
+interface EditableItemProps {
   menuItem: MenuItemType;
+  onSaveMenuItem: (newMenuItem: MenuItemType) => void;
 }
 
-function EditableMenuItem(props: EditableMenuItemProps) {
-  const { menuItem } = props;
+function EditableItem(props: EditableItemProps) {
+  const { menuItem, onSaveMenuItem } = props;
 
   const [file, setFile] = useState<File | null>(null);
   const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
 
-  const [
-    showEditableMenuItem,
-    { open: openEditableMenuItem, close: closeEditableMenuItem },
-  ] = useDisclosure(false);
   const [showItemPreview, { open: openItemPreview, close: closeItemPreview }] =
     useDisclosure(false);
 
   const imageUrl = file && URL.createObjectURL(file);
 
-  return showEditableMenuItem ? (
+  return (
     <>
       <MenuItemModal
         menuItem={editedMenuItem}
@@ -50,8 +50,11 @@ function EditableMenuItem(props: EditableMenuItemProps) {
       />
 
       <Stack p="sm">
+        {file && <Image src={imageUrl} />}
+
         <Group gap="sm" grow align="flex-end">
           <TextInput
+            withAsterisk
             label="Label"
             value={editedMenuItem.label.toUpperCase()}
             onChange={(event) =>
@@ -61,6 +64,7 @@ function EditableMenuItem(props: EditableMenuItemProps) {
               }))
             }
           />
+
           <NumberInput
             label="Price"
             value={editedMenuItem.price}
@@ -71,18 +75,15 @@ function EditableMenuItem(props: EditableMenuItemProps) {
               }))
             }
           />
-          {file ? (
-            <Flex>
-              <Image src={imageUrl} />
-              <FileButton onChange={setFile} accept="image/png,image/jpeg">
-                {(props) => <StyledButton {...props} label="Upload image" />}
-              </FileButton>
-            </Flex>
-          ) : (
-            <FileButton onChange={setFile} accept="image/png,image/jpeg">
-              {(props) => <StyledButton {...props} label="Upload image" />}
-            </FileButton>
-          )}
+
+          <FileButton onChange={setFile} accept="image/png,image/jpeg">
+            {(props) => (
+              <StyledButton
+                {...props}
+                label={file ? "Replace image" : "Upload image"}
+              />
+            )}
+          </FileButton>
         </Group>
 
         <Group gap="sm" grow align="flex-start">
@@ -90,6 +91,7 @@ function EditableMenuItem(props: EditableMenuItemProps) {
             size="md"
             searchable
             label="Ingredients"
+            description="Out of stock ingredients affect item stock"
             value={editedMenuItem.ingredients?.map(({ id }) => id)}
             data={ingredients.map((ingredient) => ({
               value: ingredient.id,
@@ -100,6 +102,7 @@ function EditableMenuItem(props: EditableMenuItemProps) {
             size="md"
             searchable
             label="Modifiers"
+            description="User is able to select multiple modifiers"
             value={editedMenuItem.modifiers?.map(({ id }) => id)}
             data={modifiers.map((modifier) => ({
               value: modifier.id,
@@ -121,35 +124,56 @@ function EditableMenuItem(props: EditableMenuItemProps) {
         <Flex justify="space-between">
           <Group>
             <Switch
-              checked={menuItem.isInStock}
-              withThumbIndicator={false}
               label="In Stock"
+              withThumbIndicator={false}
+              checked={menuItem.isInStock}
+              onChange={(event) =>
+                setEditedMenuItem((prevItem) => ({
+                  ...prevItem,
+                  isInStock: event.target.checked,
+                }))
+              }
             />
             <Switch
-              checked={menuItem.isLoyaltyApplicable}
-              withThumbIndicator={false}
               label="Loyalty Perk"
+              withThumbIndicator={false}
+              checked={menuItem.isLoyaltyApplicable}
+              onChange={(event) =>
+                setEditedMenuItem((prevItem) => ({
+                  ...prevItem,
+                  isLoyaltyApplicable: event.target.checked,
+                }))
+              }
             />
             <Switch
-              checked={menuItem.hasLongPrepTime}
-              withThumbIndicator={false}
               label="Long Prep Time"
+              withThumbIndicator={false}
+              checked={menuItem.hasLongPrepTime}
+              onChange={(event) =>
+                setEditedMenuItem((prevItem) => ({
+                  ...prevItem,
+                  hasLongPrepTime: event.target.checked,
+                }))
+              }
             />
           </Group>
+
           <Flex gap="sm" justify="flex-end">
             <StyledButton
               label="Preview"
               variant="outline"
               onClick={openItemPreview}
             />
-            <StyledButton label="Save" onClick={closeEditableMenuItem} />
+
+            <StyledButton
+              label="Save"
+              onClick={() => onSaveMenuItem(editedMenuItem)}
+            />
           </Flex>
         </Flex>
       </Stack>
     </>
-  ) : (
-    <MenuItem onEditItemClick={openEditableMenuItem} menuItem={menuItem} />
   );
 }
 
-export default EditableMenuItem;
+export default EditableItem;

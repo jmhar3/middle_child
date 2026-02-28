@@ -1,9 +1,9 @@
-import { ActionIcon, Flex, Group, Text } from "@mantine/core";
+import { ActionIcon, Flex, Group, Stack, Text } from "@mantine/core";
 
-import Badges from "../Badges";
-import EditIcon from "../../icons/EditIcon";
+import Badges from "../../Badges";
+import EditIcon from "../../../icons/EditIcon";
 
-import type { MenuItemType } from "../../helpers/menu";
+import type { MenuItemType } from "../../../helpers/menu";
 
 interface MenuItemProps {
   onEditItemClick: () => void;
@@ -20,9 +20,14 @@ function MenuItem(props: MenuItemProps) {
           <EditIcon />
         </ActionIcon>
 
-        <Text fs="1.4em" fw="600" style={{ textWrap: "nowrap" }}>
-          {menuItem.label.toUpperCase()}
-        </Text>
+        <Stack gap="0">
+          <Text fs="1.4em" fw="600" style={{ textWrap: "nowrap" }}>
+            {menuItem.label.toUpperCase()}
+          </Text>
+          <Text fs="1.4em" fw="600">
+            ${menuItem.price.toFixed(2)}
+          </Text>
+        </Stack>
       </Flex>
       <Group w="100%" justify="space-between" align="flex-start" grow>
         {menuItem.ingredients && (

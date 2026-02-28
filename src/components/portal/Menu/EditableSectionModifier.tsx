@@ -1,15 +1,15 @@
 import { MultiSelect, Flex } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import Badges from "../Badges";
-import StyledButton from "../StyledButton";
+import Badges from "../../Badges";
+import StyledButton from "../../StyledButton";
 
-interface EditableMenuSectionModifierProps {
+interface EditableSectionModifierProps {
   label: string;
   defaultValue: string[];
   data: { value: string; label: string }[];
 }
 
-function EditableMenuSectionModifier(props: EditableMenuSectionModifierProps) {
+function EditableSectionModifier(props: EditableSectionModifierProps) {
   const { defaultValue, data, label } = props;
 
   const [
@@ -45,4 +45,4 @@ function EditableMenuSectionModifier(props: EditableMenuSectionModifierProps) {
   );
 }
 
-export default EditableMenuSectionModifier;
+export default EditableSectionModifier;
