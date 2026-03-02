@@ -27,10 +27,11 @@ import type { MenuItemType } from "../../../helpers/menu";
 interface EditableItemProps {
   menuItem: MenuItemType;
   onSaveMenuItem: (newMenuItem: MenuItemType) => void;
+  onCancelCreateItem: () => void;
 }
 
 function EditableItem(props: EditableItemProps) {
-  const { menuItem, onSaveMenuItem } = props;
+  const { menuItem, onSaveMenuItem, onCancelCreateItem } = props;
 
   const [file, setFile] = useState<File | null>(null);
   const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
@@ -92,32 +93,62 @@ function EditableItem(props: EditableItemProps) {
             searchable
             label="Ingredients"
             description="Out of stock ingredients affect item stock"
-            value={editedMenuItem.ingredients?.map(({ id }) => id)}
+            defaultValue={editedMenuItem.ingredients?.map(({ id }) => id)}
             data={ingredients.map((ingredient) => ({
               value: ingredient.id,
               label: ingredient.label,
             }))}
+            onChange={(values) =>
+              setEditedMenuItem((prevItem) => ({
+                ...prevItem,
+                ingredients: values
+                  .map((id) =>
+                    ingredients.find((ingredient) => ingredient.id === id),
+                  )
+                  .filter((ingredient) => ingredient !== undefined),
+              }))
+            }
           />
           <MultiSelect
             size="md"
             searchable
             label="Modifiers"
             description="User is able to select multiple modifiers"
-            value={editedMenuItem.modifiers?.map(({ id }) => id)}
+            defaultValue={editedMenuItem.modifiers?.map(({ id }) => id)}
             data={modifiers.map((modifier) => ({
               value: modifier.id,
               label: modifier.label,
             }))}
+            onChange={(values) =>
+              setEditedMenuItem((prevItem) => ({
+                ...prevItem,
+                modifiers: values
+                  .map((id) => modifiers.find((modifier) => modifier.id === id))
+                  .filter((modifier) => modifier !== undefined),
+              }))
+            }
           />
           <MultiSelect
             size="md"
             searchable
             label="Modifier Categories"
-            value={editedMenuItem.modifierCategories?.map(({ id }) => id)}
+            defaultValue={editedMenuItem.modifierCategories?.map(
+              ({ id }) => id,
+            )}
             data={modifierCategories.map((category) => ({
               value: category.id,
               label: category.label,
             }))}
+            onChange={(values) =>
+              setEditedMenuItem((prevItem) => ({
+                ...prevItem,
+                modifierCategories: values
+                  .map((id) =>
+                    modifierCategories.find((category) => category.id === id),
+                  )
+                  .filter((category) => category !== undefined),
+              }))
+            }
           />
         </Group>
 
@@ -165,8 +196,13 @@ function EditableItem(props: EditableItemProps) {
               onClick={openItemPreview}
             />
 
+            <StyledButton label="Cancel" onClick={onCancelCreateItem} />
+
             <StyledButton
               label="Save"
+              isDisabled={
+                menuItem === editedMenuItem || editedMenuItem.label.length === 0
+              }
               onClick={() => onSaveMenuItem(editedMenuItem)}
             />
           </Flex>
