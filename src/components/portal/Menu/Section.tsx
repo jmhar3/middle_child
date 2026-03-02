@@ -10,6 +10,7 @@ import EditableMenuSectionModifier from "./EditableSectionModifier";
 import { modifierCategories, modifiers } from "../../../helpers/menu";
 
 import type { MenuItemType, MenuSection } from "../../../helpers/menu";
+import { useDisclosure } from "@mantine/hooks";
 
 interface SectionProps {
   section: MenuSection;
@@ -20,7 +21,7 @@ function Section(props: SectionProps) {
     section: { label, items, defaultModifiers, defaultModifierCategories },
   } = props;
   const blankMenuItem = {
-    id: "99",
+    id: "",
     label: "",
     price: 0,
     modifiers: defaultModifiers,
@@ -31,6 +32,34 @@ function Section(props: SectionProps) {
   const [newMenuItem, setNewMenuItem] = useState<MenuItemType | null>(
     menuItems.length === 0 ? blankMenuItem : null,
   );
+
+  const [
+    showEditableMenuItem,
+    { open: openEditableMenuItem, close: closeEditableMenuItem },
+  ] = useDisclosure(menuItems.length === 0);
+
+  const onCloseEditableItem = () => {
+    closeEditableMenuItem();
+    setNewMenuItem(null);
+  };
+
+  const onSaveMenuItem = (newMenuItem: MenuItemType) => {
+    if (newMenuItem.id.length === 0) {
+      setMenuItems((prevMenuItems) => [...prevMenuItems, newMenuItem]);
+    } else {
+      setMenuItems((prevMenuItems) =>
+        prevMenuItems.map((item) =>
+          item.id === newMenuItem.id ? newMenuItem : item,
+        ),
+      );
+    }
+    onCloseEditableItem();
+  };
+
+  const onDeleteItem = (id: string) => {
+    setMenuItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    onCloseEditableItem();
+  };
 
   return (
     <Accordion.Item key={label} value={label}>
@@ -77,23 +106,22 @@ function Section(props: SectionProps) {
 
                 <StyledButton
                   label="Add Menu Item"
-                  onClick={() => setNewMenuItem(blankMenuItem)}
+                  onClick={() => {
+                    openEditableMenuItem();
+                    setNewMenuItem(blankMenuItem);
+                  }}
                 />
               </Flex>
             </Flex>
           </Box>
 
           <Stack gap="0">
-            {newMenuItem && (
+            {newMenuItem && showEditableMenuItem && (
               <>
                 <EditableItem
                   menuItem={newMenuItem}
-                  onSaveMenuItem={(newMenuItem: MenuItemType) =>
-                    setMenuItems((prevMenuItems) => ({
-                      ...prevMenuItems,
-                      newMenuItem,
-                    }))
-                  }
+                  onSaveMenuItem={onSaveMenuItem}
+                  onCancelCreateItem={onCloseEditableItem}
                 />
                 <Divider />
               </>
@@ -102,7 +130,11 @@ function Section(props: SectionProps) {
             {menuItems.map((menuItem, index) => (
               <>
                 {index > 0 && <Divider />}
-                <EditableMenuItem menuItem={menuItem} />
+                <EditableMenuItem
+                  menuItem={menuItem}
+                  onSaveMenuItem={onSaveMenuItem}
+                  onDeleteItem={onDeleteItem}
+                />
               </>
             ))}
           </Stack>
