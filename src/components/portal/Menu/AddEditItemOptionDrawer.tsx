@@ -32,6 +32,11 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
   >();
   const [itemOption, setItemOption] = useState<ItemOptions | undefined>();
 
+  const clearDrawer = () => {
+    setItemOptionsToEdit(undefined);
+    setItemOption(undefined);
+    onClose();
+  };
   return (
     <Drawer
       offset={12}
@@ -40,39 +45,48 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
       opened={isOpen}
       onClose={() => {
         setItemOption(undefined);
-        onClose();
+        clearDrawer();
       }}
       withCloseButton={false}
     >
       <Stack align="flex-end">
         <Text size="1.4em" fw="600" ta="left" w="100%">
-          ADD / EDIT ITEM OPTION
+          ADD / EDIT MODIFIER CATEGORY
         </Text>
 
         <Divider w="100%" />
 
-        <Select
-          w="100%"
-          size="md"
-          label="Select item option to edit"
-          nothingFoundMessage="No item option found matching your search"
-          onChange={(value) =>
-            setItemOptionsToEdit(
-              modifierCategories.find(({ id }) => id === value),
-            )
-          }
-          data={modifierCategories.map((modifier) => ({
-            value: modifier.id,
-            label: modifier.label,
-          }))}
-          disabled={!!itemOption}
-          searchable
-        />
+        <Stack w="100%">
+          <Select
+            w="100%"
+            size="md"
+            label="Select modifier category to edit"
+            nothingFoundMessage="No modifier category found matching your search"
+            onChange={(value) =>
+              setItemOptionsToEdit(
+                modifierCategories.find(({ id }) => id === value),
+              )
+            }
+            data={modifierCategories.map((modifier) => ({
+              value: modifier.id,
+              label: modifier.label,
+            }))}
+            disabled={!!itemOption}
+            searchable
+          />
+          <StyledButton
+            label="Edit Modifier Category"
+            onClick={() => setItemOption(itemOptionsToEdit)}
+            isDisabled={!!itemOption}
+          />
 
-        <Group gap="sm" w="100%">
+          <Text w="100%" ta="center">
+            OR
+          </Text>
+
           <StyledButton
             variant="outline"
-            label="Create New Modifier"
+            label="Create New Modifier Category"
             onClick={() =>
               setItemOption({
                 id: "99",
@@ -83,13 +97,7 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
             }
             isDisabled={!!itemOption}
           />
-
-          <StyledButton
-            label="Edit Modifier Category"
-            onClick={() => setItemOption(itemOptionsToEdit)}
-            isDisabled={!!itemOption}
-          />
-        </Group>
+        </Stack>
 
         {itemOption !== undefined && (
           <>
@@ -120,6 +128,7 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
             <MultiSelect
               w="100%"
               size="md"
+              withAsterisk
               label="Select included modifiers"
               nothingFoundMessage="No modifiers found matching your search"
               data={modifierCategories.map((modifier) => ({
@@ -160,13 +169,16 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
                 label="Cancel"
                 onClick={() => {
                   setItemOption(undefined);
-                  onClose();
+                  clearDrawer();
                 }}
               />
 
               <StyledButton
                 label="Save"
-                onClick={() => onAddEditItemOptions(itemOption)}
+                onClick={() => {
+                  clearDrawer();
+                  onAddEditItemOptions(itemOption);
+                }}
               />
             </Group>
           </>

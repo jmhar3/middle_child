@@ -25,11 +25,18 @@ interface CreateSectionDrawerProps {
 function CreateSectionDrawer(props: CreateSectionDrawerProps) {
   const { isOpen, onClose, onCreateSection } = props;
 
-  const [section, setSection] = useState<MenuSection>({
-    id: "99",
+  const blankSection = {
+    id: "",
     label: "",
     items: [],
-  });
+  };
+
+  const [section, setSection] = useState<MenuSection>(blankSection);
+
+  const onClearDrawer = () => {
+    onClose();
+    setSection(blankSection);
+  };
 
   const onSelectModifiers = (values: string[]) => {
     setSection((prevSection) => ({
@@ -69,6 +76,7 @@ function CreateSectionDrawer(props: CreateSectionDrawerProps) {
           w="100%"
           withAsterisk
           label="Label"
+          value={section.label}
           onChange={(event) =>
             setSection((prevSection) => ({
               ...prevSection,
@@ -110,10 +118,20 @@ function CreateSectionDrawer(props: CreateSectionDrawerProps) {
         <Divider w="100%" />
 
         <Group gap="sm">
-          <StyledButton variant="outline" label="Cancel" onClick={onClose} />
+          <StyledButton
+            label="Cancel"
+            variant="outline"
+            onClick={onClearDrawer}
+          />
+
           <StyledButton
             label="Create"
-            onClick={() => onCreateSection(section)}
+            onClick={() => {
+              if (section.label.length > 0) {
+                onCreateSection(section);
+                onClearDrawer();
+              }
+            }}
           />
         </Group>
       </Stack>

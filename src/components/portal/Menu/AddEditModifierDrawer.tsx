@@ -30,6 +30,12 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
   const [modifierToEdit, setModifierToEdit] = useState<Modifier | undefined>();
   const [modifier, setModifier] = useState<Modifier | undefined>();
 
+  const clearDrawer = () => {
+    setModifierToEdit(undefined);
+    setModifier(undefined);
+    onClose();
+  };
+
   return (
     <Drawer
       offset={12}
@@ -38,7 +44,7 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
       opened={isOpen}
       onClose={() => {
         setModifier(undefined);
-        onClose();
+        clearDrawer();
       }}
       withCloseButton={false}
     >
@@ -49,28 +55,21 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
 
         <Divider w="100%" />
 
-        <Select
-          w="100%"
-          size="md"
-          label="Select modifier to edit"
-          nothingFoundMessage="No modifiers found matching your search"
-          onChange={(value) =>
-            setModifierToEdit(modifiers.find(({ id }) => id === value))
-          }
-          data={modifiers.map((modifier) => ({
-            value: modifier.id,
-            label: modifier.label,
-          }))}
-          disabled={!!modifier}
-          searchable
-        />
-
-        <Group gap="sm" w="100%">
-          <StyledButton
-            variant="outline"
-            label="Create New Modifier"
-            onClick={() => setModifier({ id: "99", label: "" })}
-            isDisabled={!!modifier}
+        <Stack w="100%">
+          <Select
+            w="100%"
+            size="md"
+            label="Select modifier to edit"
+            nothingFoundMessage="No modifiers found matching your search"
+            onChange={(value) =>
+              setModifierToEdit(modifiers.find(({ id }) => id === value))
+            }
+            data={modifiers.map((modifier) => ({
+              value: modifier.id,
+              label: modifier.label,
+            }))}
+            disabled={!!modifier}
+            searchable
           />
 
           <StyledButton
@@ -78,7 +77,18 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
             onClick={() => setModifier(modifierToEdit)}
             isDisabled={!!modifier}
           />
-        </Group>
+
+          <Text w="100%" ta="center">
+            OR
+          </Text>
+
+          <StyledButton
+            variant="outline"
+            label="Create New Modifier"
+            onClick={() => setModifier({ id: "99", label: "" })}
+            isDisabled={!!modifier}
+          />
+        </Stack>
 
         {modifier !== undefined && (
           <>
@@ -164,15 +174,17 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
               <StyledButton
                 variant="outline"
                 label="Cancel"
-                onClick={() => {
-                  setModifier(undefined);
-                  onClose();
-                }}
+                onClick={clearDrawer}
               />
 
               <StyledButton
                 label="Save"
-                onClick={() => onAddEditModifier(modifier)}
+                onClick={() => {
+                  if (modifier.label.length > 0) {
+                    onAddEditModifier(modifier);
+                    clearDrawer();
+                  }
+                }}
               />
             </Group>
           </>
