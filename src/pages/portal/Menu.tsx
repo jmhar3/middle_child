@@ -61,6 +61,12 @@ function Menu() {
     closeAddEditItemOptionDrawer();
   };
 
+  const onDeleteSection = (sectionToDelete: MenuSection) => {
+    setMenu((prevMenu) =>
+      prevMenu.filter((section) => section !== sectionToDelete),
+    );
+  };
+
   return (
     <PageLayout
       navComponents={
@@ -118,7 +124,11 @@ function Menu() {
         </Group>
 
         {menu.map((section) => (
-          <Section key={section.id} section={section} />
+          <Section
+            key={section.id}
+            section={section}
+            onDeleteSection={() => onDeleteSection(section)}
+          />
         ))}
       </Accordion>
     </PageLayout>

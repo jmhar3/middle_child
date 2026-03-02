@@ -1,25 +1,28 @@
 import { useState } from "react";
-
+import { useDisclosure } from "@mantine/hooks";
 import { Box, Flex, Text, Stack, Divider, Accordion } from "@mantine/core";
 
-import StyledButton from "../../StyledButton";
 import EditableItem from "./EditableItem";
+import StyledButton from "../../StyledButton";
 import EditableMenuItem from "./ItemEditPreview";
+import ConfirmationModal from "../../ConfirmationModal";
 import EditableMenuSectionModifier from "./EditableSectionModifier";
 
 import { modifierCategories, modifiers } from "../../../helpers/menu";
 
 import type { MenuItemType, MenuSection } from "../../../helpers/menu";
-import { useDisclosure } from "@mantine/hooks";
 
 interface SectionProps {
   section: MenuSection;
+  onDeleteSection: () => void;
 }
 
 function Section(props: SectionProps) {
   const {
     section: { label, items, defaultModifiers, defaultModifierCategories },
+    onDeleteSection,
   } = props;
+
   const blankMenuItem = {
     id: "",
     label: "",
@@ -37,6 +40,11 @@ function Section(props: SectionProps) {
     showEditableMenuItem,
     { open: openEditableMenuItem, close: closeEditableMenuItem },
   ] = useDisclosure(menuItems.length === 0);
+
+  const [
+    showConfirmDelete,
+    { close: closeConfirmDelete, open: openConfirmDelete },
+  ] = useDisclosure(false);
 
   const onCloseEditableItem = () => {
     closeEditableMenuItem();
@@ -104,13 +112,30 @@ function Section(props: SectionProps) {
               <Flex gap="sm" justify="flex-end" h="100%">
                 <Divider orientation="vertical" />
 
-                <StyledButton
-                  label="Add Menu Item"
-                  onClick={() => {
-                    openEditableMenuItem();
-                    setNewMenuItem(blankMenuItem);
-                  }}
-                />
+                <Stack>
+                  <StyledButton
+                    label="Delete Section"
+                    onClick={openConfirmDelete}
+                  />
+
+                  <ConfirmationModal
+                    label={label}
+                    isOpen={showConfirmDelete}
+                    onClose={closeConfirmDelete}
+                    onConfirmDelete={() => {
+                      closeConfirmDelete();
+                      onDeleteSection();
+                    }}
+                  />
+
+                  <StyledButton
+                    label="Add Menu Item"
+                    onClick={() => {
+                      openEditableMenuItem();
+                      setNewMenuItem(blankMenuItem);
+                    }}
+                  />
+                </Stack>
               </Flex>
             </Flex>
           </Box>
@@ -122,6 +147,7 @@ function Section(props: SectionProps) {
                   menuItem={newMenuItem}
                   onSaveMenuItem={onSaveMenuItem}
                   onCancelCreateItem={onCloseEditableItem}
+                  showCancelButton={menuItems.length > 0}
                 />
                 <Divider />
               </>
