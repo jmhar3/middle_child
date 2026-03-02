@@ -26,12 +26,18 @@ import type { MenuItemType } from "../../../helpers/menu";
 
 interface EditableItemProps {
   menuItem: MenuItemType;
+  showCancelButton?: boolean;
   onSaveMenuItem: (newMenuItem: MenuItemType) => void;
   onCancelCreateItem: () => void;
 }
 
 function EditableItem(props: EditableItemProps) {
-  const { menuItem, onSaveMenuItem, onCancelCreateItem } = props;
+  const {
+    menuItem,
+    onSaveMenuItem,
+    onCancelCreateItem,
+    showCancelButton = true,
+  } = props;
 
   const [file, setFile] = useState<File | null>(null);
   const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
@@ -196,7 +202,9 @@ function EditableItem(props: EditableItemProps) {
               onClick={openItemPreview}
             />
 
-            <StyledButton label="Cancel" onClick={onCancelCreateItem} />
+            {showCancelButton && (
+              <StyledButton label="Cancel" onClick={onCancelCreateItem} />
+            )}
 
             <StyledButton
               label="Save"
