@@ -3,7 +3,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@mantine/core";
 import { useMemo } from "react";
 
-import type { OrderType } from "../../helpers/cart";
+import type { OrderType } from "../../../helpers/cart";
 
 dayjs.extend(relativeTime);
 

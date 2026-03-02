@@ -3,7 +3,7 @@ import { Stack } from "@mantine/core";
 
 import Order from "./Order";
 
-import type { OrderType } from "../../helpers/cart";
+import type { OrderType } from "../../../helpers/cart";
 
 interface OrdersProps {
   orders: OrderType[];
