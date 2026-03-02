@@ -1,24 +1,39 @@
 import { useDisclosure } from "@mantine/hooks";
 
-import MenuItem from "./MenuItem";
-import MenuItemEdit from "./EditableItem";
+import ListItem from "./ListItem";
+import EditableItem from "./EditableItem";
 
 import type { MenuItemType } from "../../../helpers/menu";
 
-function EditItemPreview({ menuItem }: { menuItem: MenuItemType }) {
+interface EditItemPreviewProps {
+  menuItem: MenuItemType;
+  onDeleteItem: (id: string) => void;
+  onSaveMenuItem: (newMenuItem: MenuItemType) => void;
+}
+
+function EditItemPreview(props: EditItemPreviewProps) {
+  const { menuItem, onDeleteItem, onSaveMenuItem } = props;
+
   const [
     showEditableMenuItem,
     { open: openEditableMenuItem, close: closeEditableMenuItem },
   ] = useDisclosure(false);
 
-  const onSaveMenuItem = () => {
-    closeEditableMenuItem();
-  };
-
   return showEditableMenuItem ? (
-    <MenuItemEdit menuItem={menuItem} onSaveMenuItem={onSaveMenuItem} />
+    <EditableItem
+      menuItem={menuItem}
+      onSaveMenuItem={(newMenuItem: MenuItemType) => {
+        onSaveMenuItem(newMenuItem);
+        closeEditableMenuItem();
+      }}
+      onCancelCreateItem={closeEditableMenuItem}
+    />
   ) : (
-    <MenuItem onEditItemClick={openEditableMenuItem} menuItem={menuItem} />
+    <ListItem
+      onEditItemClick={openEditableMenuItem}
+      onDeleteItemClick={() => onDeleteItem(menuItem.id)}
+      menuItem={menuItem}
+    />
   );
 }
 
