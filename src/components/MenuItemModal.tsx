@@ -77,7 +77,7 @@ function MenuItemModal(props: MenuItemModalProps) {
   return (
     <Modal
       fullScreen
-      radius={0}
+      radius="sm"
       opened={isOpen}
       onClose={onModalClose}
       title={menuItem.label.toUpperCase()}
