@@ -1,10 +1,13 @@
 import { useState } from "react";
 
 import {
+  Box,
+  Checkbox,
   Divider,
   Drawer,
   Group,
   MultiSelect,
+  SegmentedControl,
   Stack,
   Text,
 } from "@mantine/core";
@@ -23,6 +26,8 @@ interface UpdateStockDrawerProps {
 
 function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const { isOpen, onClose, onUpdateStock } = props;
+
+  const [menuView, setMenuView] = useState("Checkbox List");
 
   const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
@@ -81,23 +86,58 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
           searchable
         />
 
-        <MultiSelect
-          w="100%"
-          size="md"
-          label="Menu Items"
-          placeholder="Select out of stock menu items"
-          nothingFoundMessage="No menu items found matching your search"
-          value={outOfStockMenuItems.map(({ id }) => id)}
-          onChange={onSelectOutOfStockMenuItems}
-          data={menuItems.map((item) => ({
-            value: item.id,
-            label: item.label,
-          }))}
-          hidePickedOptions
-          searchable
-        />
+        <Stack gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
+          <Stack gap="0">
+            <Text>Menu Items</Text>
 
-        <Divider w="100%" />
+            <SegmentedControl
+              w="100%"
+              value={menuView}
+              onChange={setMenuView}
+              data={["Multiselect", "Checkbox List"]}
+            />
+          </Stack>
+
+          {menuView === "Checkbox List" &&
+            menu.map((section, index) => (
+              <>
+                {index > 0 && <Divider />}
+                <Checkbox.Group
+                  key={section.id}
+                  label={section.label}
+                  value={outOfStockMenuItems.map(({ id }) => id)}
+                  onChange={onSelectOutOfStockMenuItems}
+                >
+                  <Group mt="xs">
+                    {section.items.map((item) => (
+                      <Checkbox
+                        key={item.id}
+                        value={item.id}
+                        label={item.label}
+                      />
+                    ))}
+                  </Group>
+                </Checkbox.Group>
+              </>
+            ))}
+
+          {menuView === "Multiselect" && (
+            <MultiSelect
+              w="100%"
+              size="md"
+              placeholder="Select out of stock menu items"
+              nothingFoundMessage="No menu items found matching your search"
+              value={outOfStockMenuItems.map(({ id }) => id)}
+              onChange={onSelectOutOfStockMenuItems}
+              data={menuItems.map((item) => ({
+                value: item.id,
+                label: item.label,
+              }))}
+              hidePickedOptions
+              searchable
+            />
+          )}
+        </Stack>
 
         <Group gap="sm">
           <StyledButton variant="outline" label="Cancel" onClick={onClose} />
