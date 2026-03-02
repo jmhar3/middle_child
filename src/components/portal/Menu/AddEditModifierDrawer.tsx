@@ -10,6 +10,7 @@ import {
   Select,
   NumberInput,
   Switch,
+  ColorInput,
 } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
@@ -85,7 +86,7 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
           <StyledButton
             variant="outline"
             label="Create New Modifier"
-            onClick={() => setModifier({ id: "99", label: "" })}
+            onClick={() => setModifier({ id: "", label: "" })}
             isDisabled={!!modifier}
           />
         </Stack>
@@ -98,7 +99,7 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
               w="100%"
               withAsterisk
               label="Label"
-              defaultValue={modifier.label}
+              value={modifier.label}
               onChange={(event) =>
                 setModifier((prevModifier) =>
                   prevModifier
@@ -106,7 +107,7 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
                         ...prevModifier,
                         label: event.target.value,
                       }
-                    : { id: "99", label: event.target.value },
+                    : { id: "", label: event.target.value },
                 )
               }
             />
@@ -115,7 +116,7 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
               <NumberInput
                 w="100%"
                 label="Price"
-                defaultValue={modifier.price}
+                value={modifier.price}
                 onChange={(value) =>
                   setModifier(
                     (prevModifier) =>
@@ -129,18 +130,34 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
                 }
               />
 
-              <TextInput
+              <ColorInput
                 w="100%"
                 label="Tag Colour"
-                defaultValue={modifier.color}
-                onChange={(event) =>
+                value={modifier.color || "#2f4f4f"}
+                swatches={[
+                  "#2f4f4f",
+                  "#868e96",
+                  "#fa5252",
+                  "#e64980",
+                  "#be4bdb",
+                  "#7950f2",
+                  "#4c6ef5",
+                  "#228be6",
+                  "#15aabf",
+                  "#12b886",
+                  "#40c057",
+                  "#82c91e",
+                  "#fab005",
+                  "#fd7e14",
+                ]}
+                onChange={(value) =>
                   setModifier((prevModifier) =>
                     prevModifier
                       ? {
                           ...prevModifier,
-                          color: event.target.value,
+                          color: value,
                         }
-                      : { id: "99", label: "", color: event.target.value },
+                      : { id: "", label: "", color: value },
                   )
                 }
               />
@@ -160,7 +177,7 @@ function AddEditModifierDrawer(props: AddEditModifierDrawerProps) {
                         isIngredient: event.target.checked,
                       }
                     : {
-                        id: "99",
+                        id: "",
                         label: "",
                         isIngredient: event.target.checked,
                       },
