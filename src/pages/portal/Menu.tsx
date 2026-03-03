@@ -6,11 +6,11 @@ import { notifications } from "@mantine/notifications";
 import { Group, Accordion } from "@mantine/core";
 
 import StyledButton from "../../components/StyledButton";
-import Section from "../../components/portal/menu/Section";
+import Section from "../../components/portal/menu/Section"; //
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
-import CreateSectionDrawer from "../../components/portal/menu/CreateSectionDrawer";
-import AddEditModifierDrawer from "../../components/portal/menu/AddEditModifierDrawer";
-import AddEditItemOptionDrawer from "../../components/portal/menu/AddEditItemOptionDrawer";
+import CreateSectionDrawer from "../../components/portal/menu/CreateSectionDrawer"; //
+import AddEditModifierDrawer from "../../components/portal/menu/AddEditModifierDrawer"; //
+import AddEditItemOptionDrawer from "../../components/portal/menu/AddEditItemOptionDrawer"; //
 
 import { menu as hardcodedMenu } from "../../helpers/menu";
 
