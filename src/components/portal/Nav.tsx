@@ -23,19 +23,19 @@ function Nav(props: PropsWithChildren) {
           width="fit-content"
           label="Take Orders"
           path="/portal/orders"
-          isDisabled={pathname.includes("orders")}
+          variant={pathname.includes("orders") ? "outline" : undefined}
         />
         <NavButton
           width="fit-content"
           label="Edit Menu"
           path="/portal/menu"
-          isDisabled={pathname.includes("menu")}
+          variant={pathname.includes("menu") ? "outline" : undefined}
         />
         <NavButton
           width="fit-content"
           label="View Stats"
           path="/portal/stats"
-          isDisabled={pathname.includes("stats")}
+          variant={pathname.includes("stats") ? "outline" : undefined}
         />
       </Group>
 
