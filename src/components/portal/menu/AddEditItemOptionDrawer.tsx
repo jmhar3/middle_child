@@ -48,6 +48,7 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
         clearDrawer();
       }}
       withCloseButton={false}
+      trapFocus={false}
     >
       <Stack align="flex-end">
         <Text size="1.4em" fw="600" ta="left" w="100%">

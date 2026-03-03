@@ -61,6 +61,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
       opened={isOpen}
       onClose={onClose}
       withCloseButton={false}
+      trapFocus={false}
     >
       <Stack align="flex-end">
         <Text size="1.4em" fw="600" ta="left" w="100%">
