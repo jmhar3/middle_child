@@ -87,7 +87,7 @@ function Orders() {
         onConfirmToggle={onToggleStoreOpen}
       />
 
-      <Group w="100%" grow p="sm" bg="white" style={{ zIndex: -1 }}>
+      <Group w="100%" grow p="sm" bg="white" style={{ zIndex: 0 }}>
         {orderTimes.map((orderTime) => (
           <StyledButton
             key={orderTime.label}
