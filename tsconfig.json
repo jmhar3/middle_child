@@ -1,5 +1,8 @@
 {
   "include": ["./src/**/*.ts", "./src/**/*.d.ts"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
