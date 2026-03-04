@@ -651,6 +651,7 @@ export const fetchModifiers = async () => {
 export const upsertModifier = async (params: Partial<Modifier>) => {
   const { error } = await supabase.from("modifiers").upsert({
     ...params,
+    price: params.price === 0 ? null : params.price,
     is_in_stock: params.is_ingredient ? params.is_in_stock : null,
   });
 
