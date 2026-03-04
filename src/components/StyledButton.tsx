@@ -10,6 +10,7 @@ interface StyledButtonProps {
   rightSection?: ReactElement;
   leftSection?: ReactElement;
   isDisabled?: boolean;
+  isLoading?: boolean;
   variant?: string;
   radius?: string;
 }
@@ -21,6 +22,7 @@ function StyledButton(props: StyledButtonProps) {
     textAlign,
     variant = "filled",
     radius,
+    isLoading,
     isDisabled,
     rightSection,
     leftSection,
@@ -37,7 +39,9 @@ function StyledButton(props: StyledButtonProps) {
       leftSection={leftSection}
       rightSection={rightSection}
       size={isMobile ? "md" : "lg"}
+      loaderProps={{ type: "dots" }}
       disabled={isDisabled}
+      loading={isLoading}
       justify={textAlign}
       onClick={onClick}
     >
