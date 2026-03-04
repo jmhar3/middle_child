@@ -1,9 +1,12 @@
+import { notifications } from "@mantine/notifications";
+import { supabase } from "./supabase";
+
 export interface Modifier {
   id: string;
   label: string;
   price?: number;
-  isInStock?: boolean;
-  isIngredient?: boolean;
+  is_in_stock?: boolean;
+  is_ingredient?: boolean;
   color?: string;
 }
 
@@ -19,7 +22,7 @@ export interface MenuItemType {
   label: string;
   price: number;
   image?: string;
-  isInStock?: boolean;
+  is_in_stock?: boolean;
   ingredients?: Modifier[];
   hasLongPrepTime?: boolean;
   isLoyaltyApplicable?: boolean;
@@ -61,7 +64,7 @@ export const menu: MenuSection[] = [
         modifiers: [
           { id: "5", label: "Weak" },
           { id: "6", label: "Strong", price: 1 },
-          { id: "8", label: "Decaf", isIngredient: true },
+          { id: "8", label: "Decaf", is_ingredient: true },
         ],
       },
       {
@@ -69,12 +72,12 @@ export const menu: MenuSection[] = [
         label: "Milk",
         allowMultipleSelections: false,
         modifiers: [
-          { id: "9", label: "Full Cream", isIngredient: true },
-          { id: "10", label: "Skinny", isIngredient: true },
-          { id: "11", label: "Lactose Free", isIngredient: true },
-          { id: "12", label: "Soy", isIngredient: true, color: "red" },
-          { id: "13", label: "Oat", isIngredient: true },
-          { id: "14", label: "Almond", isIngredient: true, color: "green" },
+          { id: "9", label: "Full Cream", is_ingredient: true },
+          { id: "10", label: "Skinny", is_ingredient: true },
+          { id: "11", label: "Lactose Free", is_ingredient: true },
+          { id: "12", label: "Soy", is_ingredient: true, color: "red" },
+          { id: "13", label: "Oat", is_ingredient: true },
+          { id: "14", label: "Almond", is_ingredient: true, color: "green" },
         ],
       },
       {
@@ -121,7 +124,7 @@ export const menu: MenuSection[] = [
             modifiers: [
               { id: "5", label: "Weak" },
               { id: "6", label: "Strong", price: 1 },
-              { id: "8", label: "Decaf", isIngredient: true },
+              { id: "8", label: "Decaf", is_ingredient: true },
             ],
           },
           {
@@ -129,12 +132,17 @@ export const menu: MenuSection[] = [
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "9", label: "Full Cream", isIngredient: true },
-              { id: "10", label: "Skinny", isIngredient: true },
-              { id: "11", label: "Lactose Free", isIngredient: true },
-              { id: "12", label: "Soy", isIngredient: true, color: "red" },
-              { id: "13", label: "Oat", isIngredient: true },
-              { id: "14", label: "Almond", isIngredient: true, color: "green" },
+              { id: "9", label: "Full Cream", is_ingredient: true },
+              { id: "10", label: "Skinny", is_ingredient: true },
+              { id: "11", label: "Lactose Free", is_ingredient: true },
+              { id: "12", label: "Soy", is_ingredient: true, color: "red" },
+              { id: "13", label: "Oat", is_ingredient: true },
+              {
+                id: "14",
+                label: "Almond",
+                is_ingredient: true,
+                color: "green",
+              },
             ],
           },
           {
@@ -181,7 +189,7 @@ export const menu: MenuSection[] = [
             modifiers: [
               { id: "5", label: "Weak" },
               { id: "6", label: "Strong", price: 1 },
-              { id: "8", label: "Decaf", isIngredient: true },
+              { id: "8", label: "Decaf", is_ingredient: true },
             ],
           },
           {
@@ -189,12 +197,12 @@ export const menu: MenuSection[] = [
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "9", label: "Full Cream", isIngredient: true },
-              { id: "10", label: "Skinny", isIngredient: true },
-              { id: "11", label: "Lactose Free", isIngredient: true },
-              { id: "12", label: "Soy", isIngredient: true },
-              { id: "13", label: "Oat", isIngredient: true },
-              { id: "14", label: "Almond", isIngredient: true },
+              { id: "9", label: "Full Cream", is_ingredient: true },
+              { id: "10", label: "Skinny", is_ingredient: true },
+              { id: "11", label: "Lactose Free", is_ingredient: true },
+              { id: "12", label: "Soy", is_ingredient: true },
+              { id: "13", label: "Oat", is_ingredient: true },
+              { id: "14", label: "Almond", is_ingredient: true },
             ],
           },
           {
@@ -241,7 +249,7 @@ export const menu: MenuSection[] = [
             modifiers: [
               { id: "5", label: "Weak" },
               { id: "6", label: "Strong", price: 1 },
-              { id: "8", label: "Decaf", isIngredient: true },
+              { id: "8", label: "Decaf", is_ingredient: true },
             ],
           },
           {
@@ -249,12 +257,12 @@ export const menu: MenuSection[] = [
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "9", label: "Full Cream", isIngredient: true },
-              { id: "10", label: "Skinny", isIngredient: true },
-              { id: "11", label: "Lactose Free", isIngredient: true },
-              { id: "12", label: "Soy", isIngredient: true },
-              { id: "13", label: "Oat", isIngredient: true },
-              { id: "14", label: "Almond", isIngredient: true },
+              { id: "9", label: "Full Cream", is_ingredient: true },
+              { id: "10", label: "Skinny", is_ingredient: true },
+              { id: "11", label: "Lactose Free", is_ingredient: true },
+              { id: "12", label: "Soy", is_ingredient: true },
+              { id: "13", label: "Oat", is_ingredient: true },
+              { id: "14", label: "Almond", is_ingredient: true },
             ],
           },
           {
@@ -282,7 +290,7 @@ export const menu: MenuSection[] = [
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
-          { id: "8", label: "Decaf", isIngredient: true },
+          { id: "8", label: "Decaf", is_ingredient: true },
         ],
         modifierCategories: [
           {
@@ -314,7 +322,7 @@ export const menu: MenuSection[] = [
           { id: "5", label: "Weak" },
           { id: "6", label: "Strong", price: 1 },
           { id: "7", label: "3/4 Full" },
-          { id: "8", label: "Decaf", isIngredient: true },
+          { id: "8", label: "Decaf", is_ingredient: true },
         ],
         modifierCategories: [
           {
@@ -350,12 +358,12 @@ export const menu: MenuSection[] = [
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "9", label: "Full Cream", isIngredient: true },
-              { id: "10", label: "Skinny", isIngredient: true },
-              { id: "11", label: "Lactose Free", isIngredient: true },
-              { id: "12", label: "Soy", isIngredient: true },
-              { id: "13", label: "Oat", isIngredient: true },
-              { id: "14", label: "Almond", isIngredient: true },
+              { id: "9", label: "Full Cream", is_ingredient: true },
+              { id: "10", label: "Skinny", is_ingredient: true },
+              { id: "11", label: "Lactose Free", is_ingredient: true },
+              { id: "12", label: "Soy", is_ingredient: true },
+              { id: "13", label: "Oat", is_ingredient: true },
+              { id: "14", label: "Almond", is_ingredient: true },
             ],
           },
           {
@@ -392,12 +400,12 @@ export const menu: MenuSection[] = [
             label: "Milk",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "9", label: "Full Cream", isIngredient: true },
-              { id: "10", label: "Skinny", isIngredient: true },
-              { id: "11", label: "Lactose Free", isIngredient: true },
-              { id: "12", label: "Soy", isIngredient: true },
-              { id: "13", label: "Oat", isIngredient: true },
-              { id: "14", label: "Almond", isIngredient: true },
+              { id: "9", label: "Full Cream", is_ingredient: true },
+              { id: "10", label: "Skinny", is_ingredient: true },
+              { id: "11", label: "Lactose Free", is_ingredient: true },
+              { id: "12", label: "Soy", is_ingredient: true },
+              { id: "13", label: "Oat", is_ingredient: true },
+              { id: "14", label: "Almond", is_ingredient: true },
             ],
           },
           {
@@ -405,13 +413,13 @@ export const menu: MenuSection[] = [
             label: "Flavours",
             allowMultipleSelections: true,
             modifiers: [
-              { id: "27", label: "Strawberry", isIngredient: true },
-              { id: "28", label: "Banana", isIngredient: true },
-              { id: "29", label: "Chocolate", isIngredient: true },
-              { id: "30", label: "Cookies", isIngredient: true },
-              { id: "31", label: "Vanilla", isIngredient: true },
-              { id: "32", label: "Caramel", isIngredient: true },
-              { id: "33", label: "Mocha", isIngredient: true, price: 2.5 },
+              { id: "27", label: "Strawberry", is_ingredient: true },
+              { id: "28", label: "Banana", is_ingredient: true },
+              { id: "29", label: "Chocolate", is_ingredient: true },
+              { id: "30", label: "Cookies", is_ingredient: true },
+              { id: "31", label: "Vanilla", is_ingredient: true },
+              { id: "32", label: "Caramel", is_ingredient: true },
+              { id: "33", label: "Mocha", is_ingredient: true, price: 2.5 },
             ],
           },
         ],
@@ -421,10 +429,10 @@ export const menu: MenuSection[] = [
         label: "Jewel Smoothie",
         price: 5,
         ingredients: [
-          { id: "34", label: "Almond Milk", isIngredient: true },
-          { id: "35", label: "Banana", isIngredient: true },
-          { id: "36", label: "Berries", isIngredient: true },
-          { id: "37", label: "Agave", isIngredient: true },
+          { id: "34", label: "Almond Milk", is_ingredient: true },
+          { id: "35", label: "Banana", is_ingredient: true },
+          { id: "36", label: "Berries", is_ingredient: true },
+          { id: "37", label: "Agave", is_ingredient: true },
         ],
       },
       {
@@ -432,13 +440,13 @@ export const menu: MenuSection[] = [
         label: "Daisy Smoothie",
         price: 5,
         ingredients: [
-          { id: "38", label: "Coconut Water", isIngredient: true },
-          { id: "39", label: "Cucumber", isIngredient: true },
-          { id: "40", label: "Kiwi", isIngredient: true },
-          { id: "41", label: "Spinach", isIngredient: true },
-          { id: "42", label: "Mango", isIngredient: true },
-          { id: "43", label: "Parsley", isIngredient: true },
-          { id: "44", label: "Lemon", isIngredient: true },
+          { id: "38", label: "Coconut Water", is_ingredient: true },
+          { id: "39", label: "Cucumber", is_ingredient: true },
+          { id: "40", label: "Kiwi", is_ingredient: true },
+          { id: "41", label: "Spinach", is_ingredient: true },
+          { id: "42", label: "Mango", is_ingredient: true },
+          { id: "43", label: "Parsley", is_ingredient: true },
+          { id: "44", label: "Lemon", is_ingredient: true },
         ],
       },
     ],
@@ -451,21 +459,21 @@ export const menu: MenuSection[] = [
         id: "10",
         label: "Croissant",
         price: 5,
-        isInStock: true,
+        is_in_stock: true,
         modifiers: [{ id: "45", label: "Warmed up" }],
       },
       {
         id: "11",
         label: "Almond Croissant",
         price: 5,
-        isInStock: true,
+        is_in_stock: true,
         modifiers: [{ id: "45", label: "Warmed up" }],
       },
       {
         id: "12",
         label: "Hazelnut Cruffin",
         price: 5,
-        isInStock: true,
+        is_in_stock: true,
         modifiers: [{ id: "45", label: "Warmed up" }],
       },
     ],
@@ -482,10 +490,10 @@ export const menu: MenuSection[] = [
         image:
           "https://lh3.googleusercontent.com/gps-cs-s/AHVAwepCZ8V_FAiAumjIZC805KGY74ETVdk1E4UlVkASH86p-Ob3TakPO-yHTctdwoRDJvC6QoaAItNlxC57fk3cSTnA6TfasIfsn_7wezM7Otg8bdY9D_QkhZeiAmIMiDkwp5Vwttg=s1360-w1360-h1020-rw",
         ingredients: [
-          { id: "46", label: "Bacon", isIngredient: true },
-          { id: "47", label: "Egg", isIngredient: true },
-          { id: "48", label: "Cheese", isIngredient: true },
-          { id: "49", label: "Spinach", isIngredient: true },
+          { id: "46", label: "Bacon", is_ingredient: true },
+          { id: "47", label: "Egg", is_ingredient: true },
+          { id: "48", label: "Cheese", is_ingredient: true },
+          { id: "49", label: "Spinach", is_ingredient: true },
         ],
         modifierCategories: [
           {
@@ -493,8 +501,8 @@ export const menu: MenuSection[] = [
             label: "Add Ons",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "48", label: "Cheese", isIngredient: true },
-              { id: "49", label: "Sourdough", isIngredient: true },
+              { id: "48", label: "Cheese", is_ingredient: true },
+              { id: "49", label: "Sourdough", is_ingredient: true },
             ],
           },
           {
@@ -502,10 +510,10 @@ export const menu: MenuSection[] = [
             label: "Remove",
             allowMultipleSelections: false,
             modifiers: [
-              { id: "46", label: "Bacon", isIngredient: true },
-              { id: "47", label: "Egg", isIngredient: true },
-              { id: "48", label: "Cheese", isIngredient: true },
-              { id: "49", label: "Spinach", isIngredient: true },
+              { id: "46", label: "Bacon", is_ingredient: true },
+              { id: "47", label: "Egg", is_ingredient: true },
+              { id: "48", label: "Cheese", is_ingredient: true },
+              { id: "49", label: "Spinach", is_ingredient: true },
             ],
           },
         ],
@@ -515,34 +523,34 @@ export const menu: MenuSection[] = [
 ];
 
 export const ingredients: Modifier[] = [
-  { id: "9", label: "Full Cream", isIngredient: true },
-  { id: "10", label: "Skinny", isIngredient: true },
-  { id: "11", label: "Lactose Free", isIngredient: true },
-  { id: "12", label: "Soy", isIngredient: true },
-  { id: "13", label: "Oat", isIngredient: true },
-  { id: "14", label: "Almond", isIngredient: true },
-  { id: "27", label: "Strawberry", isIngredient: true },
-  { id: "28", label: "Banana", isIngredient: true },
-  { id: "29", label: "Chocolate", isIngredient: true },
-  { id: "30", label: "Cookies", isIngredient: true },
-  { id: "31", label: "Vanilla", isIngredient: true },
-  { id: "32", label: "Caramel", isIngredient: true },
-  { id: "33", label: "Mocha", isIngredient: true, price: 2.5 },
-  { id: "34", label: "Almond Milk", isIngredient: true },
-  { id: "35", label: "Banana", isIngredient: true },
-  { id: "36", label: "Berries", isIngredient: true },
-  { id: "37", label: "Agave", isIngredient: true },
-  { id: "38", label: "Coconut Water", isIngredient: true },
-  { id: "39", label: "Cucumber", isIngredient: true },
-  { id: "40", label: "Kiwi", isIngredient: true },
-  { id: "41", label: "Spinach", isIngredient: true },
-  { id: "42", label: "Mango", isIngredient: true },
-  { id: "43", label: "Parsley", isIngredient: true },
-  { id: "44", label: "Lemon", isIngredient: true },
-  { id: "46", label: "Bacon", isIngredient: true },
-  { id: "47", label: "Egg", isIngredient: true },
-  { id: "48", label: "Cheese", isIngredient: true },
-  { id: "49", label: "Spinach", isIngredient: true },
+  { id: "9", label: "Full Cream", is_ingredient: true },
+  { id: "10", label: "Skinny", is_ingredient: true },
+  { id: "11", label: "Lactose Free", is_ingredient: true },
+  { id: "12", label: "Soy", is_ingredient: true },
+  { id: "13", label: "Oat", is_ingredient: true },
+  { id: "14", label: "Almond", is_ingredient: true },
+  { id: "27", label: "Strawberry", is_ingredient: true },
+  { id: "28", label: "Banana", is_ingredient: true },
+  { id: "29", label: "Chocolate", is_ingredient: true },
+  { id: "30", label: "Cookies", is_ingredient: true },
+  { id: "31", label: "Vanilla", is_ingredient: true },
+  { id: "32", label: "Caramel", is_ingredient: true },
+  { id: "33", label: "Mocha", is_ingredient: true, price: 2.5 },
+  { id: "34", label: "Almond Milk", is_ingredient: true },
+  { id: "35", label: "Banana", is_ingredient: true },
+  { id: "36", label: "Berries", is_ingredient: true },
+  { id: "37", label: "Agave", is_ingredient: true },
+  { id: "38", label: "Coconut Water", is_ingredient: true },
+  { id: "39", label: "Cucumber", is_ingredient: true },
+  { id: "40", label: "Kiwi", is_ingredient: true },
+  { id: "41", label: "Spinach", is_ingredient: true },
+  { id: "42", label: "Mango", is_ingredient: true },
+  { id: "43", label: "Parsley", is_ingredient: true },
+  { id: "44", label: "Lemon", is_ingredient: true },
+  { id: "46", label: "Bacon", is_ingredient: true },
+  { id: "47", label: "Egg", is_ingredient: true },
+  { id: "48", label: "Cheese", is_ingredient: true },
+  { id: "49", label: "Spinach", is_ingredient: true },
 ];
 
 export const modifierCategories: ItemOptions[] = [
@@ -562,7 +570,7 @@ export const modifierCategories: ItemOptions[] = [
     modifiers: [
       { id: "5", label: "Weak" },
       { id: "6", label: "Strong", price: 1 },
-      { id: "8", label: "Decaf", isIngredient: true },
+      { id: "8", label: "Decaf", is_ingredient: true },
     ],
   },
   {
@@ -570,12 +578,12 @@ export const modifierCategories: ItemOptions[] = [
     label: "Milk",
     allowMultipleSelections: false,
     modifiers: [
-      { id: "9", label: "Full Cream", isIngredient: true },
-      { id: "10", label: "Skinny", isIngredient: true },
-      { id: "11", label: "Lactose Free", isIngredient: true },
-      { id: "12", label: "Soy", isIngredient: true },
-      { id: "13", label: "Oat", isIngredient: true },
-      { id: "14", label: "Almond", isIngredient: true },
+      { id: "9", label: "Full Cream", is_ingredient: true },
+      { id: "10", label: "Skinny", is_ingredient: true },
+      { id: "11", label: "Lactose Free", is_ingredient: true },
+      { id: "12", label: "Soy", is_ingredient: true },
+      { id: "13", label: "Oat", is_ingredient: true },
+      { id: "14", label: "Almond", is_ingredient: true },
     ],
   },
   {
@@ -596,17 +604,20 @@ export const modifierCategories: ItemOptions[] = [
 ];
 
 export const modifiers: Modifier[] = [
+  { id: "1", label: "Make it a large", price: 1.5 },
+  { id: "2", label: "BYO Keep Cup" },
   { id: "3", label: "With Ice" },
   { id: "4", label: "Extra Hot" },
   { id: "5", label: "Weak" },
   { id: "6", label: "Strong", price: 1 },
-  { id: "8", label: "Decaf", isIngredient: true },
-  { id: "9", label: "Full Cream", isIngredient: true },
-  { id: "10", label: "Skinny", isIngredient: true },
-  { id: "11", label: "Lactose Free", isIngredient: true },
-  { id: "12", label: "Soy", isIngredient: true },
-  { id: "13", label: "Oat", isIngredient: true },
-  { id: "14", label: "Almond", isIngredient: true },
+  { id: "7", label: "3/4 Full" },
+  { id: "8", label: "Decaf", is_ingredient: true },
+  { id: "9", label: "Full Cream", is_ingredient: true },
+  { id: "10", label: "Skinny", is_ingredient: true },
+  { id: "11", label: "Lactose Free", is_ingredient: true },
+  { id: "12", label: "Soy", is_ingredient: true },
+  { id: "13", label: "Oat", is_ingredient: true },
+  { id: "14", label: "Almond", is_ingredient: true },
   { id: "16", label: "1/2 Sugar" },
   { id: "17", label: "1 Sugar" },
   { id: "18", label: "2 Sugars" },
@@ -616,3 +627,41 @@ export const modifiers: Modifier[] = [
   { id: "23", label: "2 Equals" },
   { id: "26", label: "Honey" },
 ];
+
+export const fetchModifiers = async () => {
+  const { data, error } = await supabase
+    .from("modifiers")
+    .select()
+    .overrideTypes<Array<Modifier>, { merge: false }>();
+
+  if (data) return data;
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+  }
+};
+
+export const upsertModifier = async (params: Partial<Modifier>) => {
+  const { error } = await supabase.from("modifiers").upsert({
+    ...params,
+    is_in_stock: params.is_ingredient ? params.is_in_stock : null,
+  });
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+  }
+};

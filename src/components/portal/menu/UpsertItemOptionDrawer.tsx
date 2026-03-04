@@ -18,14 +18,14 @@ import { modifierCategories } from "../../../helpers/menu";
 
 import type { ItemOptions } from "../../../helpers/menu";
 
-interface AddEditItemOptionDrawerProps {
+interface UpsertItemOptionDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddEditItemOptions: (modifier: ItemOptions) => void;
+  onUpsertItemOptions: (modifier: ItemOptions) => void;
 }
 
-function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
-  const { isOpen, onClose, onAddEditItemOptions } = props;
+function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
+  const { isOpen, onClose, onUpsertItemOptions } = props;
 
   const [itemOptionsToEdit, setItemOptionsToEdit] = useState<
     ItemOptions | undefined
@@ -178,7 +178,7 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
                 label="Save"
                 onClick={() => {
                   clearDrawer();
-                  onAddEditItemOptions(itemOption);
+                  onUpsertItemOptions(itemOption);
                 }}
               />
             </Group>
@@ -189,4 +189,4 @@ function AddEditItemOptionDrawer(props: AddEditItemOptionDrawerProps) {
   );
 }
 
-export default AddEditItemOptionDrawer;
+export default UpsertItemOptionDrawer;

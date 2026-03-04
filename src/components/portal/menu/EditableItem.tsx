@@ -163,11 +163,11 @@ function EditableItem(props: EditableItemProps) {
             <Switch
               label="In Stock"
               withThumbIndicator={false}
-              checked={menuItem.isInStock}
+              checked={menuItem.is_in_stock}
               onChange={(event) =>
                 setEditedMenuItem((prevItem) => ({
                   ...prevItem,
-                  isInStock: event.target.checked,
+                  is_in_stock: event.target.checked,
                 }))
               }
             />

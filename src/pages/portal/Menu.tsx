@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageLayout from "./PageLayout";
 import { useDisclosure } from "@mantine/hooks";
+import { Group, Accordion } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
-import { Group, Accordion } from "@mantine/core";
 
+import Loading from "../../components/Loading";
 import StyledButton from "../../components/StyledButton";
 import Section from "../../components/portal/menu/Section"; //
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 import CreateSectionDrawer from "../../components/portal/menu/CreateSectionDrawer"; //
-import AddEditModifierDrawer from "../../components/portal/menu/AddEditModifierDrawer"; //
-import AddEditItemOptionDrawer from "../../components/portal/menu/AddEditItemOptionDrawer"; //
+import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer"; //
+import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer"; //
 
-import { menu as hardcodedMenu } from "../../helpers/menu";
+import { fetchModifiers, menu as hardcodedMenu } from "../../helpers/menu";
 
 import type { ItemOptions, MenuSection, Modifier } from "../../helpers/menu";
 
 function Menu() {
-  const [menu, setMenu] = useState<MenuSection[]>(hardcodedMenu);
-
   const [
     showUpdateStockDrawer,
     { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
@@ -28,13 +27,31 @@ function Menu() {
     { open: openAddSectionDrawer, close: closeAddSectionDrawer },
   ] = useDisclosure(false);
   const [
-    showAddEditModifierDrawer,
-    { open: openAddEditModifierDrawer, close: closeAddEditModifierDrawer },
+    showUpsertModifierDrawer,
+    { open: openUpsertModifierDrawer, close: closeUpsertModifierDrawer },
   ] = useDisclosure(false);
   const [
-    showAddEditItemOptionDrawer,
-    { open: openAddEditItemOptionDrawer, close: closeAddEditItemOptionDrawer },
+    showUpsertItemOptionDrawer,
+    { open: openUpsertItemOptionDrawer, close: closeUpsertItemOptionDrawer },
   ] = useDisclosure(false);
+
+  const [menu, setMenu] = useState<MenuSection[]>(hardcodedMenu);
+  const [modifiers, setModifiers] = useState<Modifier[]>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchModifiers()
+      .then((data) => setModifiers(data))
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const onUpdateStock = () => {
     closeUpdateStockDrawer();
@@ -51,14 +68,18 @@ function Menu() {
     closeAddSectionDrawer();
   };
 
-  const onAddEditModifier = (modifier: Modifier) => {
-    console.log(modifier);
-    closeAddEditModifierDrawer();
+  const onModifierUpsert = (modifier: Modifier) => {
+    setModifiers((prevModifiers) =>
+      prevModifiers?.map((prevModifier) =>
+        prevModifier.id === modifier.id ? modifier : prevModifier,
+      ),
+    );
+    closeUpsertModifierDrawer();
   };
 
-  const onAddEditItemOption = (itemOption: ItemOptions) => {
+  const onUpsertItemOption = (itemOption: ItemOptions) => {
     console.log(itemOption);
-    closeAddEditItemOptionDrawer();
+    closeUpsertItemOptionDrawer();
   };
 
   const onDeleteSection = (sectionToDelete: MenuSection) => {
@@ -66,6 +87,8 @@ function Menu() {
       prevMenu.filter((section) => section !== sectionToDelete),
     );
   };
+
+  if (isLoading) return <Loading message="Loading store data" />;
 
   return (
     <PageLayout
@@ -87,15 +110,18 @@ function Menu() {
         onClose={closeAddSectionDrawer}
         onCreateSection={onCreateSection}
       />
-      <AddEditModifierDrawer
-        isOpen={showAddEditModifierDrawer}
-        onClose={closeAddEditModifierDrawer}
-        onAddEditModifier={onAddEditModifier}
-      />
-      <AddEditItemOptionDrawer
-        isOpen={showAddEditItemOptionDrawer}
-        onClose={closeAddEditItemOptionDrawer}
-        onAddEditItemOptions={onAddEditItemOption}
+      {modifiers && (
+        <UpsertModifierDrawer
+          modifiers={modifiers}
+          isOpen={showUpsertModifierDrawer}
+          onClose={closeUpsertModifierDrawer}
+          onModifierUpsert={onModifierUpsert}
+        />
+      )}
+      <UpsertItemOptionDrawer
+        isOpen={showUpsertItemOptionDrawer}
+        onClose={closeUpsertItemOptionDrawer}
+        onUpsertItemOptions={onUpsertItemOption}
       />
 
       <Accordion
@@ -115,11 +141,11 @@ function Menu() {
           <StyledButton label="Add Section" onClick={openAddSectionDrawer} />
           <StyledButton
             label="Add/Edit Modifier"
-            onClick={openAddEditModifierDrawer}
+            onClick={openUpsertModifierDrawer}
           />
           <StyledButton
             label="Add/Edit Modifier Category"
-            onClick={openAddEditItemOptionDrawer}
+            onClick={openUpsertItemOptionDrawer}
           />
         </Group>
 
