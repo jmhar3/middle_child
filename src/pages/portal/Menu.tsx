@@ -69,11 +69,14 @@ function Menu() {
   };
 
   const onModifierUpsert = (modifier: Modifier) => {
-    setModifiers((prevModifiers) =>
-      prevModifiers?.map((prevModifier) =>
-        prevModifier.id === modifier.id ? modifier : prevModifier,
-      ),
-    );
+    setModifiers((prevModifiers) => {
+      if (prevModifiers) {
+        const modifiersWithoutUpsertModifier = prevModifiers.filter(
+          (prevModifier) => prevModifier.id !== modifier.id,
+        );
+        return [...modifiersWithoutUpsertModifier, modifier];
+      }
+    });
     closeUpsertModifierDrawer();
   };
 
