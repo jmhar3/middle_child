@@ -93,7 +93,7 @@ function EditableItem(props: EditableItemProps) {
           </FileButton>
         </Group>
 
-        <Group gap="sm" grow align="flex-start">
+        <Group gap="sm" grow align="flex-end">
           <MultiSelect
             size="md"
             searchable
