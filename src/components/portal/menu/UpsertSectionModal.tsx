@@ -1,4 +1,4 @@
-import { Group, Modal, Stack, TextInput } from "@mantine/core";
+import { Group, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 
@@ -26,13 +26,17 @@ function UpsertSectionModal(props: UpsertSectionModalProps) {
       radius="sm"
       opened={isOpen}
       onClose={onClose}
-      title={section?.label ? "Rename Section" : "Create Section"}
+      withCloseButton={false}
       transitionProps={{ transition: "fade", duration: 200 }}
       styles={{
         content: { background: "whitesmoke" },
       }}
     >
-      <Stack gap="md" align="center" pt="sm">
+      <Stack gap="md" align="flex-start">
+        <Text fw="600" size="1.4em">
+          {section?.label ? "RENAME SECTION" : "CREATE SECTION"}
+        </Text>
+
         <TextInput
           w="100%"
           size="md"
