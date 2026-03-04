@@ -34,68 +34,12 @@ export interface MenuSection {
   id: string;
   label: string;
   items: MenuItemType[];
-  defaultModifiers?: Modifier[];
-  defaultModifierCategories?: ItemOptions[];
 }
 
 export const menu: MenuSection[] = [
   {
     id: "1",
     label: "Coffee / Drinks",
-    defaultModifiers: [
-      { id: "1", label: "Make it a large", price: 1.5 },
-      { id: "2", label: "BYO Keep Cup" },
-      { id: "7", label: "3/4 Full" },
-    ],
-    defaultModifierCategories: [
-      {
-        id: "1",
-        label: "Temperature",
-        allowMultipleSelections: false,
-        modifiers: [
-          { id: "3", label: "With Ice" },
-          { id: "4", label: "Extra Hot" },
-        ],
-      },
-      {
-        id: "2",
-        label: "Strength",
-        allowMultipleSelections: false,
-        modifiers: [
-          { id: "5", label: "Weak" },
-          { id: "6", label: "Strong", price: 1 },
-          { id: "8", label: "Decaf", is_ingredient: true },
-        ],
-      },
-      {
-        id: "3",
-        label: "Milk",
-        allowMultipleSelections: false,
-        modifiers: [
-          { id: "9", label: "Full Cream", is_ingredient: true },
-          { id: "10", label: "Skinny", is_ingredient: true },
-          { id: "11", label: "Lactose Free", is_ingredient: true },
-          { id: "12", label: "Soy", is_ingredient: true, color: "red" },
-          { id: "13", label: "Oat", is_ingredient: true },
-          { id: "14", label: "Almond", is_ingredient: true, color: "green" },
-        ],
-      },
-      {
-        id: "4",
-        label: "Sugar / Sweetener",
-        allowMultipleSelections: false,
-        modifiers: [
-          { id: "16", label: "1/2 Sugar" },
-          { id: "17", label: "1 Sugar" },
-          { id: "18", label: "2 Sugars" },
-          { id: "19", label: "3 Sugars" },
-          { id: "21", label: "1/2 Equal" },
-          { id: "22", label: "1 Equal" },
-          { id: "23", label: "2 Equals" },
-          { id: "26", label: "Honey" },
-        ],
-      },
-    ],
     items: [
       {
         id: "1",

@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { Box, Flex, Text, Stack, Divider, Accordion } from "@mantine/core";
+import { Box, Text, Stack, Divider, Accordion, Group } from "@mantine/core";
 
 import EditableItem from "./EditableItem";
 import StyledButton from "../../StyledButton";
 import EditableMenuItem from "./ItemEditPreview";
 import ConfirmationModal from "../../ConfirmationModal";
-import EditableMenuSectionModifier from "./EditableSectionModifier";
-
-import { modifierCategories, modifiers } from "../../../helpers/menu";
 
 import type { MenuItemType, MenuSection } from "../../../helpers/menu";
+import UpsertSectionModal from "./UpsertSectionModal";
 
 interface SectionProps {
   section: MenuSection;
@@ -19,7 +17,7 @@ interface SectionProps {
 
 function Section(props: SectionProps) {
   const {
-    section: { label, items, defaultModifiers, defaultModifierCategories },
+    section: { label, items },
     onDeleteSection,
   } = props;
 
@@ -27,14 +25,17 @@ function Section(props: SectionProps) {
     id: "",
     label: "",
     price: 0,
-    modifiers: defaultModifiers,
-    modifierCategories: defaultModifierCategories,
   };
 
   const [menuItems, setMenuItems] = useState<MenuItemType[]>(items);
   const [newMenuItem, setNewMenuItem] = useState<MenuItemType | null>(
     menuItems.length === 0 ? blankMenuItem : null,
   );
+
+  const [
+    showUpsertSectionModal,
+    { open: openUpsertSectionModal, close: closeUpsertSectionModal },
+  ] = useDisclosure(menuItems.length === 0);
 
   const [
     showEditableMenuItem,
@@ -76,68 +77,45 @@ function Section(props: SectionProps) {
       </Accordion.Control>
 
       <Accordion.Panel>
+        <ConfirmationModal
+          label={label}
+          isOpen={showConfirmDelete}
+          onClose={closeConfirmDelete}
+          onConfirmDelete={() => {
+            closeConfirmDelete();
+            onDeleteSection();
+          }}
+        />
+        <UpsertSectionModal
+          section={props.section}
+          isOpen={showUpsertSectionModal}
+          onClose={openUpsertSectionModal}
+          onUpsertSection={() => {
+            closeUpsertSectionModal();
+          }}
+        />
+
         <Stack gap="0">
-          <Box p="sm" pb="0">
-            <Flex
-              p="sm"
-              gap="sm"
-              w="100%"
-              align="flex-end"
-              justify="space-between"
-              bd="darkslategray 1px solid"
-              bdrs="sm"
-            >
-              <Stack w="100%">
-                <EditableMenuSectionModifier
-                  label="DEFAULT MODIFIERS"
-                  defaultValue={["3", "4"]}
-                  data={modifiers.map((category) => ({
-                    value: category.id,
-                    label: category.label,
-                  }))}
-                />
+          <Box p="sm">
+            <Group grow p="sm" gap="sm" w="100%" bdrs="sm" bg="whitesmoke">
+              <StyledButton
+                label="Edit Section"
+                onClick={openUpsertSectionModal}
+              />
 
-                <Divider />
+              <StyledButton
+                label="Delete Section"
+                onClick={openConfirmDelete}
+              />
 
-                <EditableMenuSectionModifier
-                  label="DEFAULT MODIFIER CATEGORIES"
-                  defaultValue={["3", "4"]}
-                  data={modifierCategories.map((category) => ({
-                    value: category.id,
-                    label: category.label,
-                  }))}
-                />
-              </Stack>
-
-              <Flex gap="sm" justify="flex-end" h="100%">
-                <Divider orientation="vertical" />
-
-                <Stack>
-                  <StyledButton
-                    label="Delete Section"
-                    onClick={openConfirmDelete}
-                  />
-
-                  <ConfirmationModal
-                    label={label}
-                    isOpen={showConfirmDelete}
-                    onClose={closeConfirmDelete}
-                    onConfirmDelete={() => {
-                      closeConfirmDelete();
-                      onDeleteSection();
-                    }}
-                  />
-
-                  <StyledButton
-                    label="Add Menu Item"
-                    onClick={() => {
-                      openEditableMenuItem();
-                      setNewMenuItem(blankMenuItem);
-                    }}
-                  />
-                </Stack>
-              </Flex>
-            </Flex>
+              <StyledButton
+                label="Add Menu Item"
+                onClick={() => {
+                  openEditableMenuItem();
+                  setNewMenuItem(blankMenuItem);
+                }}
+              />
+            </Group>
           </Box>
 
           <Stack gap="0">

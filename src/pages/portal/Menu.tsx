@@ -7,11 +7,11 @@ import { notifications } from "@mantine/notifications";
 
 import Loading from "../../components/Loading";
 import StyledButton from "../../components/StyledButton";
-import Section from "../../components/portal/menu/Section"; //
+import Section from "../../components/portal/menu/Section";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
-import CreateSectionDrawer from "../../components/portal/menu/CreateSectionDrawer"; //
-import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer"; //
-import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer"; //
+import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal";
+import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
+import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
 
 import { fetchModifiers, menu as hardcodedMenu } from "../../helpers/menu";
 
@@ -23,8 +23,8 @@ function Menu() {
     { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
   ] = useDisclosure(false);
   const [
-    showAddSectionDrawer,
-    { open: openAddSectionDrawer, close: closeAddSectionDrawer },
+    showUpsertSectionModal,
+    { open: openUpsertSectionModal, close: closeUpsertSectionModal },
   ] = useDisclosure(false);
   const [
     showUpsertModifierDrawer,
@@ -65,7 +65,7 @@ function Menu() {
 
   const onCreateSection = (section: MenuSection) => {
     setMenu((prevMenu) => [...prevMenu, section]);
-    closeAddSectionDrawer();
+    closeUpsertSectionModal();
   };
 
   const onModifierUpsert = (modifier: Modifier) => {
@@ -108,10 +108,10 @@ function Menu() {
         onClose={closeUpdateStockDrawer}
         onUpdateStock={onUpdateStock}
       />
-      <CreateSectionDrawer
-        isOpen={showAddSectionDrawer}
-        onClose={closeAddSectionDrawer}
-        onCreateSection={onCreateSection}
+      <UpsertSectionModal
+        isOpen={showUpsertSectionModal}
+        onClose={closeUpsertSectionModal}
+        onUpsertSection={onCreateSection}
       />
       {modifiers && (
         <UpsertModifierDrawer
@@ -141,7 +141,7 @@ function Menu() {
         }}
       >
         <Group w="100%" grow p="sm" bg="white" style={{ zIndex: -1 }}>
-          <StyledButton label="Add Section" onClick={openAddSectionDrawer} />
+          <StyledButton label="Add Section" onClick={openUpsertSectionModal} />
           <StyledButton
             label="Add/Edit Modifier"
             onClick={openUpsertModifierDrawer}
