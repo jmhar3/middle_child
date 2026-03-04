@@ -163,9 +163,9 @@ function MenuItemModal(props: MenuItemModalProps) {
           pb={isMobile ? "md" : "lg"}
         >
           <ButtonWithPrice
-            isDisabled={!menuItem.isInStock}
+            isDisabled={!menuItem.is_in_stock}
             price={menuItemPrice * quantity}
-            label={menuItem.isInStock ? "Add to order" : "Out of stock"}
+            label={menuItem.is_in_stock ? "Add to order" : "Out of stock"}
             onClick={() => {
               onAddToOrder({ ...selection, note: note, quantity: quantity });
               onModalClose();
