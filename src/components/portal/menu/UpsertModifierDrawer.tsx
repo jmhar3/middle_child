@@ -29,14 +29,16 @@ interface UpsertModifierDrawerProps {
 function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
   const { isOpen, onClose, modifiers, onModifierUpsert } = props;
 
-  const [modifier, setModifier] = useState<Modifier>({
+  const blankModifier = {
     id: uuid(),
     label: "",
-  });
+  };
+
+  const [modifier, setModifier] = useState<Modifier>(blankModifier);
   const [addOrEdit, setAddOrEdit] = useState<"add" | "edit" | undefined>();
 
   const clearDrawer = () => {
-    setModifier({ id: uuid(), label: "" });
+    setModifier(blankModifier);
     setAddOrEdit(undefined);
     onClose();
   };
@@ -71,10 +73,7 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
       radius="sm"
       position="right"
       opened={isOpen}
-      onClose={() => {
-        setAddOrEdit(undefined);
-        clearDrawer();
-      }}
+      onClose={clearDrawer}
       withCloseButton={false}
       trapFocus={false}
     >
@@ -116,7 +115,10 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
           <StyledButton
             variant="outline"
             label="Create New Modifier"
-            onClick={() => setAddOrEdit("add")}
+            onClick={() => {
+              setModifier(blankModifier);
+              setAddOrEdit("add");
+            }}
             isDisabled={!!addOrEdit}
           />
         </Stack>
