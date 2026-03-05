@@ -564,12 +564,21 @@ export const upsertModifier = async (params: Partial<Modifier>) => {
 };
 
 export const fetchItemOptions = async () => {
-  const { data, error } = await supabase
-    .from("menu_item_options")
-    .select()
-    .overrideTypes<Array<ItemOptions>, { merge: false }>();
+  const { data, error } = await supabase.from("menu_item_options").select(
+    `
+      *,
+      menu_item_options_modifiers (
+        modifiers (*)
+      )`,
+  );
 
-  if (data) return data;
+  if (data)
+    return data.map((itemOption) => ({
+      ...itemOption,
+      modifiers: itemOption.menu_item_options_modifiers.map(
+        ({ modifiers }: { modifiers: Modifier }) => modifiers,
+      ),
+    }));
 
   if (error) {
     notifications.show({
