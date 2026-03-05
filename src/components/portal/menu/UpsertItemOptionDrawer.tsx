@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { v4 as uuid } from "uuid";
 
 import {
   Text,
@@ -14,45 +15,54 @@ import {
 
 import StyledButton from "../../StyledButton";
 
-import { modifierCategories } from "../../../helpers/menu";
-
-import type { ItemOptions } from "../../../helpers/menu";
+import type { ItemOptions, Modifier } from "../../../helpers/menu";
 
 interface UpsertItemOptionDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onUpsertItemOptions: (modifier: ItemOptions) => void;
+  modifierCategories: ItemOptions[];
+  modifiers: Modifier[];
 }
 
 function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
-  const { isOpen, onClose, onUpsertItemOptions } = props;
+  const {
+    isOpen,
+    onClose,
+    onUpsertItemOptions,
+    modifierCategories,
+    modifiers,
+  } = props;
 
-  const [itemOptionsToEdit, setItemOptionsToEdit] = useState<
-    ItemOptions | undefined
-  >();
-  const [itemOption, setItemOption] = useState<ItemOptions | undefined>();
+  const blankItemOption = {
+    id: uuid(),
+    label: "",
+    modifiers: [],
+    allowMultipleSelections: false,
+  };
+
+  const [itemOption, setItemOption] = useState<ItemOptions>(blankItemOption);
+  const [addOrEdit, setAddOrEdit] = useState<"add" | "edit" | undefined>();
 
   const clearDrawer = () => {
-    setItemOptionsToEdit(undefined);
-    setItemOption(undefined);
+    setAddOrEdit(undefined);
+    setItemOption(blankItemOption);
     onClose();
   };
+  console.log(itemOption);
   return (
     <Drawer
       offset={12}
       radius="sm"
       position="right"
       opened={isOpen}
-      onClose={() => {
-        setItemOption(undefined);
-        clearDrawer();
-      }}
+      onClose={clearDrawer}
       withCloseButton={false}
       trapFocus={false}
     >
       <Stack align="flex-end">
         <Text size="1.4em" fw="600" ta="left" w="100%">
-          ADD / EDIT MODIFIER CATEGORY
+          {addOrEdit ? addOrEdit.toUpperCase() : "ADD / EDIT"} MODIFIER CATEGORY
         </Text>
 
         <Divider w="100%" />
@@ -63,22 +73,23 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
             size="md"
             label="Select modifier category to edit"
             nothingFoundMessage="No modifier category found matching your search"
-            onChange={(value) =>
-              setItemOptionsToEdit(
-                modifierCategories.find(({ id }) => id === value),
-              )
-            }
-            data={modifierCategories.map((modifier) => ({
-              value: modifier.id,
-              label: modifier.label,
+            onChange={(value) => {
+              const findItemOption = modifierCategories.find(
+                ({ id }) => id === value,
+              );
+              if (findItemOption) setItemOption(findItemOption);
+            }}
+            data={modifierCategories.map((itemOption) => ({
+              value: itemOption.id,
+              label: itemOption.label,
             }))}
-            disabled={!!itemOption}
+            disabled={!!addOrEdit}
             searchable
           />
           <StyledButton
             label="Edit Modifier Category"
-            onClick={() => setItemOption(itemOptionsToEdit)}
-            isDisabled={!!itemOption}
+            onClick={() => setAddOrEdit("edit")}
+            isDisabled={!!addOrEdit}
           />
 
           <Text w="100%" ta="center">
@@ -88,19 +99,15 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
           <StyledButton
             variant="outline"
             label="Create New Modifier Category"
-            onClick={() =>
-              setItemOption({
-                id: "99",
-                label: "",
-                modifiers: [],
-                allowMultipleSelections: false,
-              })
-            }
-            isDisabled={!!itemOption}
+            onClick={() => {
+              setItemOption(blankItemOption);
+              setAddOrEdit("add");
+            }}
+            isDisabled={!!addOrEdit}
           />
         </Stack>
 
-        {itemOption !== undefined && (
+        {addOrEdit !== undefined && (
           <>
             <Divider w="100%" />
 
@@ -110,19 +117,10 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
               label="Label"
               defaultValue={itemOption.label}
               onChange={(event) =>
-                setItemOption((itemOption) =>
-                  itemOption
-                    ? {
-                        ...itemOption,
-                        label: event.target.value,
-                      }
-                    : {
-                        id: "99",
-                        label: event.target.value,
-                        allowMultipleSelections: false,
-                        modifiers: [],
-                      },
-                )
+                setItemOption((itemOption) => ({
+                  ...itemOption,
+                  label: event.target.value,
+                }))
               }
             />
 
@@ -132,7 +130,8 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
               withAsterisk
               label="Select included modifiers"
               nothingFoundMessage="No modifiers found matching your search"
-              data={modifierCategories.map((modifier) => ({
+              defaultValue={itemOption.modifiers.map(({ id }) => id)}
+              data={modifiers.map((modifier) => ({
                 value: modifier.id,
                 label: modifier.label,
               }))}
@@ -146,19 +145,10 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
               withThumbIndicator={false}
               checked={itemOption.allowMultipleSelections}
               onChange={(event) =>
-                setItemOption((prevItemOption) =>
-                  prevItemOption
-                    ? {
-                        ...prevItemOption,
-                        allowMultipleSelections: event.target.checked,
-                      }
-                    : {
-                        id: "99",
-                        label: "",
-                        allowMultipleSelections: event.target.checked,
-                        modifiers: [],
-                      },
-                )
+                setItemOption((prevItemOption) => ({
+                  ...prevItemOption,
+                  allowMultipleSelections: event.target.checked,
+                }))
               }
             />
 
@@ -168,10 +158,7 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
               <StyledButton
                 variant="outline"
                 label="Cancel"
-                onClick={() => {
-                  setItemOption(undefined);
-                  clearDrawer();
-                }}
+                onClick={clearDrawer}
               />
 
               <StyledButton
