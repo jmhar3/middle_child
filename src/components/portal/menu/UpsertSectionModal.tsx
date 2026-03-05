@@ -1,21 +1,24 @@
 import { Group, Modal, Stack, Text, TextInput } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import StyledButton from "../../StyledButton";
 
-import { menu, upsertSection, type MenuSection } from "../../../helpers/menu";
-import { notifications } from "@mantine/notifications";
+import { upsertSection } from "../../../helpers/menu";
+
+import type { MenuSection } from "../../../helpers/menu";
 
 interface UpsertSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSectionUpsert: (section: MenuSection) => void;
   section?: MenuSection;
+  menuLength: number;
 }
 
 function UpsertSectionModal(props: UpsertSectionModalProps) {
-  const { section, isOpen, onClose, onSectionUpsert } = props;
+  const { section, isOpen, onClose, onSectionUpsert, menuLength } = props;
 
   const [isUpdatingSection, setIsUpdatingSection] = useState(false);
   const [sectionLabel, setSectionLabel] = useState(
@@ -32,7 +35,7 @@ function UpsertSectionModal(props: UpsertSectionModalProps) {
       ? { ...section, label: sectionLabel }
       : {
           id: uuid(),
-          order: menu.length + 1,
+          order: menuLength + 1,
           label: sectionLabel,
           items: [],
         };
