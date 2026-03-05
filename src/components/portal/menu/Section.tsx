@@ -7,15 +7,22 @@ import StyledButton from "../../StyledButton";
 import EditableMenuItem from "./ItemEditPreview";
 import ConfirmationModal from "../../ConfirmationModal";
 
-import type { MenuItemType, MenuSection } from "../../../helpers/menu";
+import type {
+  ItemOptions,
+  MenuItemType,
+  MenuSection,
+  Modifier,
+} from "../../../helpers/menu";
 import UpsertSectionModal from "./UpsertSectionModal";
 
 interface SectionProps {
   section: MenuSection;
   onDeleteSection: () => void;
+  modifierCategories: ItemOptions[];
+  modifiers: Modifier[];
 }
 
-function Section({ section, onDeleteSection }: SectionProps) {
+function Section({ section, onDeleteSection, ...itemProps }: SectionProps) {
   const blankMenuItem = {
     id: "",
     label: "",
@@ -125,6 +132,7 @@ function Section({ section, onDeleteSection }: SectionProps) {
                   onSaveMenuItem={onSaveMenuItem}
                   onCancelCreateItem={onCloseEditableItem}
                   showCancelButton={menuItems.length > 0}
+                  {...itemProps}
                 />
                 <Divider />
               </>
@@ -137,6 +145,7 @@ function Section({ section, onDeleteSection }: SectionProps) {
                   menuItem={menuItem}
                   onSaveMenuItem={onSaveMenuItem}
                   onDeleteItem={onDeleteItem}
+                  {...itemProps}
                 />
               </>
             ))}

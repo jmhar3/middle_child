@@ -2,29 +2,33 @@ import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 
 import {
-  FileButton,
   Flex,
   Group,
   Image,
-  MultiSelect,
-  NumberInput,
   Stack,
   Switch,
   TextInput,
+  FileButton,
+  MultiSelect,
+  NumberInput,
 } from "@mantine/core";
 
 import MenuItemModal from "../../MenuItemModal";
 import StyledButton from "../../StyledButton";
 
-import { modifierCategories, modifiers } from "../../../helpers/menu";
-
-import type { MenuItemType } from "../../../helpers/menu";
+import type {
+  ItemOptions,
+  MenuItemType,
+  Modifier,
+} from "../../../helpers/menu";
 
 interface EditableItemProps {
   menuItem: MenuItemType;
   showCancelButton?: boolean;
   onSaveMenuItem: (newMenuItem: MenuItemType) => void;
   onCancelCreateItem: () => void;
+  modifierCategories: ItemOptions[];
+  modifiers: Modifier[];
 }
 
 function EditableItem(props: EditableItemProps) {
@@ -33,6 +37,8 @@ function EditableItem(props: EditableItemProps) {
     onSaveMenuItem,
     onCancelCreateItem,
     showCancelButton = true,
+    modifierCategories,
+    modifiers,
   } = props;
 
   const [file, setFile] = useState<File | null>(null);
@@ -149,22 +155,22 @@ function EditableItem(props: EditableItemProps) {
             <Switch
               label="Loyalty Perk"
               withThumbIndicator={false}
-              checked={menuItem.isLoyaltyApplicable}
+              checked={menuItem.is_applicable_loyalty_item}
               onChange={(event) =>
                 setEditedMenuItem((prevItem) => ({
                   ...prevItem,
-                  isLoyaltyApplicable: event.target.checked,
+                  is_applicable_loyalty_item: event.target.checked,
                 }))
               }
             />
             <Switch
               label="Long Prep Time"
               withThumbIndicator={false}
-              checked={menuItem.hasLongPrepTime}
+              checked={menuItem.has_long_prep_time}
               onChange={(event) =>
                 setEditedMenuItem((prevItem) => ({
                   ...prevItem,
-                  hasLongPrepTime: event.target.checked,
+                  has_long_prep_time: event.target.checked,
                 }))
               }
             />

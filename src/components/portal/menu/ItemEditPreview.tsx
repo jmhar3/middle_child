@@ -3,12 +3,18 @@ import { useDisclosure } from "@mantine/hooks";
 import ListItem from "./ListItem";
 import EditableItem from "./EditableItem";
 
-import type { MenuItemType } from "../../../helpers/menu";
+import type {
+  ItemOptions,
+  MenuItemType,
+  Modifier,
+} from "../../../helpers/menu";
 
 interface EditItemPreviewProps {
   menuItem: MenuItemType;
   onDeleteItem: (id: string) => void;
   onSaveMenuItem: (newMenuItem: MenuItemType) => void;
+  modifierCategories: ItemOptions[];
+  modifiers: Modifier[];
 }
 
 function EditItemPreview(props: EditItemPreviewProps) {
@@ -21,7 +27,7 @@ function EditItemPreview(props: EditItemPreviewProps) {
 
   return showEditableMenuItem ? (
     <EditableItem
-      menuItem={menuItem}
+      {...props}
       onSaveMenuItem={(newMenuItem: MenuItemType) => {
         onSaveMenuItem(newMenuItem);
         closeEditableMenuItem();

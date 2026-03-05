@@ -13,7 +13,7 @@ import {
 
 import StyledButton from "../StyledButton";
 
-import { ingredients, menu } from "../../helpers/menu";
+import { menu, modifiers } from "../../helpers/menu";
 
 import type { Modifier } from "../../helpers/menu";
 
@@ -30,9 +30,10 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 
   const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
-  const [outOfStockIngredients, setOutOfStockIngredients] = useState<
-    Modifier[]
-  >(ingredients.slice(0, 2));
+  const ingredients = modifiers.filter((modifier) => modifier.is_ingredient);
+
+  const [outOfStockIngredients, setOutOfStockIngredients] =
+    useState<Modifier[]>();
   const [outOfStockMenuItems, setOutOfStockMenuItems] = useState<Modifier[]>(
     menuItems.slice(0, 3),
   );
@@ -40,7 +41,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const onSelectOutOfStockIngredients = (values: string[]) => {
     setOutOfStockIngredients(
       values
-        .map((value) => ingredients.find(({ id }) => id === value))
+        .map((value) => modifiers.find(({ id }) => id === value))
         .filter((ingredient) => ingredient !== undefined),
     );
   };
@@ -76,9 +77,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
           label="Ingredients"
           placeholder="Select out of stock ingredients"
           nothingFoundMessage="No ingredients found matching your search"
-          value={outOfStockIngredients.map(({ id }) => id)}
+          value={outOfStockIngredients?.map(({ id }) => id)}
           onChange={onSelectOutOfStockIngredients}
-          data={ingredients.map((ingredient) => ({
+          data={ingredients?.map((ingredient) => ({
             value: ingredient.id,
             label: ingredient.label,
           }))}

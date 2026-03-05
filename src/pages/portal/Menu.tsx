@@ -13,7 +13,11 @@ import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal"
 import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
 import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
 
-import { fetchModifiers, fetchSections } from "../../helpers/menu";
+import {
+  fetchItemOptions,
+  fetchModifiers,
+  fetchSections,
+} from "../../helpers/menu";
 
 import type { ItemOptions, MenuSection, Modifier } from "../../helpers/menu";
 
@@ -37,11 +41,23 @@ function Menu() {
 
   const [menu, setMenu] = useState<MenuSection[]>();
   const [modifiers, setModifiers] = useState<Modifier[]>();
+  const [modifierCategories, setModifierCategories] = useState<ItemOptions[]>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchModifiers()
       .then((data) => setModifiers(data))
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsLoading(false));
+    fetchItemOptions()
+      .then((data) => setModifierCategories(data))
       .catch((error) =>
         notifications.show({
           message: error,
@@ -163,13 +179,17 @@ function Menu() {
           />
         </Group>
 
-        {menu?.map((section) => (
-          <Section
-            key={section.id}
-            section={section}
-            onDeleteSection={() => onDeleteSection(section)}
-          />
-        ))}
+        {modifiers &&
+          modifierCategories &&
+          menu?.map((section) => (
+            <Section
+              key={section.id}
+              section={section}
+              onDeleteSection={() => onDeleteSection(section)}
+              modifierCategories={modifierCategories}
+              modifiers={modifiers}
+            />
+          ))}
       </Accordion>
     </PageLayout>
   );

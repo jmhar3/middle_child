@@ -23,8 +23,8 @@ export interface MenuItemType {
   price: number;
   image?: string;
   is_in_stock?: boolean;
-  hasLongPrepTime?: boolean;
-  isLoyaltyApplicable?: boolean;
+  has_long_prep_time?: boolean;
+  is_applicable_loyalty_item?: boolean;
   modifiers?: Modifier[];
   modifierCategories?: ItemOptions[];
 }
@@ -46,7 +46,7 @@ export const menu: MenuSection[] = [
         id: "1",
         label: "Latte",
         price: 5,
-        isLoyaltyApplicable: true,
+        is_applicable_loyalty_item: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -111,7 +111,7 @@ export const menu: MenuSection[] = [
         id: "2",
         label: "Flat White",
         price: 5,
-        isLoyaltyApplicable: true,
+        is_applicable_loyalty_item: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -171,7 +171,7 @@ export const menu: MenuSection[] = [
         id: "3",
         label: "Cappuccino",
         price: 5,
-        isLoyaltyApplicable: true,
+        is_applicable_loyalty_item: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -231,7 +231,7 @@ export const menu: MenuSection[] = [
         id: "4",
         label: "Espresso",
         price: 5,
-        isLoyaltyApplicable: true,
+        is_applicable_loyalty_item: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -259,7 +259,7 @@ export const menu: MenuSection[] = [
         id: "5",
         label: "Long Black",
         price: 5,
-        isLoyaltyApplicable: true,
+        is_applicable_loyalty_item: true,
         modifiers: [
           { id: "1", label: "Make it a large", price: 1.5 },
           { id: "2", label: "BYO Keep Cup" },
@@ -419,7 +419,7 @@ export const menu: MenuSection[] = [
         id: "13",
         price: 5,
         label: "Bacon & Egg Roll",
-        hasLongPrepTime: true,
+        has_long_prep_time: true,
         image:
           "https://lh3.googleusercontent.com/gps-cs-s/AHVAwepCZ8V_FAiAumjIZC805KGY74ETVdk1E4UlVkASH86p-Ob3TakPO-yHTctdwoRDJvC6QoaAItNlxC57fk3cSTnA6TfasIfsn_7wezM7Otg8bdY9D_QkhZeiAmIMiDkwp5Vwttg=s1360-w1360-h1020-rw",
         modifierCategories: [
@@ -563,12 +563,52 @@ export const upsertModifier = async (params: Partial<Modifier>) => {
   }
 };
 
+export const fetchItemOptions = async () => {
+  const { data, error } = await supabase
+    .from("menu_item_options")
+    .select()
+    .overrideTypes<Array<ItemOptions>, { merge: false }>();
+
+  if (data) return data;
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+  }
+};
+
+export const upsertItemOption = async (params: Partial<ItemOptions>) => {
+  const { error } = await supabase.from("menu_item_options").upsert(params);
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+  }
+};
+
 export const fetchSections = async () => {
   const { data, error } = await supabase.from("menu_sections").select(`
       *, menu_items (
         *,
-        menu_items_options (*,
-          menu_item_options (*)
+        menu_items_options (
+          menu_item_options (
+            *,
+            menu_item_options_modifiers (
+              modifiers (*)
+            )
+          )
         ),
         menu_items_modifiers (
           modifiers (*)
@@ -581,8 +621,15 @@ export const fetchSections = async () => {
       ...section,
       items: section.menu_items.map((item) => ({
         ...item,
-        modifiers: item.menu_items_modifiers,
-        modifierCategories: item.menu_items_options,
+        modifiers: item.menu_items_modifiers.map(({ modifiers }) => modifiers),
+        modifierCategories: item.menu_items_options.map(
+          ({ menu_item_options }) => ({
+            ...menu_item_options,
+            modifiers: menu_item_options.menu_item_options_modifiers.map(
+              ({ modifiers }: { modifiers: Modifier }) => modifiers,
+            ),
+          }),
+        ),
       })),
     }));
 
