@@ -95,9 +95,9 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
               const findModifier = modifiers.find(({ id }) => id === value);
               if (findModifier) setModifier(findModifier);
             }}
-            data={modifiers.map((modifier) => ({
-              value: modifier.id,
-              label: modifier.label,
+            data={modifiers.map(({ id, label, price }) => ({
+              value: id,
+              label: price ? `${label} +$${price.toFixed(2)}` : label,
             }))}
             disabled={!!addOrEdit}
             searchable
