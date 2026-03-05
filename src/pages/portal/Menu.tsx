@@ -135,11 +135,14 @@ function Menu() {
         onClose={closeUpdateStockDrawer}
         onUpdateStock={onUpdateStock}
       />
-      <UpsertSectionModal
-        isOpen={showUpsertSectionModal}
-        onClose={closeUpsertSectionModal}
-        onSectionUpsert={onCreateSection}
-      />
+      {menu && (
+        <UpsertSectionModal
+          menuLength={menu?.length}
+          isOpen={showUpsertSectionModal}
+          onClose={closeUpsertSectionModal}
+          onSectionUpsert={onCreateSection}
+        />
+      )}
       {modifiers && (
         <UpsertModifierDrawer
           modifiers={modifiers}
@@ -148,11 +151,15 @@ function Menu() {
           onModifierUpsert={onModifierUpsert}
         />
       )}
-      <UpsertItemOptionDrawer
-        isOpen={showUpsertItemOptionDrawer}
-        onClose={closeUpsertItemOptionDrawer}
-        onUpsertItemOptions={onUpsertItemOption}
-      />
+      {modifierCategories && modifiers && (
+        <UpsertItemOptionDrawer
+          modifiers={modifiers}
+          modifierCategories={modifierCategories}
+          isOpen={showUpsertItemOptionDrawer}
+          onClose={closeUpsertItemOptionDrawer}
+          onUpsertItemOptions={onUpsertItemOption}
+        />
+      )}
 
       <Accordion
         styles={{
@@ -185,9 +192,10 @@ function Menu() {
             <Section
               key={section.id}
               section={section}
-              onDeleteSection={() => onDeleteSection(section)}
-              modifierCategories={modifierCategories}
               modifiers={modifiers}
+              menuLength={menu.length}
+              modifierCategories={modifierCategories}
+              onDeleteSection={() => onDeleteSection(section)}
             />
           ))}
       </Accordion>
