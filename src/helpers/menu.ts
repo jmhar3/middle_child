@@ -23,7 +23,6 @@ export interface MenuItemType {
   price: number;
   image?: string;
   is_in_stock?: boolean;
-  ingredients?: Modifier[];
   hasLongPrepTime?: boolean;
   isLoyaltyApplicable?: boolean;
   modifiers?: Modifier[];
@@ -33,12 +32,14 @@ export interface MenuItemType {
 export interface MenuSection {
   id: string;
   label: string;
+  order: number;
   items: MenuItemType[];
 }
 
 export const menu: MenuSection[] = [
   {
     id: "1",
+    order: 1,
     label: "Coffee / Drinks",
     items: [
       {
@@ -331,6 +332,7 @@ export const menu: MenuSection[] = [
   },
   {
     id: "2",
+    order: 2,
     label: "Milkshakes / Smoothies",
     items: [
       {
@@ -372,31 +374,17 @@ export const menu: MenuSection[] = [
         id: "8",
         label: "Jewel Smoothie",
         price: 5,
-        ingredients: [
-          { id: "34", label: "Almond Milk", is_ingredient: true },
-          { id: "35", label: "Banana", is_ingredient: true },
-          { id: "36", label: "Berries", is_ingredient: true },
-          { id: "37", label: "Agave", is_ingredient: true },
-        ],
       },
       {
         id: "9",
         label: "Daisy Smoothie",
         price: 5,
-        ingredients: [
-          { id: "38", label: "Coconut Water", is_ingredient: true },
-          { id: "39", label: "Cucumber", is_ingredient: true },
-          { id: "40", label: "Kiwi", is_ingredient: true },
-          { id: "41", label: "Spinach", is_ingredient: true },
-          { id: "42", label: "Mango", is_ingredient: true },
-          { id: "43", label: "Parsley", is_ingredient: true },
-          { id: "44", label: "Lemon", is_ingredient: true },
-        ],
       },
     ],
   },
   {
     id: "3",
+    order: 3,
     label: "Pastries",
     items: [
       {
@@ -424,6 +412,7 @@ export const menu: MenuSection[] = [
   },
   {
     id: "4",
+    order: 4,
     label: "Brunch",
     items: [
       {
@@ -433,12 +422,6 @@ export const menu: MenuSection[] = [
         hasLongPrepTime: true,
         image:
           "https://lh3.googleusercontent.com/gps-cs-s/AHVAwepCZ8V_FAiAumjIZC805KGY74ETVdk1E4UlVkASH86p-Ob3TakPO-yHTctdwoRDJvC6QoaAItNlxC57fk3cSTnA6TfasIfsn_7wezM7Otg8bdY9D_QkhZeiAmIMiDkwp5Vwttg=s1360-w1360-h1020-rw",
-        ingredients: [
-          { id: "46", label: "Bacon", is_ingredient: true },
-          { id: "47", label: "Egg", is_ingredient: true },
-          { id: "48", label: "Cheese", is_ingredient: true },
-          { id: "49", label: "Spinach", is_ingredient: true },
-        ],
         modifierCategories: [
           {
             id: "6",
@@ -464,37 +447,6 @@ export const menu: MenuSection[] = [
       },
     ],
   },
-];
-
-export const ingredients: Modifier[] = [
-  { id: "9", label: "Full Cream", is_ingredient: true },
-  { id: "10", label: "Skinny", is_ingredient: true },
-  { id: "11", label: "Lactose Free", is_ingredient: true },
-  { id: "12", label: "Soy", is_ingredient: true },
-  { id: "13", label: "Oat", is_ingredient: true },
-  { id: "14", label: "Almond", is_ingredient: true },
-  { id: "27", label: "Strawberry", is_ingredient: true },
-  { id: "28", label: "Banana", is_ingredient: true },
-  { id: "29", label: "Chocolate", is_ingredient: true },
-  { id: "30", label: "Cookies", is_ingredient: true },
-  { id: "31", label: "Vanilla", is_ingredient: true },
-  { id: "32", label: "Caramel", is_ingredient: true },
-  { id: "33", label: "Mocha", is_ingredient: true, price: 2.5 },
-  { id: "34", label: "Almond Milk", is_ingredient: true },
-  { id: "35", label: "Banana", is_ingredient: true },
-  { id: "36", label: "Berries", is_ingredient: true },
-  { id: "37", label: "Agave", is_ingredient: true },
-  { id: "38", label: "Coconut Water", is_ingredient: true },
-  { id: "39", label: "Cucumber", is_ingredient: true },
-  { id: "40", label: "Kiwi", is_ingredient: true },
-  { id: "41", label: "Spinach", is_ingredient: true },
-  { id: "42", label: "Mango", is_ingredient: true },
-  { id: "43", label: "Parsley", is_ingredient: true },
-  { id: "44", label: "Lemon", is_ingredient: true },
-  { id: "46", label: "Bacon", is_ingredient: true },
-  { id: "47", label: "Egg", is_ingredient: true },
-  { id: "48", label: "Cheese", is_ingredient: true },
-  { id: "49", label: "Spinach", is_ingredient: true },
 ];
 
 export const modifierCategories: ItemOptions[] = [
@@ -598,6 +550,57 @@ export const upsertModifier = async (params: Partial<Modifier>) => {
     price: params.price === 0 ? null : params.price,
     is_in_stock: params.is_ingredient ? params.is_in_stock : null,
   });
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+  }
+};
+
+export const fetchSections = async () => {
+  const { data, error } = await supabase.from("menu_sections").select(`
+      *, menu_items (
+        *,
+        menu_items_options (*,
+          menu_item_options (*)
+        ),
+        menu_items_modifiers (
+          modifiers (*)
+        )
+      )
+    `);
+  console.log(data);
+  if (data)
+    return data?.map((section) => ({
+      ...section,
+      items: section.menu_items.map((item) => ({
+        ...item,
+        modifiers: item.menu_items_modifiers,
+        modifierCategories: item.menu_items_options,
+      })),
+    }));
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+  }
+};
+
+export const upsertSection = async ({ items, ...params }: MenuSection) => {
+  console.log(items);
+  const { error } = await supabase.from("menu_sections").upsert(params);
 
   if (error) {
     notifications.show({

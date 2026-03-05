@@ -15,19 +15,15 @@ interface SectionProps {
   onDeleteSection: () => void;
 }
 
-function Section(props: SectionProps) {
-  const {
-    section: { label, items },
-    onDeleteSection,
-  } = props;
-
+function Section({ section, onDeleteSection }: SectionProps) {
   const blankMenuItem = {
     id: "",
     label: "",
     price: 0,
   };
 
-  const [menuItems, setMenuItems] = useState<MenuItemType[]>(items);
+  const [menuSection, setMenuSection] = useState(section);
+  const [menuItems, setMenuItems] = useState<MenuItemType[]>(menuSection.items);
   const [newMenuItem, setNewMenuItem] = useState<MenuItemType | null>(
     menuItems.length === 0 ? blankMenuItem : null,
   );
@@ -35,7 +31,7 @@ function Section(props: SectionProps) {
   const [
     showUpsertSectionModal,
     { open: openUpsertSectionModal, close: closeUpsertSectionModal },
-  ] = useDisclosure(menuItems.length === 0);
+  ] = useDisclosure(false);
 
   const [
     showEditableMenuItem,
@@ -70,15 +66,20 @@ function Section(props: SectionProps) {
     onCloseEditableItem();
   };
 
+  const onUpdateSection = (section: MenuSection) => {
+    setMenuSection(section);
+    closeUpsertSectionModal();
+  };
+
   return (
-    <Accordion.Item key={label} value={label}>
+    <Accordion.Item key={menuSection.label} value={menuSection.label}>
       <Accordion.Control>
-        <Text component="span">{label.toUpperCase()}</Text>
+        <Text component="span">{menuSection.label.toUpperCase()}</Text>
       </Accordion.Control>
 
       <Accordion.Panel>
         <ConfirmationModal
-          label={label}
+          label={menuSection.label}
           isOpen={showConfirmDelete}
           onClose={closeConfirmDelete}
           onConfirmDelete={() => {
@@ -87,19 +88,17 @@ function Section(props: SectionProps) {
           }}
         />
         <UpsertSectionModal
-          section={props.section}
+          section={menuSection}
           isOpen={showUpsertSectionModal}
-          onClose={openUpsertSectionModal}
-          onUpsertSection={() => {
-            closeUpsertSectionModal();
-          }}
+          onClose={closeUpsertSectionModal}
+          onSectionUpsert={onUpdateSection}
         />
 
         <Stack gap="0">
           <Box p="sm">
             <Group grow p="sm" gap="sm" w="100%" bdrs="sm" bg="whitesmoke">
               <StyledButton
-                label="Edit Section"
+                label="Rename Section"
                 onClick={openUpsertSectionModal}
               />
 

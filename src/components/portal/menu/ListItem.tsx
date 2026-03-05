@@ -78,10 +78,6 @@ function ListItem(props: ListItemProps) {
         </Stack>
       </Flex>
       <Group w="100%" justify="space-between" align="flex-start" grow>
-        {menuItem.ingredients && (
-          <Badges label="Ingredients" badges={menuItem.ingredients} />
-        )}
-
         {menuItem.modifiers && (
           <Badges label="Modifiers" badges={menuItem.modifiers} />
         )}

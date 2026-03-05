@@ -5,7 +5,6 @@ import { Box, Button, em, Image, Modal, Stack } from "@mantine/core";
 import ModifierCheckbox from "./customer/ModifierCheckbox";
 import ButtonWithPrice from "./customer/ButtonWithPrice";
 import ModifierRadio from "./customer/ModifierRadio";
-import Badges from "./Badges";
 import NoteInput from "./customer/NoteInput";
 
 import { calculateOrderItemPrice } from "../helpers/cart";
@@ -89,10 +88,6 @@ function MenuItemModal(props: MenuItemModalProps) {
     >
       <Stack pb={60} align="center">
         {menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
-
-        {menuItem.ingredients && (
-          <Badges label="Ingredients" badges={menuItem.ingredients} />
-        )}
 
         {menuItem.modifiers && (
           <ModifierCheckbox

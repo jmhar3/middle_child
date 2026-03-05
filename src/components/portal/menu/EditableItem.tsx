@@ -16,11 +16,7 @@ import {
 import MenuItemModal from "../../MenuItemModal";
 import StyledButton from "../../StyledButton";
 
-import {
-  ingredients,
-  modifierCategories,
-  modifiers,
-} from "../../../helpers/menu";
+import { modifierCategories, modifiers } from "../../../helpers/menu";
 
 import type { MenuItemType } from "../../../helpers/menu";
 
@@ -94,27 +90,6 @@ function EditableItem(props: EditableItemProps) {
         </Group>
 
         <Group gap="sm" grow align="flex-end">
-          <MultiSelect
-            size="md"
-            searchable
-            label="Ingredients"
-            description="Out of stock ingredients affect item stock"
-            defaultValue={editedMenuItem.ingredients?.map(({ id }) => id)}
-            data={ingredients.map((ingredient) => ({
-              value: ingredient.id,
-              label: ingredient.label,
-            }))}
-            onChange={(values) =>
-              setEditedMenuItem((prevItem) => ({
-                ...prevItem,
-                ingredients: values
-                  .map((id) =>
-                    ingredients.find((ingredient) => ingredient.id === id),
-                  )
-                  .filter((ingredient) => ingredient !== undefined),
-              }))
-            }
-          />
           <MultiSelect
             size="md"
             searchable

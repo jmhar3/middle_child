@@ -13,7 +13,7 @@ import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal"
 import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
 import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
 
-import { fetchModifiers, menu as hardcodedMenu } from "../../helpers/menu";
+import { fetchModifiers, fetchSections } from "../../helpers/menu";
 
 import type { ItemOptions, MenuSection, Modifier } from "../../helpers/menu";
 
@@ -35,13 +35,24 @@ function Menu() {
     { open: openUpsertItemOptionDrawer, close: closeUpsertItemOptionDrawer },
   ] = useDisclosure(false);
 
-  const [menu, setMenu] = useState<MenuSection[]>(hardcodedMenu);
+  const [menu, setMenu] = useState<MenuSection[]>();
   const [modifiers, setModifiers] = useState<Modifier[]>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchModifiers()
       .then((data) => setModifiers(data))
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsLoading(false));
+    fetchSections()
+      .then((data) => setMenu(data))
       .catch((error) =>
         notifications.show({
           message: error,
@@ -64,7 +75,7 @@ function Menu() {
   };
 
   const onCreateSection = (section: MenuSection) => {
-    setMenu((prevMenu) => [...prevMenu, section]);
+    setMenu((prevMenu) => (prevMenu ? [...prevMenu, section] : [section]));
     closeUpsertSectionModal();
   };
 
@@ -87,7 +98,7 @@ function Menu() {
 
   const onDeleteSection = (sectionToDelete: MenuSection) => {
     setMenu((prevMenu) =>
-      prevMenu.filter((section) => section !== sectionToDelete),
+      prevMenu?.filter((section) => section !== sectionToDelete),
     );
   };
 
@@ -111,7 +122,7 @@ function Menu() {
       <UpsertSectionModal
         isOpen={showUpsertSectionModal}
         onClose={closeUpsertSectionModal}
-        onUpsertSection={onCreateSection}
+        onSectionUpsert={onCreateSection}
       />
       {modifiers && (
         <UpsertModifierDrawer
@@ -152,7 +163,7 @@ function Menu() {
           />
         </Group>
 
-        {menu.map((section) => (
+        {menu?.map((section) => (
           <Section
             key={section.id}
             section={section}
