@@ -20,9 +20,15 @@ interface SectionProps {
   onDeleteSection: () => void;
   modifierCategories: ItemOptions[];
   modifiers: Modifier[];
+  menuLength: number;
 }
 
-function Section({ section, onDeleteSection, ...itemProps }: SectionProps) {
+function Section({
+  section,
+  onDeleteSection,
+  menuLength,
+  ...itemProps
+}: SectionProps) {
   const blankMenuItem = {
     id: "",
     label: "",
@@ -99,11 +105,20 @@ function Section({ section, onDeleteSection, ...itemProps }: SectionProps) {
           isOpen={showUpsertSectionModal}
           onClose={closeUpsertSectionModal}
           onSectionUpsert={onUpdateSection}
+          menuLength={menuLength}
         />
 
         <Stack gap="0">
           <Box p="sm">
             <Group grow p="sm" gap="sm" w="100%" bdrs="sm" bg="whitesmoke">
+              <StyledButton
+                label="Add Menu Item"
+                onClick={() => {
+                  openEditableMenuItem();
+                  setNewMenuItem(blankMenuItem);
+                }}
+              />
+
               <StyledButton
                 label="Rename Section"
                 onClick={openUpsertSectionModal}
@@ -112,14 +127,6 @@ function Section({ section, onDeleteSection, ...itemProps }: SectionProps) {
               <StyledButton
                 label="Delete Section"
                 onClick={openConfirmDelete}
-              />
-
-              <StyledButton
-                label="Add Menu Item"
-                onClick={() => {
-                  openEditableMenuItem();
-                  setNewMenuItem(blankMenuItem);
-                }}
               />
             </Group>
           </Box>
