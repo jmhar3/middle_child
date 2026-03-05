@@ -102,9 +102,9 @@ function EditableItem(props: EditableItemProps) {
             label="Modifiers"
             description="User is able to select multiple modifiers"
             defaultValue={editedMenuItem.modifiers?.map(({ id }) => id)}
-            data={modifiers.map((modifier) => ({
-              value: modifier.id,
-              label: modifier.label,
+            data={modifiers.map(({ id, label, price }) => ({
+              value: id,
+              label: price ? `${label} (+$${price.toFixed(2)})` : label,
             }))}
             onChange={(values) =>
               setEditedMenuItem((prevItem) => ({
