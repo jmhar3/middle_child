@@ -16,19 +16,18 @@ import {
 import MenuItemModal from "../../MenuItemModal";
 import StyledButton from "../../StyledButton";
 
-import type {
-  ItemOptions,
-  MenuItemType,
-  Modifier,
-} from "../../../helpers/menu";
+import { useAppSelector } from "../../../state/hooks";
+import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
+
+// to be removed
+import type { MenuItemType } from "../../../types/menu";
+import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
 
 interface EditableItemProps {
   menuItem: MenuItemType;
   showCancelButton?: boolean;
   onSaveMenuItem: (newMenuItem: MenuItemType) => void;
   onCancelCreateItem: () => void;
-  modifierCategories: ItemOptions[];
-  modifiers: Modifier[];
 }
 
 function EditableItem(props: EditableItemProps) {
@@ -37,9 +36,9 @@ function EditableItem(props: EditableItemProps) {
     onSaveMenuItem,
     onCancelCreateItem,
     showCancelButton = true,
-    modifierCategories,
-    modifiers,
   } = props;
+  const modifiers = useAppSelector(selectAllModifiers);
+  const itemOptions = useAppSelector(selectAllItemOptions);
 
   const [file, setFile] = useState<File | null>(null);
   const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
@@ -122,7 +121,7 @@ function EditableItem(props: EditableItemProps) {
             defaultValue={editedMenuItem.modifierCategories?.map(
               ({ id }) => id,
             )}
-            data={modifierCategories.map((category) => ({
+            data={itemOptions.map((category) => ({
               value: category.id,
               label: category.label,
             }))}
@@ -131,7 +130,7 @@ function EditableItem(props: EditableItemProps) {
                 ...prevItem,
                 modifierCategories: values
                   .map((id) =>
-                    modifierCategories.find((category) => category.id === id),
+                    itemOptions.find((category) => category.id === id),
                   )
                   .filter((category) => category !== undefined),
               }))

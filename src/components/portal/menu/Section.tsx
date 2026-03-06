@@ -1,42 +1,27 @@
 import { useState } from "react";
+import { v4 as uuid } from "uuid";
 import { useDisclosure } from "@mantine/hooks";
 import { Box, Text, Stack, Divider, Accordion, Group } from "@mantine/core";
 
 import EditableItem from "./EditableItem";
 import StyledButton from "../../StyledButton";
-import EditableMenuItem from "./ItemEditPreview";
+import ItemEditPreview from "./ItemEditPreview";
 import ConfirmationModal from "../../ConfirmationModal";
-
-import type {
-  ItemOptions,
-  MenuItemType,
-  MenuSection,
-  Modifier,
-} from "../../../helpers/menu";
 import UpsertSectionModal from "./UpsertSectionModal";
 
-interface SectionProps {
-  section: MenuSection;
-  onDeleteSection: () => void;
-  modifierCategories: ItemOptions[];
-  modifiers: Modifier[];
-  menuLength: number;
-}
+import type { Section as SectionType } from "../../../state/menu/menuSlice";
 
-function Section({
-  section,
-  onDeleteSection,
-  menuLength,
-  ...itemProps
-}: SectionProps) {
-  const blankMenuItem = {
-    id: "",
-    label: "",
-    price: 0,
-  };
+// to be removed
+import type { MenuItemType } from "../../../types/menu";
 
-  const [menuSection, setMenuSection] = useState(section);
-  const [menuItems, setMenuItems] = useState<MenuItemType[]>(menuSection.items);
+const blankMenuItem = {
+  id: uuid(),
+  label: "",
+  price: 0,
+};
+
+function Section({ section }: { section: SectionType }) {
+  const [menuItems, setMenuItems] = useState<MenuItemType[]>(section.items);
   const [newMenuItem, setNewMenuItem] = useState<MenuItemType | null>(
     menuItems.length === 0 ? blankMenuItem : null,
   );
@@ -79,33 +64,23 @@ function Section({
     onCloseEditableItem();
   };
 
-  const onUpdateSection = (section: MenuSection) => {
-    setMenuSection(section);
-    closeUpsertSectionModal();
-  };
-
   return (
-    <Accordion.Item key={menuSection.label} value={menuSection.label}>
+    <Accordion.Item key={section.label} value={section.label}>
       <Accordion.Control>
-        <Text component="span">{menuSection.label.toUpperCase()}</Text>
+        <Text component="span">{section.label.toUpperCase()}</Text>
       </Accordion.Control>
 
       <Accordion.Panel>
         <ConfirmationModal
-          label={menuSection.label}
+          label={section.label}
           isOpen={showConfirmDelete}
           onClose={closeConfirmDelete}
-          onConfirmDelete={() => {
-            closeConfirmDelete();
-            onDeleteSection();
-          }}
+          onConfirmDelete={closeConfirmDelete}
         />
         <UpsertSectionModal
-          section={menuSection}
+          section={section}
           isOpen={showUpsertSectionModal}
           onClose={closeUpsertSectionModal}
-          onSectionUpsert={onUpdateSection}
-          menuLength={menuLength}
         />
 
         <Stack gap="0">
@@ -139,7 +114,6 @@ function Section({
                   onSaveMenuItem={onSaveMenuItem}
                   onCancelCreateItem={onCloseEditableItem}
                   showCancelButton={menuItems.length > 0}
-                  {...itemProps}
                 />
                 <Divider />
               </>
@@ -148,11 +122,10 @@ function Section({
             {menuItems.map((menuItem, index) => (
               <>
                 {index > 0 && <Divider />}
-                <EditableMenuItem
+                <ItemEditPreview
                   menuItem={menuItem}
                   onSaveMenuItem={onSaveMenuItem}
                   onDeleteItem={onDeleteItem}
-                  {...itemProps}
                 />
               </>
             ))}

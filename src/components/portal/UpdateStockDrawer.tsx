@@ -1,21 +1,26 @@
 import { useState } from "react";
 
 import {
-  Checkbox,
-  Divider,
-  Drawer,
+  Text,
   Group,
+  Stack,
+  Drawer,
+  Divider,
+  Checkbox,
   MultiSelect,
   SegmentedControl,
-  Stack,
-  Text,
 } from "@mantine/core";
 
 import StyledButton from "../StyledButton";
 
-import { menu, modifiers } from "../../helpers/menu";
+import { selectMenu } from "../../state/menu/menuSlice";
+import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
+import { useAppSelector } from "../../state/hooks";
 
-import type { Modifier } from "../../helpers/menu";
+import type { Modifier } from "../../state/modifiers/modifiersSlice";
+
+// to be removed
+import type { MenuItemType } from "../../types/menu";
 
 interface UpdateStockDrawerProps {
   isOpen: boolean;
@@ -26,22 +31,24 @@ interface UpdateStockDrawerProps {
 function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const { isOpen, onClose, onUpdateStock } = props;
 
-  const [menuView, setMenuView] = useState("Checkbox List");
+  const menu = useAppSelector(selectMenu);
+  const ingredients = useAppSelector(selectAllIngredients);
 
   const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
-  const ingredients = modifiers.filter((modifier) => modifier.is_ingredient);
+  const [menuView, setMenuView] = useState("Checkbox List");
 
-  const [outOfStockIngredients, setOutOfStockIngredients] =
-    useState<Modifier[]>();
-  const [outOfStockMenuItems, setOutOfStockMenuItems] = useState<Modifier[]>(
-    menuItems.slice(0, 3),
-  );
+  const [outOfStockIngredients, setOutOfStockIngredients] = useState<
+    Modifier[]
+  >(ingredients.filter((ingredient) => !ingredient.is_in_stock));
+  const [outOfStockMenuItems, setOutOfStockMenuItems] = useState<
+    MenuItemType[]
+  >(menuItems.filter((item) => !item.is_in_stock));
 
   const onSelectOutOfStockIngredients = (values: string[]) => {
     setOutOfStockIngredients(
       values
-        .map((value) => modifiers.find(({ id }) => id === value))
+        .map((value) => ingredients.find(({ id }) => id === value))
         .filter((ingredient) => ingredient !== undefined),
     );
   };
@@ -87,7 +94,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
           searchable
         />
 
-        <Stack gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
+        <Stack w="100%" gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
           <Stack gap="0">
             <Text>Menu Items</Text>
 

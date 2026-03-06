@@ -7,10 +7,10 @@ import ButtonWithPrice from "./customer/ButtonWithPrice";
 import ModifierRadio from "./customer/ModifierRadio";
 import NoteInput from "./customer/NoteInput";
 
-import { calculateOrderItemPrice } from "../helpers/cart";
+import { calculateOrderItemPrice } from "../helpers";
 
-import type { MenuItemType, Modifier } from "../helpers/menu";
-import type { OrderItem } from "../helpers/cart";
+import type { MenuItemType, Modifier } from "../types/menu";
+import type { OrderItem } from "../types/cart";
 
 interface MenuItemModalProps {
   isOpen: boolean;

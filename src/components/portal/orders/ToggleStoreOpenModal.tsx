@@ -1,10 +1,10 @@
 import { Group, Modal, Overlay, Stack, Text } from "@mantine/core";
 
-import StyledButton from "../StyledButton";
+import StyledButton from "../../StyledButton";
 
 interface ToggleStoreOpenModalProps {
   isOpen: boolean;
-  onConfirmToggle: () => void;
+  onStoreOpenSuccess: () => void;
   showConfirmationDialog: boolean;
   setShowConfirmationDialog: (showConfirmation: boolean) => void;
 }
@@ -12,7 +12,7 @@ interface ToggleStoreOpenModalProps {
 function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
   const {
     isOpen,
-    onConfirmToggle,
+    onStoreOpenSuccess,
     showConfirmationDialog,
     setShowConfirmationDialog,
   } = props;
@@ -55,7 +55,7 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
           <Group grow>
             {showConfirmationDialog ? (
               <>
-                <StyledButton label="Confirm" onClick={onConfirmToggle} />
+                <StyledButton label="Confirm" onClick={onStoreOpenSuccess} />
                 <StyledButton
                   label="Cancel"
                   variant="outline"

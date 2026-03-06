@@ -1,8 +1,11 @@
 import { Text, Flex, Stack, ScrollArea, ActionIcon } from "@mantine/core";
 
-import { calculateOrderItemPrice, type OrderItem } from "../../helpers/cart";
+import { calculateOrderItemPrice } from "../../helpers";
+
 import EditIcon from "../../icons/EditIcon";
 import CloseIcon from "../../icons/CloseIcon";
+
+import type { OrderItem } from "../../types/cart";
 
 interface OrderListItem extends OrderItem {
   quantity: number;

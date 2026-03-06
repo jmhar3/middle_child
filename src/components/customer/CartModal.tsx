@@ -10,7 +10,7 @@ import LoginButton from "../LoginButton";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
 
-import type { Cart, OrderItem } from "../../helpers/cart";
+import type { Cart, OrderItem } from "../../types/cart";
 
 interface CartModalProps {
   order: Cart;
@@ -46,7 +46,8 @@ function CartModal(props: CartModalProps) {
   };
 
   const additionalLoyaltyPoints = useMemo(
-    () => items.filter((item) => item.menuItem.isLoyaltyApplicable).length,
+    () =>
+      items.filter((item) => item.menuItem.is_applicable_loyalty_item).length,
     [items],
   );
 

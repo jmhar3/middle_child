@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PageLayout from "./PageLayout";
 import { useDisclosure } from "@mantine/hooks";
 import { Group, Accordion } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import Loading from "../../components/Loading";
@@ -13,13 +12,15 @@ import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal"
 import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
 import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
 
-import {
-  fetchItemOptions,
-  fetchModifiers,
-  fetchSections,
-} from "../../helpers/menu";
+import { fetchMenu } from "../../state/menu/menuThunks";
+import { fetchModifiers } from "../../state/modifiers/modifierThunks";
+import { fetchItemOptions } from "../../state/itemOptions/itemOptionThunks";
 
-import type { ItemOptions, MenuSection, Modifier } from "../../helpers/menu";
+import { selectMenu, selectMenuStatus } from "../../state/menu/menuSlice";
+import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
+import { selectItemOptionsStatus } from "../../state/itemOptions/itemOptionsSlice";
+
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
 function Menu() {
   const [
@@ -39,84 +40,28 @@ function Menu() {
     { open: openUpsertItemOptionDrawer, close: closeUpsertItemOptionDrawer },
   ] = useDisclosure(false);
 
-  const [menu, setMenu] = useState<MenuSection[]>();
-  const [modifiers, setModifiers] = useState<Modifier[]>();
-  const [modifierCategories, setModifierCategories] = useState<ItemOptions[]>();
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const menu = useAppSelector(selectMenu);
+  const menuStatus = useAppSelector(selectMenuStatus);
+  const modifiersStatus = useAppSelector(selectModifiersStatus);
+  const itemOptionsStatus = useAppSelector(selectItemOptionsStatus);
+
+  const isLoading =
+    menuStatus === "pending" ||
+    modifiersStatus === "pending" ||
+    itemOptionsStatus === "pending";
 
   useEffect(() => {
-    fetchModifiers()
-      .then((data) => setModifiers(data))
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsLoading(false));
-    fetchItemOptions()
-      .then((data) => setModifierCategories(data))
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsLoading(false));
-    fetchSections()
-      .then((data) => setMenu(data))
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const onUpdateStock = () => {
-    closeUpdateStockDrawer();
-    notifications.show({
-      withCloseButton: false,
-      message: "Stock Updated Successfully",
-      position: "bottom-right",
-      color: "green",
-    });
-  };
-
-  const onCreateSection = (section: MenuSection) => {
-    setMenu((prevMenu) => (prevMenu ? [...prevMenu, section] : [section]));
-    closeUpsertSectionModal();
-  };
-
-  const onModifierUpsert = (modifier: Modifier) => {
-    setModifiers((prevModifiers) => {
-      if (prevModifiers) {
-        const modifiersWithoutUpsertModifier = prevModifiers.filter(
-          (prevModifier) => prevModifier.id !== modifier.id,
-        );
-        return [...modifiersWithoutUpsertModifier, modifier];
-      }
-    });
-    closeUpsertModifierDrawer();
-  };
-
-  const onUpsertItemOption = (itemOption: ItemOptions) => {
-    console.log(itemOption);
-    closeUpsertItemOptionDrawer();
-  };
-
-  const onDeleteSection = (sectionToDelete: MenuSection) => {
-    setMenu((prevMenu) =>
-      prevMenu?.filter((section) => section !== sectionToDelete),
-    );
-  };
+    if (menuStatus === "idle") {
+      dispatch(fetchMenu());
+    }
+    if (modifiersStatus === "idle") {
+      dispatch(fetchModifiers());
+    }
+    if (itemOptionsStatus === "idle") {
+      dispatch(fetchItemOptions());
+    }
+  }, [dispatch, menuStatus, modifiersStatus, itemOptionsStatus]);
 
   if (isLoading) return <Loading message="Loading store data" />;
 
@@ -133,33 +78,19 @@ function Menu() {
       <UpdateStockDrawer
         isOpen={showUpdateStockDrawer}
         onClose={closeUpdateStockDrawer}
-        onUpdateStock={onUpdateStock}
       />
-      {menu && (
-        <UpsertSectionModal
-          menuLength={menu?.length}
-          isOpen={showUpsertSectionModal}
-          onClose={closeUpsertSectionModal}
-          onSectionUpsert={onCreateSection}
-        />
-      )}
-      {modifiers && (
-        <UpsertModifierDrawer
-          modifiers={modifiers}
-          isOpen={showUpsertModifierDrawer}
-          onClose={closeUpsertModifierDrawer}
-          onModifierUpsert={onModifierUpsert}
-        />
-      )}
-      {modifierCategories && modifiers && (
-        <UpsertItemOptionDrawer
-          modifiers={modifiers}
-          modifierCategories={modifierCategories}
-          isOpen={showUpsertItemOptionDrawer}
-          onClose={closeUpsertItemOptionDrawer}
-          onUpsertItemOptions={onUpsertItemOption}
-        />
-      )}
+      <UpsertSectionModal
+        isOpen={showUpsertSectionModal}
+        onClose={closeUpsertSectionModal}
+      />
+      <UpsertModifierDrawer
+        isOpen={showUpsertModifierDrawer}
+        onClose={closeUpsertModifierDrawer}
+      />
+      <UpsertItemOptionDrawer
+        isOpen={showUpsertItemOptionDrawer}
+        onClose={closeUpsertItemOptionDrawer}
+      />
 
       <Accordion
         styles={{
@@ -186,18 +117,9 @@ function Menu() {
           />
         </Group>
 
-        {modifiers &&
-          modifierCategories &&
-          menu?.map((section) => (
-            <Section
-              key={section.id}
-              section={section}
-              modifiers={modifiers}
-              menuLength={menu.length}
-              modifierCategories={modifierCategories}
-              onDeleteSection={() => onDeleteSection(section)}
-            />
-          ))}
+        {menu.map((section) => (
+          <Section key={section.id} section={section} />
+        ))}
       </Accordion>
     </PageLayout>
   );

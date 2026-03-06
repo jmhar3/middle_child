@@ -15,24 +15,18 @@ import {
 
 import StyledButton from "../../StyledButton";
 
-import type { ItemOptions, Modifier } from "../../../helpers/menu";
+import type { ItemOptions } from "../../../types/menu";
+import { useAppSelector } from "../../../state/hooks";
+import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
+import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
 
 interface UpsertItemOptionDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpsertItemOptions: (modifier: ItemOptions) => void;
-  modifierCategories: ItemOptions[];
-  modifiers: Modifier[];
 }
 
 function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
-  const {
-    isOpen,
-    onClose,
-    onUpsertItemOptions,
-    modifierCategories,
-    modifiers,
-  } = props;
+  const { isOpen, onClose } = props;
 
   const blankItemOption = {
     id: uuid(),
@@ -41,6 +35,8 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
     allowMultipleSelections: false,
   };
 
+  const modifiers = useAppSelector(selectAllModifiers);
+  const itemOptions = useAppSelector(selectAllItemOptions);
   const [itemOption, setItemOption] = useState<ItemOptions>(blankItemOption);
   const [addOrEdit, setAddOrEdit] = useState<"add" | "edit" | undefined>();
 
@@ -49,7 +45,12 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
     setItemOption(blankItemOption);
     onClose();
   };
-  console.log(itemOption);
+
+  const onUpsertItemOption = () => {
+    // upsert item option
+    clearDrawer();
+  };
+
   return (
     <Drawer
       offset={12}
@@ -74,12 +75,10 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
             label="Select modifier category to edit"
             nothingFoundMessage="No modifier category found matching your search"
             onChange={(value) => {
-              const findItemOption = modifierCategories.find(
-                ({ id }) => id === value,
-              );
+              const findItemOption = itemOptions.find(({ id }) => id === value);
               if (findItemOption) setItemOption(findItemOption);
             }}
-            data={modifierCategories.map((itemOption) => ({
+            data={itemOptions.map((itemOption) => ({
               value: itemOption.id,
               label: itemOption.label,
             }))}
@@ -161,13 +160,7 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
                 onClick={clearDrawer}
               />
 
-              <StyledButton
-                label="Save"
-                onClick={() => {
-                  clearDrawer();
-                  onUpsertItemOptions(itemOption);
-                }}
-              />
+              <StyledButton label="Save" onClick={onUpsertItemOption} />
             </Group>
           </>
         )}

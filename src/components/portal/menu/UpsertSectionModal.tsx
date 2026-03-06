@@ -1,71 +1,48 @@
 import { Group, Modal, Stack, Text, TextInput } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import StyledButton from "../../StyledButton";
 
-import { upsertSection } from "../../../helpers/menu";
-
-import type { MenuSection } from "../../../helpers/menu";
+import { selectMenuLength, type Section } from "../../../state/menu/menuSlice";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import { upsertSection } from "../../../state/menu/menuThunks";
 
 interface UpsertSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSectionUpsert: (section: MenuSection) => void;
-  section?: MenuSection;
-  menuLength: number;
+  section?: Section;
 }
 
 function UpsertSectionModal(props: UpsertSectionModalProps) {
-  const { section, isOpen, onClose, onSectionUpsert, menuLength } = props;
+  const { section, isOpen, onClose } = props;
+
+  const dispatch = useAppDispatch();
+  const menuLength = useAppSelector(selectMenuLength);
 
   const [isUpdatingSection, setIsUpdatingSection] = useState(false);
-  const [sectionLabel, setSectionLabel] = useState(
+  const [sectionLabelInput, setSectionLabelInput] = useState(
     section?.label.toUpperCase() || "",
   );
 
   const onCloseModal = () => {
-    setSectionLabel(section?.label.toUpperCase() || "");
+    setSectionLabelInput(section?.label.toUpperCase() || "");
     onClose();
   };
 
   const onUpsertSection = () => {
     const sectionData = section
-      ? { ...section, label: sectionLabel }
+      ? { ...section, label: sectionLabelInput }
       : {
           id: uuid(),
           order: menuLength + 1,
-          label: sectionLabel,
-          items: [],
+          label: sectionLabelInput,
         };
 
     setIsUpdatingSection(true);
-
-    upsertSection(sectionData)
-      .then(() =>
-        notifications.show({
-          withCloseButton: false,
-          message: section
-            ? `${section.label} successfully updated to: ${sectionLabel}`
-            : `${sectionLabel} successfully created`,
-          position: "bottom-right",
-          color: "green",
-        }),
-      )
-      .catch((error) =>
-        notifications.show({
-          withCloseButton: false,
-          message: error,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => {
-        if (!section) setSectionLabel("");
-        setIsUpdatingSection(false);
-        onSectionUpsert(sectionData);
-      });
+    dispatch(upsertSection(sectionData)).finally(() => {
+      setIsUpdatingSection(false);
+    });
   };
 
   return (
@@ -90,8 +67,8 @@ function UpsertSectionModal(props: UpsertSectionModalProps) {
           size="md"
           withAsterisk
           label="Section Label"
-          value={sectionLabel}
-          onChange={(event) => setSectionLabel(event.target.value)}
+          value={sectionLabelInput}
+          onChange={(event) => setSectionLabelInput(event.target.value)}
         />
 
         <Group grow gap="sm" w="100%">

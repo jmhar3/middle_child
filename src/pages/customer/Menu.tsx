@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 
@@ -8,19 +8,48 @@ import MenuItemModal from "../../components/MenuItemModal";
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
 
-import { menu } from "../../helpers/menu";
-import { store } from "../../helpers/store";
+import {
+  selectStoreInfo,
+  selectStoreInfoStatus,
+} from "../../state/storeInfo/storeInfoSlice";
+
+import { selectMenu, selectMenuStatus } from "../../state/menu/menuSlice";
+
+import { fetchMenu } from "../../state/menu/menuThunks";
+import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
+
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
 import {
   calculateOrderItemPrice,
   filterItemFromOrder,
   findExistingOrderItem,
-} from "../../helpers/cart";
+} from "../../helpers";
 
-import type { MenuItemType } from "../../helpers/menu";
-import type { Cart, OrderItem } from "../../helpers/cart";
+// to be removed
+import type { MenuItemType } from "../../types/menu";
+import type { Cart, OrderItem } from "../../types/cart";
+import Loading from "../../components/Loading";
+// to be removed
 
 function Menu() {
+  const dispatch = useAppDispatch();
+  const menu = useAppSelector(selectMenu);
+  const menuStatus = useAppSelector(selectMenuStatus);
+  const storeInfo = useAppSelector(selectStoreInfo);
+  const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
+
+  const isLoading = menuStatus === "pending" || storeInfoStatus === "pending";
+
+  useEffect(() => {
+    if (menuStatus === "idle") {
+      dispatch(fetchMenu());
+    }
+    if (storeInfoStatus === "idle") {
+      dispatch(fetchStoreInfo());
+    }
+  }, [dispatch, menuStatus, storeInfoStatus]);
+
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   const [isMenuItemModalOpen, setIsMenuItemModalOpen] = useState(false);
@@ -75,12 +104,12 @@ function Menu() {
 
           const hasManyItems = totalItemsInOrder && totalItemsInOrder > 5;
           const hasItemsWithLongPrepTime = newOrderItems.find(
-            (item: OrderItem) => item.menuItem.hasLongPrepTime || false,
+            (item: OrderItem) => item.menuItem.has_long_prep_time || false,
           );
           const orderTime =
             hasItemsWithLongPrepTime || hasManyItems
-              ? store.currentOrderTime.long
-              : store.currentOrderTime.short;
+              ? storeInfo.current_order_time.long
+              : storeInfo.current_order_time.short;
 
           return {
             // if matching item exists in order, return filtered order + update quantity on item
@@ -96,14 +125,14 @@ function Menu() {
         return {
           items: [item],
           total: orderItemPrice,
-          pickUpTimeFromNow: store.currentOrderTime.short,
+          pickUpTimeFromNow: storeInfo.current_order_time.short,
         };
       }
 
       return {
         items: [item],
         total: orderItemPrice,
-        pickUpTimeFromNow: store.currentOrderTime.short,
+        pickUpTimeFromNow: storeInfo.current_order_time.short,
       };
     });
 
@@ -132,7 +161,7 @@ function Menu() {
         return {
           items: [...filteredOrderItems, newOrderItem],
           total: prevOrder.total - oldOrderItemPrice + newOrderItemPrice,
-          pickUpTimeFromNow: store.currentOrderTime.short,
+          pickUpTimeFromNow: storeInfo.current_order_time.short,
         };
       } else {
         return null;
@@ -157,12 +186,14 @@ function Menu() {
         return {
           items: filteredOrderItems,
           total: prevOrder.total - orderItemPrice,
-          pickUpTimeFromNow: store.currentOrderTime.short,
+          pickUpTimeFromNow: storeInfo.current_order_time.short,
         };
       }
       return null;
     });
   };
+
+  if (isLoading) return <Loading message="Loading store data" />;
 
   return (
     <PageLayout>

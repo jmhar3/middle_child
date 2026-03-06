@@ -1,9 +1,9 @@
 import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
-import { calculateOrderItemPrice } from "../../helpers/cart";
+import { calculateOrderItemPrice } from "../../helpers";
 
-import type { MenuItemType, Modifier } from "../../helpers/menu";
+import type { MenuItemType, Modifier } from "../../types/menu";
 
 interface MenuItemButtonProps {
   onClick: () => void;
@@ -35,16 +35,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
     >
       <Stack gap="3" w="100%" justify="center" align="flex-start" py="xs">
         <Text fw={700}>{menuItem.label}</Text>
-
-        {menuItem.ingredients && (
-          <ScrollArea h="20px" w="100%">
-            <Text size="xs">
-              {menuItem.ingredients
-                .map((ingredient) => ingredient.label)
-                .join(", ")}
-            </Text>
-          </ScrollArea>
-        )}
+        <Text>{menuItem.description}</Text>
 
         {modifiers && modifiers.length > 0 && (
           <ScrollArea h="20px" w="100%">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
+import { notifications } from "@mantine/notifications";
 
 import {
   Text,
@@ -16,24 +17,28 @@ import {
 
 import StyledButton from "../../StyledButton";
 
-import { upsertModifier, type Modifier } from "../../../helpers/menu";
-import { notifications } from "@mantine/notifications";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
+
+import type { Modifier } from "../../../state/modifiers/modifiersSlice";
+import { upsertModifier } from "../../../state/modifiers/modifierThunks";
 
 interface UpsertModifierDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  modifiers: Modifier[];
-  onModifierUpsert: (modifier: Modifier) => void;
 }
 
+const blankModifier = {
+  id: uuid(),
+  label: "",
+};
+
 function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
-  const { isOpen, onClose, modifiers, onModifierUpsert } = props;
+  const { isOpen, onClose } = props;
 
-  const blankModifier = {
-    id: uuid(),
-    label: "",
-  };
+  const dispatch = useAppDispatch();
 
+  const modifiers = useAppSelector(selectAllModifiers);
   const [modifier, setModifier] = useState<Modifier>(blankModifier);
   const [addOrEdit, setAddOrEdit] = useState<"add" | "edit" | undefined>();
 
@@ -44,7 +49,7 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
   };
 
   const onUpsertModifier = () => {
-    upsertModifier({ ...modifier })
+    dispatch(upsertModifier([modifier]))
       .then(() =>
         notifications.show({
           withCloseButton: false,
@@ -62,7 +67,6 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
         }),
       )
       .finally(() => {
-        onModifierUpsert(modifier);
         clearDrawer();
       });
   };

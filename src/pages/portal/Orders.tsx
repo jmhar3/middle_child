@@ -1,26 +1,46 @@
 import { useEffect, useState } from "react";
 import { Group } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import PageLayout from "./PageLayout";
+import Loading from "../../components/Loading";
 import StyledButton from "../../components/StyledButton";
 import OrdersList from "../../components/portal/orders/OrdersList";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
-import ToggleStoreOpenModal from "../../components/portal/ToggleStoreOpenModal";
+import ToggleStoreOpenModal from "../../components/portal/orders/ToggleStoreOpenModal";
+
+import { fetchModifiers } from "../../state/modifiers/modifierThunks";
+import { fetchOrderTimes } from "../../state/orderTimes/orderTimesThunks";
 
 import {
-  fetchOrderTimes,
-  fetchStoreData,
-  updateStoreData,
-} from "../../helpers/store";
-import { mockOrders } from "../../helpers/cart";
+  fetchStoreInfo,
+  updateStoreInfo,
+} from "../../state/storeInfo/storeInfoThunks";
 
-import type { OrderTime, Store } from "../../helpers/store";
-import Loading from "../../components/Loading";
+import {
+  selectStoreInfo,
+  selectStoreIsOpen,
+} from "../../state/storeInfo/storeInfoSlice";
+
+import {
+  selectAllOrderTimes,
+  selectOrderTimesStatus,
+} from "../../state/orderTimes/orderTimesSlice";
+
+import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
+
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
+
+import type { OrderTime } from "../../state/orderTimes/orderTimesSlice";
+
+// to be removed
+import { mockOrders } from "../../types/cart";
+import { selectMenuStatus } from "../../state/menu/menuSlice";
+import { fetchMenu } from "../../state/menu/menuThunks";
 
 function Orders() {
+  // handle dialog/drawer state
   const [
     showUpdateStockDrawer,
     { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
@@ -30,83 +50,57 @@ function Orders() {
     { open: openConfirmOpenDialog, close: closeConfirmOpenDialog },
   ] = useDisclosure(false);
 
-  const [isLoading, setIsLoading] = useState(true);
+  // update order time loading state
   const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
-  const [storeInfo, setStoreInfo] = useState<Store>();
-  const [orderTimes, setOrderTimes] = useState<OrderTime[]>();
+
+  const dispatch = useAppDispatch();
+
+  // store status
+  const menuStatus = useAppSelector(selectMenuStatus);
+  const modifiersStatus = useAppSelector(selectModifiersStatus);
+  const orderTimesStatus = useAppSelector(selectOrderTimesStatus);
+  const storeInfoStatus = useAppSelector(selectModifiersStatus);
+
+  // store data
+  const orderTimes = useAppSelector(selectAllOrderTimes);
+  const storeInfo = useAppSelector(selectStoreInfo);
+  const storeIsOpen = useAppSelector(selectStoreIsOpen);
+
+  const isLoading =
+    modifiersStatus === "pending" ||
+    storeInfoStatus === "pending" ||
+    orderTimesStatus === "pending" ||
+    menuStatus === "pending";
 
   useEffect(() => {
-    fetchOrderTimes()
-      .then((data) => setOrderTimes(data))
-      .catch((error) =>
-        notifications.show({
-          withCloseButton: false,
-          message: error,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsLoading(false));
-    fetchStoreData()
-      .then((data) => setStoreInfo(data))
-      .catch((error) =>
-        notifications.show({
-          withCloseButton: false,
-          message: error,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
+    if (menuStatus === "idle") {
+      dispatch(fetchMenu());
+    }
+    if (modifiersStatus === "idle") {
+      dispatch(fetchModifiers());
+    }
+    if (orderTimesStatus === "idle") {
+      dispatch(fetchOrderTimes());
+    }
+    if (storeInfoStatus === "idle") {
+      dispatch(fetchStoreInfo());
+    }
+  }, [
+    dispatch,
+    menuStatus,
+    modifiersStatus,
+    orderTimesStatus,
+    storeInfoStatus,
+  ]);
 
-  const onSetOrderTime = (orderTime: OrderTime) => {
+  console.log(storeInfo);
+
+  const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
     setIsUpdatingOrderTime(true);
-    updateStoreData({ current_order_time: orderTime.id })
-      .then(() =>
-        notifications.show({
-          withCloseButton: false,
-          message: `Order time successfully updated to: ${orderTime.label}`,
-          position: "bottom-right",
-          color: "green",
-        }),
-      )
-      .catch((error) =>
-        notifications.show({
-          withCloseButton: false,
-          message: error,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsUpdatingOrderTime(false));
-    setStoreInfo(
-      (prevStoreInfo) =>
-        prevStoreInfo && {
-          ...prevStoreInfo,
-          current_order_time: orderTime,
-        },
-    );
-  };
-
-  const onToggleStoreOpen = () => {
-    closeConfirmOpenDialog();
-    setStoreInfo(
-      (prevStoreInfo) =>
-        prevStoreInfo && {
-          ...prevStoreInfo,
-          is_open: !prevStoreInfo.is_open,
-        },
-    );
-  };
-
-  const onUpdateStock = () => {
-    closeUpdateStockDrawer();
-    notifications.show({
-      withCloseButton: false,
-      message: "Stock Updated Successfully",
-      position: "bottom-right",
-      color: "green",
+    dispatch(
+      updateStoreInfo({ ...storeInfo, current_order_time: selectedOrderTime }),
+    ).finally(() => {
+      setIsUpdatingOrderTime(false);
     });
   };
 
@@ -122,11 +116,11 @@ function Orders() {
             onClick={openUpdateStockDrawer}
           />
 
-          {storeInfo?.is_open && (
+          {storeIsOpen && (
             <StyledButton
               variant="outline"
               label="Close Store"
-              onClick={() => openConfirmOpenDialog()}
+              onClick={openConfirmOpenDialog}
             />
           )}
         </>
@@ -135,7 +129,6 @@ function Orders() {
       <UpdateStockDrawer
         isOpen={showUpdateStockDrawer}
         onClose={closeUpdateStockDrawer}
-        onUpdateStock={onUpdateStock}
       />
 
       {storeInfo && (
@@ -145,7 +138,7 @@ function Orders() {
           setShowConfirmationDialog={(isOpen) =>
             isOpen ? openConfirmOpenDialog() : closeConfirmOpenDialog()
           }
-          onConfirmToggle={onToggleStoreOpen}
+          onStoreOpenSuccess={closeConfirmOpenDialog}
         />
       )}
 
@@ -155,7 +148,7 @@ function Orders() {
             <StyledButton
               key={orderTime.label}
               label={orderTime.label}
-              onClick={() => onSetOrderTime(orderTime)}
+              onClick={() => onUpdateCurrentOrderTime(orderTime)}
               isLoading={isUpdatingOrderTime}
               variant={
                 orderTime.id === storeInfo.current_order_time.id
