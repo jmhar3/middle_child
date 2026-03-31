@@ -2,11 +2,13 @@ import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 
 import {
+  Text,
   Flex,
   Group,
   Image,
   Stack,
   Switch,
+  Textarea,
   TextInput,
   FileButton,
   MultiSelect,
@@ -19,8 +21,9 @@ import StyledButton from "../../StyledButton";
 import { useAppSelector } from "../../../state/hooks";
 import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
 
+import type { MenuItemType } from "../../../state/menu/menuSlice";
+
 // to be removed
-import type { MenuItemType } from "../../../types/menu";
 import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
 
 interface EditableItemProps {
@@ -83,15 +86,6 @@ function EditableItem(props: EditableItemProps) {
               }))
             }
           />
-
-          <FileButton onChange={setFile} accept="image/png,image/jpeg">
-            {(props) => (
-              <StyledButton
-                {...props}
-                label={file ? "Replace image" : "Upload image"}
-              />
-            )}
-          </FileButton>
         </Group>
 
         <Group gap="sm" grow align="flex-end">
@@ -136,6 +130,31 @@ function EditableItem(props: EditableItemProps) {
               }))
             }
           />
+        </Group>
+
+        <Group gap="sm" grow align="flex-end">
+          <Textarea
+            label="Description"
+            value={editedMenuItem.description}
+            onChange={(event) =>
+              setEditedMenuItem((prevItem) => ({
+                ...prevItem,
+                description: event.target.value,
+              }))
+            }
+          />
+
+          <Stack gap="3">
+            <Text>Image: {file?.name}</Text>
+            <FileButton onChange={setFile} accept="image/png,image/jpeg">
+              {(props) => (
+                <StyledButton
+                  {...props}
+                  label={file ? "Replace image" : "Upload image"}
+                />
+              )}
+            </FileButton>
+          </Stack>
         </Group>
 
         <Flex justify="space-between">
