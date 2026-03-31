@@ -16,9 +16,10 @@ import {
 import StyledButton from "../../StyledButton";
 
 import type { ItemOptions } from "../../../types/menu";
-import { useAppSelector } from "../../../state/hooks";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
 import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
+import { upsertItemOption } from "../../../state/itemOptions/itemOptionThunks";
 
 interface UpsertItemOptionDrawerProps {
   isOpen: boolean;
@@ -27,6 +28,8 @@ interface UpsertItemOptionDrawerProps {
 
 function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
   const { isOpen, onClose } = props;
+
+  const dispatch = useAppDispatch();
 
   const blankItemOption = {
     id: uuid(),
@@ -37,8 +40,10 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
 
   const modifiers = useAppSelector(selectAllModifiers);
   const itemOptions = useAppSelector(selectAllItemOptions);
+
   const [itemOption, setItemOption] = useState<ItemOptions>(blankItemOption);
   const [addOrEdit, setAddOrEdit] = useState<"add" | "edit" | undefined>();
+  const [isUpdatingItemOptions, setIsUpdatingItemOptions] = useState(false);
 
   const clearDrawer = () => {
     setAddOrEdit(undefined);
@@ -47,8 +52,11 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
   };
 
   const onUpsertItemOption = () => {
-    // upsert item option
-    clearDrawer();
+    setIsUpdatingItemOptions(true);
+    dispatch(upsertItemOption(itemOption)).finally(() => {
+      setIsUpdatingItemOptions(false);
+      clearDrawer();
+    });
   };
 
   return (
@@ -158,9 +166,14 @@ function UpsertItemOptionDrawer(props: UpsertItemOptionDrawerProps) {
                 variant="outline"
                 label="Cancel"
                 onClick={clearDrawer}
+                isLoading={isUpdatingItemOptions}
               />
 
-              <StyledButton label="Save" onClick={onUpsertItemOption} />
+              <StyledButton
+                label="Save"
+                onClick={onUpsertItemOption}
+                isLoading={isUpdatingItemOptions}
+              />
             </Group>
           </>
         )}
