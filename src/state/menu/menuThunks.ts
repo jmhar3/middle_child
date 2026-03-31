@@ -18,6 +18,7 @@ interface MenuItemType {
   label: string;
   price: number;
   image?: string;
+  description?: string;
   is_in_stock: boolean;
   has_long_prep_time: boolean;
   is_applicable_loyalty_item: boolean;
