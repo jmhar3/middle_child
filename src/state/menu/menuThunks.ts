@@ -90,7 +90,7 @@ export const upsertSection = createAsyncThunk(
   "menu/upsertSection",
   async (params: Partial<Section>) => {
     const { count, data, error } = await supabase
-      .from("modifiers")
+      .from("menu_sections")
       .upsert(params)
       .select();
 
