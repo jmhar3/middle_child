@@ -18,9 +18,9 @@ interface MenuItemType {
   label: string;
   price: number;
   image?: string;
-  is_in_stock?: boolean;
-  has_long_prep_time?: boolean;
-  is_applicable_loyalty_item?: boolean;
+  is_in_stock: boolean;
+  has_long_prep_time: boolean;
+  is_applicable_loyalty_item: boolean;
   menu_items_modifiers: { modifiers: Modifier }[];
   menu_items_options: { menu_item_options: ItemOptions }[];
 }

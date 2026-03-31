@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ListItem from "./ListItem";
 import EditableItem from "./EditableItem";
 
-import type { MenuItemType } from "../../../types/menu";
+import type { MenuItemType } from "../../../state/menu/menuSlice";
 
 interface EditItemPreviewProps {
   menuItem: MenuItemType;

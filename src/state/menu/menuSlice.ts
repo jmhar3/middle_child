@@ -5,8 +5,34 @@ import { fetchMenu, upsertSection } from "./menuThunks";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
-// to be removed
-import type { MenuItemType } from "../../types/menu";
+export interface Modifier {
+  id: string;
+  label: string;
+  price?: number;
+  is_in_stock?: boolean;
+  is_ingredient?: boolean;
+  color?: string;
+}
+
+export interface ItemOptions {
+  id: string;
+  label: string;
+  allowMultipleSelections: boolean;
+  modifiers: Modifier[];
+}
+
+export interface MenuItemType {
+  id: string;
+  label: string;
+  description?: string;
+  price: number;
+  image?: string;
+  is_in_stock: boolean;
+  has_long_prep_time: boolean;
+  is_applicable_loyalty_item: boolean;
+  modifiers?: Modifier[];
+  modifierCategories?: ItemOptions[];
+}
 
 export interface Section {
   id: string;
