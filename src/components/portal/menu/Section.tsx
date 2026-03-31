@@ -9,15 +9,18 @@ import ItemEditPreview from "./ItemEditPreview";
 import ConfirmationModal from "../../ConfirmationModal";
 import UpsertSectionModal from "./UpsertSectionModal";
 
-import type { Section as SectionType } from "../../../state/menu/menuSlice";
+import type {
+  MenuItemType,
+  Section as SectionType,
+} from "../../../state/menu/menuSlice";
 
-// to be removed
-import type { MenuItemType } from "../../../types/menu";
-
-const blankMenuItem = {
+const blankMenuItem: MenuItemType = {
   id: uuid(),
   label: "",
   price: 0,
+  is_in_stock: true,
+  has_long_prep_time: false,
+  is_applicable_loyalty_item: false,
 };
 
 function Section({ section }: { section: SectionType }) {
@@ -44,19 +47,6 @@ function Section({ section }: { section: SectionType }) {
   const onCloseEditableItem = () => {
     closeEditableMenuItem();
     setNewMenuItem(null);
-  };
-
-  const onSaveMenuItem = (newMenuItem: MenuItemType) => {
-    if (newMenuItem.id.length === 0) {
-      setMenuItems((prevMenuItems) => [...prevMenuItems, newMenuItem]);
-    } else {
-      setMenuItems((prevMenuItems) =>
-        prevMenuItems.map((item) =>
-          item.id === newMenuItem.id ? newMenuItem : item,
-        ),
-      );
-    }
-    onCloseEditableItem();
   };
 
   const onDeleteItem = (id: string) => {
@@ -111,8 +101,7 @@ function Section({ section }: { section: SectionType }) {
               <>
                 <EditableItem
                   menuItem={newMenuItem}
-                  onSaveMenuItem={onSaveMenuItem}
-                  onCancelCreateItem={onCloseEditableItem}
+                  onCloseEditableItem={onCloseEditableItem}
                   showCancelButton={menuItems.length > 0}
                 />
                 <Divider />
@@ -124,7 +113,6 @@ function Section({ section }: { section: SectionType }) {
                 {index > 0 && <Divider />}
                 <ItemEditPreview
                   menuItem={menuItem}
-                  onSaveMenuItem={onSaveMenuItem}
                   onDeleteItem={onDeleteItem}
                 />
               </>
