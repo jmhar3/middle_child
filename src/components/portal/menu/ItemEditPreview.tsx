@@ -8,11 +8,10 @@ import type { MenuItemType } from "../../../state/menu/menuSlice";
 interface EditItemPreviewProps {
   menuItem: MenuItemType;
   onDeleteItem: (id: string) => void;
-  onSaveMenuItem: (newMenuItem: MenuItemType) => void;
 }
 
 function EditItemPreview(props: EditItemPreviewProps) {
-  const { menuItem, onDeleteItem, onSaveMenuItem } = props;
+  const { menuItem, onDeleteItem } = props;
 
   const [
     showEditableMenuItem,
@@ -22,11 +21,7 @@ function EditItemPreview(props: EditItemPreviewProps) {
   return showEditableMenuItem ? (
     <EditableItem
       menuItem={menuItem}
-      onSaveMenuItem={(newMenuItem: MenuItemType) => {
-        onSaveMenuItem(newMenuItem);
-        closeEditableMenuItem();
-      }}
-      onCancelCreateItem={closeEditableMenuItem}
+      onCloseEditableItem={closeEditableMenuItem}
     />
   ) : (
     <ListItem
