@@ -18,38 +18,41 @@ import {
 import MenuItemModal from "../../MenuItemModal";
 import StyledButton from "../../StyledButton";
 
-import { useAppSelector } from "../../../state/hooks";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
+import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
+import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
 
 import type { MenuItemType } from "../../../state/menu/menuSlice";
-
-// to be removed
-import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
 
 interface EditableItemProps {
   menuItem: MenuItemType;
   showCancelButton?: boolean;
-  onSaveMenuItem: (newMenuItem: MenuItemType) => void;
-  onCancelCreateItem: () => void;
+  onCloseEditableItem: () => void;
 }
 
 function EditableItem(props: EditableItemProps) {
-  const {
-    menuItem,
-    onSaveMenuItem,
-    onCancelCreateItem,
-    showCancelButton = true,
-  } = props;
+  const { menuItem, onCloseEditableItem, showCancelButton = true } = props;
+  const dispatch = useAppDispatch();
   const modifiers = useAppSelector(selectAllModifiers);
   const itemOptions = useAppSelector(selectAllItemOptions);
 
   const [file, setFile] = useState<File | null>(null);
   const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
+  const [isUpdatingMenuItems, setIsUpdatingMenuItems] = useState(false);
 
   const [showItemPreview, { open: openItemPreview, close: closeItemPreview }] =
     useDisclosure(false);
 
   const imageUrl = file && URL.createObjectURL(file);
+
+  const onUpsertMenuItem = () => {
+    setIsUpdatingMenuItems(true);
+    dispatch(upsertMenuItems(menuItem)).finally(() => {
+      setIsUpdatingMenuItems(false);
+      onCloseEditableItem();
+    });
+  };
 
   return (
     <>
@@ -202,15 +205,20 @@ function EditableItem(props: EditableItemProps) {
             />
 
             {showCancelButton && (
-              <StyledButton label="Cancel" onClick={onCancelCreateItem} />
+              <StyledButton
+                label="Cancel"
+                onClick={onCloseEditableItem}
+                isLoading={isUpdatingMenuItems}
+              />
             )}
 
             <StyledButton
               label="Save"
+              isLoading={isUpdatingMenuItems}
+              onClick={onUpsertMenuItem}
               isDisabled={
                 menuItem === editedMenuItem || editedMenuItem.label.length === 0
               }
-              onClick={() => onSaveMenuItem(editedMenuItem)}
             />
           </Flex>
         </Flex>
