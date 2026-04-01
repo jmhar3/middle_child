@@ -15,7 +15,7 @@ function Nav(props: PropsWithChildren) {
       w="100vw"
       top="0px"
       pos="fixed"
-      bg="whitesmoke"
+      bg="white"
       justify="space-between"
     >
       <Group gap="sm">
