@@ -26,33 +26,43 @@ interface MenuItemType {
   menu_items_options: { menu_item_options: ItemOptions }[];
 }
 
-interface SupabaseMenuData {
+interface SupabaseSection {
   id: string;
   label: string;
   order: number;
   menu_items: MenuItemType[];
 }
 
-const formatSupaBaseMenu = (supabaseData: SupabaseMenuData[]) => {
-  return supabaseData.map((section) => ({
+const formatSupaBaseMenu = (supabaseData: SupabaseSection[]) => {
+  return supabaseData.map(({ menu_items, ...section }) => ({
     ...section,
-    items: section.menu_items.map((item) => ({
-      ...item,
-      modifiers: item.menu_items_modifiers.map(({ modifiers }) => modifiers),
-      modifierCategories: item.menu_items_options.map(
-        ({ menu_item_options }) => ({
-          ...menu_item_options,
-          modifiers: menu_item_options.menu_item_options_modifiers.map(
-            ({ modifiers }) => modifiers,
-          ),
-        }),
-      ),
-    })),
+    items: menu_items.map(
+      ({ menu_items_options, menu_items_modifiers, ...item }) => ({
+        ...item,
+        modifiers: menu_items_modifiers.map(({ modifiers }) => modifiers),
+        modifierCategories: menu_items_options.map(
+          ({
+            menu_item_options: {
+              menu_item_options_modifiers,
+              ...menu_item_options
+            },
+          }) => ({
+            ...menu_item_options,
+            modifiers: menu_item_options_modifiers.map(
+              ({ modifiers }) => modifiers,
+            ),
+          }),
+        ),
+      }),
+    ),
   }));
 };
 
 export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
-  const { count, data, error } = await supabase.from("menu_sections").select(`
+  const { count, data, error } = await supabase
+    .from("menu_sections")
+    .select(
+      `
         *, menu_items (
           *,
           menu_items_options (
@@ -67,7 +77,9 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
             modifiers (*)
           )
         )
-      `);
+      `,
+    )
+    .order("order");
 
   if (error) {
     console.error(error);
@@ -89,10 +101,12 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
 
 export const upsertSection = createAsyncThunk(
   "menu/upsertSection",
-  async (params: Partial<Section>) => {
+  async ({ items, ...section }: Partial<Section>) => {
+    console.log(items);
+
     const { count, data, error } = await supabase
       .from("menu_sections")
-      .upsert(params)
+      .upsert(section)
       .select();
 
     if (error) {

@@ -4,6 +4,7 @@ import { notifications } from "@mantine/notifications";
 import type { Modifier } from "../modifiers/modifiersSlice";
 
 import { supabase } from "../../supabase";
+import type { MenuItemType } from "./menuItemsSlice";
 
 interface ItemOptions {
   id: string;
@@ -12,7 +13,7 @@ interface ItemOptions {
   menu_item_options_modifiers: { modifiers: Modifier }[];
 }
 
-interface MenuItemType {
+interface SupabaseMenuItem {
   id: string;
   label: string;
   price: number;
@@ -25,19 +26,21 @@ interface MenuItemType {
   menu_items_options: { menu_item_options: ItemOptions }[];
 }
 
-const formatSupaBaseMenuItems = (supabaseItem: MenuItemType[]) => {
-  return supabaseItem.map((item) => ({
-    ...item,
-    modifiers: item.menu_items_modifiers.map(({ modifiers }) => modifiers),
-    modifierCategories: item.menu_items_options.map(
-      ({ menu_item_options }) => ({
-        ...menu_item_options,
-        modifiers: menu_item_options.menu_item_options_modifiers.map(
-          ({ modifiers }) => modifiers,
-        ),
-      }),
-    ),
-  }));
+const formatSupaBaseMenuItems = (supabaseItem: SupabaseMenuItem[]) => {
+  return supabaseItem.map(
+    ({ menu_items_options, menu_items_modifiers, ...menuItem }) => {
+      return {
+        ...menuItem,
+        modifiers: menu_items_modifiers.map(({ modifiers }) => modifiers),
+        modifierCategories: menu_items_options.map(({ menu_item_options }) => ({
+          ...menu_item_options,
+          modifiers: menu_item_options.menu_item_options_modifiers.map(
+            ({ modifiers }) => modifiers,
+          ),
+        })),
+      };
+    },
+  );
 };
 
 export const fetchMenuItems = createAsyncThunk(
@@ -77,9 +80,14 @@ export const fetchMenuItems = createAsyncThunk(
 export const upsertMenuItems = createAsyncThunk(
   "menuItems/upsertMenuItems",
   async (params: Partial<MenuItemType>) => {
+    const { modifiers, modifierCategories, ...menuItem } = params;
+
+    console.log(modifiers);
+    console.log(modifierCategories);
+
     const { data, error } = await supabase
       .from("menu_items")
-      .upsert(params)
+      .upsert(menuItem)
       .select();
 
     if (error) {
