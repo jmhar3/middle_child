@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Group } from "@mantine/core";
+import { Box, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
@@ -93,8 +93,6 @@ function Orders() {
     storeInfoStatus,
   ]);
 
-  console.log(storeInfo);
-
   const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
     setIsUpdatingOrderTime(true);
     dispatch(
@@ -143,21 +141,30 @@ function Orders() {
       )}
 
       {storeInfo && orderTimes && (
-        <Group w="100%" grow p="sm" bg="white" style={{ zIndex: 0 }}>
-          {orderTimes.map((orderTime) => (
-            <StyledButton
-              key={orderTime.label}
-              label={orderTime.label}
-              onClick={() => onUpdateCurrentOrderTime(orderTime)}
-              isLoading={isUpdatingOrderTime}
-              variant={
-                orderTime.id === storeInfo.current_order_time.id
-                  ? "filled"
-                  : "outline"
-              }
-            />
-          ))}
-        </Group>
+        <Box px="sm">
+          <Group
+            grow
+            p="sm"
+            w="100%"
+            bdrs="sm"
+            bg="white"
+            style={{ zIndex: 0 }}
+          >
+            {orderTimes.map((orderTime) => (
+              <StyledButton
+                key={orderTime.label}
+                label={orderTime.label}
+                onClick={() => onUpdateCurrentOrderTime(orderTime)}
+                isLoading={isUpdatingOrderTime}
+                variant={
+                  orderTime.id === storeInfo.current_order_time.id
+                    ? "filled"
+                    : "outline"
+                }
+              />
+            ))}
+          </Group>
+        </Box>
       )}
 
       <OrdersList orders={mockOrders} />
