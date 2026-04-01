@@ -1,16 +1,11 @@
 import { useEffect } from "react";
 import PageLayout from "./PageLayout";
-import { useDisclosure } from "@mantine/hooks";
-import { Group, Accordion } from "@mantine/core";
+import { Accordion, Box, Text } from "@mantine/core";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import Loading from "../../components/Loading";
-import StyledButton from "../../components/StyledButton";
 import Section from "../../components/portal/menu/Section";
-import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
-import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal";
-import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
-import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
+import ManageMenu from "../../components/portal/ManageMenu";
 
 import { fetchMenu } from "../../state/menu/menuThunks";
 import { fetchModifiers } from "../../state/modifiers/modifierThunks";
@@ -23,23 +18,6 @@ import { selectItemOptionsStatus } from "../../state/itemOptions/itemOptionsSlic
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
 function Menu() {
-  const [
-    showUpdateStockDrawer,
-    { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
-  ] = useDisclosure(false);
-  const [
-    showUpsertSectionModal,
-    { open: openUpsertSectionModal, close: closeUpsertSectionModal },
-  ] = useDisclosure(false);
-  const [
-    showUpsertModifierDrawer,
-    { open: openUpsertModifierDrawer, close: closeUpsertModifierDrawer },
-  ] = useDisclosure(false);
-  const [
-    showUpsertItemOptionDrawer,
-    { open: openUpsertItemOptionDrawer, close: closeUpsertItemOptionDrawer },
-  ] = useDisclosure(false);
-
   const dispatch = useAppDispatch();
   const menu = useAppSelector(selectMenu);
   const menuStatus = useAppSelector(selectMenuStatus);
@@ -66,61 +44,27 @@ function Menu() {
   if (isLoading) return <Loading message="Loading store data" />;
 
   return (
-    <PageLayout
-      navComponents={
-        <StyledButton
-          variant="outline"
-          label="Update Stock"
-          onClick={openUpdateStockDrawer}
-        />
-      }
-    >
-      <UpdateStockDrawer
-        isOpen={showUpdateStockDrawer}
-        onClose={closeUpdateStockDrawer}
-      />
-      <UpsertSectionModal
-        isOpen={showUpsertSectionModal}
-        onClose={closeUpsertSectionModal}
-      />
-      <UpsertModifierDrawer
-        isOpen={showUpsertModifierDrawer}
-        onClose={closeUpsertModifierDrawer}
-      />
-      <UpsertItemOptionDrawer
-        isOpen={showUpsertItemOptionDrawer}
-        onClose={closeUpsertItemOptionDrawer}
-      />
+    <PageLayout navComponents={<ManageMenu />}>
+      <Box m="sm" bg="white" bdrs="sm">
+        <Accordion
+          radius="sm"
+          variant="contained"
+          chevronIconSize={21}
+          chevronPosition="left"
+        >
+          {menu.map((section) => (
+            <Accordion.Item key={section.label} value={section.label}>
+              <Accordion.Control>
+                <Text component="span">{section.label.toUpperCase()}</Text>
+              </Accordion.Control>
 
-      <Accordion
-        styles={{
-          item: { borderColor: "darkslategray" },
-          content: {
-            padding: 0,
-            margin: 0,
-            backgroundColor: "white",
-          },
-          control: {
-            backgroundColor: "whitesmoke",
-          },
-        }}
-      >
-        <Group w="100%" grow p="sm" bg="white" style={{ zIndex: -1 }}>
-          <StyledButton label="Add Section" onClick={openUpsertSectionModal} />
-          <StyledButton
-            label="Add/Edit Modifier"
-            onClick={openUpsertModifierDrawer}
-          />
-          <StyledButton
-            label="Add/Edit Modifier Category"
-            onClick={openUpsertItemOptionDrawer}
-          />
-        </Group>
-
-        {menu.map((section) => (
-          <Section key={section.id} section={section} />
-        ))}
-      </Accordion>
+              <Accordion.Panel>
+                <Section key={section.id} section={section} />
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </Box>
     </PageLayout>
   );
 }
