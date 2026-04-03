@@ -5,10 +5,15 @@ import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal";
 import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
 import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
+import ReorderDrawer from "./menu/ReorderDrawer";
 
 function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
+  const [
+    showReorderDrawer,
+    { open: openReorderDrawer, close: closeReorderDrawer },
+  ] = useDisclosure(false);
   const [
     showUpdateStockDrawer,
     { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
@@ -27,59 +32,76 @@ function ManageMenu() {
   ] = useDisclosure(false);
 
   return (
-    <Menu shadow="md" position="bottom-end">
-      <Menu.Target>
-        <Button
-          px="lg"
-          variant="outline"
-          color="darkslategray"
-          size={isMobile ? "md" : "lg"}
-        >
-          Manage Menu
-        </Button>
-      </Menu.Target>
+    <>
+      <Menu shadow="md" position="bottom-end">
+        <Menu.Target>
+          <Button
+            px="lg"
+            variant="outline"
+            color="darkslategray"
+            size={isMobile ? "md" : "lg"}
+          >
+            Manage Menu
+          </Button>
+        </Menu.Target>
 
-      <Menu.Dropdown pos="absolute">
-        <Menu.Item onClick={openUpdateStockDrawer}>Update Stock</Menu.Item>
+        <Menu.Dropdown pos="absolute">
+          <Menu.Item onClick={openUpdateStockDrawer}>Update Stock</Menu.Item>
 
-        <UpdateStockDrawer
-          isOpen={showUpdateStockDrawer}
-          onClose={closeUpdateStockDrawer}
-        />
+          <Menu.Divider />
 
-        <Menu.Divider />
-        <Menu.Label>Menu Sections</Menu.Label>
-        <Menu.Item onClick={openUpsertSectionModal}>Add Section</Menu.Item>
-        <Menu.Item>Reorder Menu</Menu.Item>
+          <Menu.Label>Menu Sections</Menu.Label>
+          <Menu.Item onClick={openUpsertSectionModal}>Add Section</Menu.Item>
+          <Menu.Item onClick={openReorderDrawer}>Reorder Menu</Menu.Item>
 
-        <UpsertSectionModal
-          isOpen={showUpsertSectionModal}
-          onClose={closeUpsertSectionModal}
-        />
+          <Menu.Divider />
 
-        <Menu.Divider />
-        <Menu.Label>Item Modifiers</Menu.Label>
-        <Menu.Item onClick={openUpsertModifierDrawer}>Add Modifier</Menu.Item>
-        <Menu.Item onClick={openUpsertModifierDrawer}>Edit Modifier</Menu.Item>
-        <Menu.Item>Remove Modifier</Menu.Item>
+          <Menu.Label>Item Modifiers</Menu.Label>
+          <Menu.Item onClick={openUpsertModifierDrawer}>Add Modifier</Menu.Item>
+          <Menu.Item onClick={openUpsertModifierDrawer}>
+            Edit Modifier
+          </Menu.Item>
+          <Menu.Item>Remove Modifier</Menu.Item>
 
-        <UpsertModifierDrawer
-          isOpen={showUpsertModifierDrawer}
-          onClose={closeUpsertModifierDrawer}
-        />
+          <Menu.Divider />
 
-        <Menu.Divider />
-        <Menu.Label>Item Options</Menu.Label>
-        <Menu.Item onClick={openUpsertItemOptionDrawer}>Add Options</Menu.Item>
-        <Menu.Item onClick={openUpsertItemOptionDrawer}>Edit Options</Menu.Item>
-        <Menu.Item>Remove Options</Menu.Item>
+          <Menu.Label>Item Options</Menu.Label>
+          <Menu.Item onClick={openUpsertItemOptionDrawer}>
+            Add Options
+          </Menu.Item>
+          <Menu.Item onClick={openUpsertItemOptionDrawer}>
+            Edit Options
+          </Menu.Item>
+          <Menu.Item>Remove Options</Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
 
-        <UpsertItemOptionDrawer
-          isOpen={showUpsertItemOptionDrawer}
-          onClose={closeUpsertItemOptionDrawer}
-        />
-      </Menu.Dropdown>
-    </Menu>
+      <UpdateStockDrawer
+        isOpen={showUpdateStockDrawer}
+        onClose={closeUpdateStockDrawer}
+      />
+
+      <UpsertSectionModal
+        isOpen={showUpsertSectionModal}
+        onClose={closeUpsertSectionModal}
+      />
+
+      <ReorderDrawer
+        isOpen={showReorderDrawer}
+        onClose={closeReorderDrawer}
+        label="Sections"
+      />
+
+      <UpsertModifierDrawer
+        isOpen={showUpsertModifierDrawer}
+        onClose={closeUpsertModifierDrawer}
+      />
+
+      <UpsertItemOptionDrawer
+        isOpen={showUpsertItemOptionDrawer}
+        onClose={closeUpsertItemOptionDrawer}
+      />
+    </>
   );
 }
 
