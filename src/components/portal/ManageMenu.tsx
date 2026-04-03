@@ -5,14 +5,13 @@ import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal";
 import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
 import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
-import ReorderDrawer from "./menu/ReorderDrawer";
 
 function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
   const [
-    showReorderDrawer,
-    { open: openReorderDrawer, close: closeReorderDrawer },
+    showReorderSections,
+    { open: openReorderSections, close: closeReorderSections },
   ] = useDisclosure(false);
   const [
     showUpdateStockDrawer,
@@ -52,7 +51,7 @@ function ManageMenu() {
 
           <Menu.Label>Menu Sections</Menu.Label>
           <Menu.Item onClick={openUpsertSectionModal}>Add Section</Menu.Item>
-          <Menu.Item onClick={openReorderDrawer}>Reorder Menu</Menu.Item>
+          <Menu.Item onClick={openReorderSections}>Reorder Menu</Menu.Item>
 
           <Menu.Divider />
 
@@ -84,12 +83,6 @@ function ManageMenu() {
       <UpsertSectionModal
         isOpen={showUpsertSectionModal}
         onClose={closeUpsertSectionModal}
-      />
-
-      <ReorderDrawer
-        isOpen={showReorderDrawer}
-        onClose={closeReorderDrawer}
-        label="Sections"
       />
 
       <UpsertModifierDrawer
