@@ -1,47 +1,47 @@
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import { useDisclosure } from "@mantine/hooks";
-import { Stack, Divider, Group, TextInput } from "@mantine/core";
+import { Stack, Divider, Group } from "@mantine/core";
 
 import EditableItem from "./EditableItem";
 import StyledButton from "../../StyledButton";
 import ItemEditPreview from "./ItemEditPreview";
 import ConfirmationModal from "../../ConfirmationModal";
-
-import { selectMenuLength } from "../../../state/menu/menuSlice";
-import { upsertSection } from "../../../state/menu/menuThunks";
-
-import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import UpsertSectionModal from "./UpsertSectionModal";
+import ReorderDrawer from "./ReorderMenuItemsDrawer";
 
 import type {
   MenuItemType,
   Section as SectionType,
 } from "../../../state/menu/menuSlice";
 
-const blankMenuItem: MenuItemType = {
-  id: uuid(),
-  label: "",
-  price: 0,
-  is_in_stock: true,
-  has_long_prep_time: false,
-  is_applicable_loyalty_item: false,
-};
-
 function Section({ section }: { section: SectionType }) {
-  const dispatch = useAppDispatch();
-  const menuLength = useAppSelector(selectMenuLength);
+  const blankMenuItem: MenuItemType = {
+    id: uuid(),
+    label: "",
+    price: 0,
+    is_in_stock: true,
+    has_long_prep_time: false,
+    is_applicable_loyalty_item: false,
+    order: section.items.length + 1,
+  };
 
-  const [sectionLabel, setSectionLabel] = useState(section.label);
-  const [isUpdatingSection, setIsUpdatingSection] = useState(false);
-  const [menuItems, setMenuItems] = useState<MenuItemType[]>(section.items);
   const [newMenuItem, setNewMenuItem] = useState<MenuItemType | null>(
-    menuItems.length === 0 ? blankMenuItem : null,
+    section.items.length === 0 ? blankMenuItem : null,
   );
 
   const [
+    showReorderDrawer,
+    { open: openReorderDrawer, close: closeReorderDrawer },
+  ] = useDisclosure(false);
+  const [
+    showUpsertSectionModal,
+    { open: openUpsertSectionModal, close: closeUpsertSectionModal },
+  ] = useDisclosure(false);
+  const [
     showEditableMenuItem,
     { open: openEditableMenuItem, close: closeEditableMenuItem },
-  ] = useDisclosure(menuItems.length === 0);
+  ] = useDisclosure(section.items.length === 0);
 
   const [
     showConfirmDelete,
@@ -53,24 +53,9 @@ function Section({ section }: { section: SectionType }) {
     setNewMenuItem(null);
   };
 
-  const onDeleteItem = (id: string) => {
-    setMenuItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const onDeleteSectionItem = (id: string) => {
+    // dispatch(deleteMenuItem(id))
     onCloseEditableItem();
-  };
-
-  const onRenameSection = () => {
-    const sectionData = section
-      ? { ...section, label: sectionLabel }
-      : {
-          id: uuid(),
-          order: menuLength + 1,
-          label: sectionLabel,
-        };
-
-    setIsUpdatingSection(true);
-    dispatch(upsertSection(sectionData)).finally(() => {
-      setIsUpdatingSection(false);
-    });
   };
 
   return (
@@ -93,16 +78,11 @@ function Section({ section }: { section: SectionType }) {
             bd="1px solid lightgray"
             bg="white"
           >
-            <TextInput
-              size="lg"
-              value={sectionLabel}
-              onChange={(event) => setSectionLabel(event.target.value)}
-              disabled={isUpdatingSection}
-            />
+            <StyledButton label="Reorder Items" onClick={openReorderDrawer} />
+
             <StyledButton
               label="Rename Section"
-              onClick={onRenameSection}
-              isLoading={isUpdatingSection}
+              onClick={openUpsertSectionModal}
             />
 
             <StyledButton label="Delete Section" onClick={openConfirmDelete} />
@@ -122,18 +102,37 @@ function Section({ section }: { section: SectionType }) {
             <EditableItem
               menuItem={newMenuItem}
               onCloseEditableItem={onCloseEditableItem}
-              showCancelButton={menuItems.length > 0}
+              showCancelButton={section.items.length > 0}
             />
             <Divider />
           </>
         )}
 
-        {menuItems.map((menuItem, index) => (
+        {section.items.map((menuItem, index) => (
           <>
             {index > 0 && <Divider />}
-            <ItemEditPreview menuItem={menuItem} onDeleteItem={onDeleteItem} />
+            <ItemEditPreview
+              menuItem={menuItem}
+              onDeleteItem={onDeleteSectionItem}
+            />
           </>
         ))}
+
+        {showUpsertSectionModal && (
+          <UpsertSectionModal
+            isOpen={showUpsertSectionModal}
+            onClose={closeUpsertSectionModal}
+          />
+        )}
+
+        {showReorderDrawer && (
+          <ReorderDrawer
+            isOpen={showReorderDrawer}
+            onClose={closeReorderDrawer}
+            label="Menu Items"
+            items={section.items}
+          />
+        )}
       </Stack>
     </>
   );
