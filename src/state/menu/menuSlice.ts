@@ -32,6 +32,7 @@ export interface MenuItemType {
   is_applicable_loyalty_item: boolean;
   modifiers?: Modifier[];
   modifierCategories?: ItemOptions[];
+  order: number;
 }
 
 export interface Section {
