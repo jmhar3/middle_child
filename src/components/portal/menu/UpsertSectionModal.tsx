@@ -7,6 +7,7 @@ import StyledButton from "../../StyledButton";
 import { selectMenuLength, type Section } from "../../../state/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 import { upsertSection } from "../../../state/menu/menuThunks";
+import { notifications } from "@mantine/notifications";
 
 interface UpsertSectionModalProps {
   isOpen: boolean;
@@ -31,18 +32,32 @@ function UpsertSectionModal(props: UpsertSectionModalProps) {
   };
 
   const onUpsertSection = () => {
-    const sectionData = section
-      ? { ...section, label: sectionLabelInput }
-      : {
-          id: uuid(),
-          order: menuLength + 1,
-          label: sectionLabelInput,
-        };
+    const sectionData = {
+      id: section?.id || uuid(),
+      order: section?.order || menuLength + 1,
+      label: sectionLabelInput,
+    };
 
     setIsUpdatingSection(true);
-    dispatch(upsertSection(sectionData)).finally(() => {
-      setIsUpdatingSection(false);
-    });
+
+    dispatch(upsertSection(sectionData))
+      .then(() => {
+        notifications.show({
+          withCloseButton: false,
+          message: `${sectionLabelInput} successfully ${section ? "renamed" : "created"}`,
+          position: "bottom-right",
+          color: "green",
+        });
+      })
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsUpdatingSection(false));
   };
 
   return (
