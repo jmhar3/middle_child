@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchMenu, upsertSection } from "./menuThunks";
+import { deleteSection, fetchMenu, upsertSection } from "./menuThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -44,13 +44,11 @@ export interface Section {
 
 export interface MenuState {
   data: Section[];
-  menuLength: number;
   status: "idle" | "pending" | "succeeded" | "failed";
 }
 
 const initialState: MenuState = {
   data: [],
-  menuLength: 0,
   status: "idle",
 };
 
@@ -77,8 +75,7 @@ const menuSlice = createSlice({
       })
       .addCase(fetchMenu.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload.menu;
-        state.menuLength = action.payload.menuLength;
+        state.data = action.payload;
       })
       .addCase(fetchMenu.rejected, (state) => {
         state.status = "failed";
@@ -88,11 +85,21 @@ const menuSlice = createSlice({
       })
       .addCase(upsertSection.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload.menu;
-        if (action.payload.menuLength)
-          state.menuLength = action.payload.menuLength;
+        state.data = [...state.data, action.payload];
       })
       .addCase(upsertSection.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(deleteSection.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(deleteSection.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = state.data.filter(
+          (section) => section.id !== action.payload,
+        );
+      })
+      .addCase(deleteSection.rejected, (state) => {
         state.status = "failed";
       });
   },
@@ -108,4 +115,4 @@ export const selectSectionById = (state: RootState, sectionId: string) =>
 
 export const selectMenuStatus = (state: RootState) => state.menu.status;
 
-export const selectMenuLength = (state: RootState) => state.menu.menuLength;
+export const selectMenuLength = (state: RootState) => state.menu.data.length;

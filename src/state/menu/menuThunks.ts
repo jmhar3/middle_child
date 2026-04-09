@@ -60,7 +60,7 @@ const formatSupaBaseMenu = (supabaseData: SupabaseSection[]) => {
 };
 
 export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
-  const { count, data, error } = await supabase
+  const { data, error } = await supabase
     .from("menu_sections")
     .select(
       `
@@ -94,18 +94,13 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
     throw Error(error.message);
   }
 
-  return {
-    menuLength: count || 0,
-    menu: formatSupaBaseMenu(data),
-  };
+  return formatSupaBaseMenu(data);
 });
 
 export const upsertSection = createAsyncThunk(
   "menu/upsertSection",
-  async ({ items, ...section }: Partial<Section>) => {
-    console.log(items);
-
-    const { count, data, error } = await supabase
+  async (section: Partial<Section>) => {
+    const { data, error } = await supabase
       .from("menu_sections")
       .upsert(section)
       .select();
@@ -121,7 +116,30 @@ export const upsertSection = createAsyncThunk(
       });
       throw Error(error.message);
     }
+    return formatSupaBaseMenu(data)[0];
+  },
+);
 
-    return { menuLength: count, menu: formatSupaBaseMenu(data) };
+export const deleteSection = createAsyncThunk(
+  "menu/deleteSection",
+  async (id: string) => {
+    const { error } = await supabase
+      .from("menu_sections")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.log(error);
+      notifications.show({
+        withCloseButton: false,
+        message: error.message,
+        title: error.name,
+        position: "bottom-right",
+        color: "red",
+      });
+      throw Error(error.message);
+    }
+
+    return id;
   },
 );
