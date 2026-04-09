@@ -50,14 +50,15 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
 
   const onUpsertModifier = () => {
     dispatch(upsertModifier([modifier]))
-      .then(() =>
+      .then(() => {
         notifications.show({
           withCloseButton: false,
           message: `${modifier ? modifier.label : "Modifier"} successfully updated`,
           position: "bottom-right",
           color: "green",
-        }),
-      )
+        });
+        clearDrawer();
+      })
       .catch((error) =>
         notifications.show({
           message: error,
@@ -65,10 +66,7 @@ function UpsertModifierDrawer(props: UpsertModifierDrawerProps) {
           position: "bottom-right",
           color: "red",
         }),
-      )
-      .finally(() => {
-        clearDrawer();
-      });
+      );
   };
 
   return (
