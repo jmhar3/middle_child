@@ -15,12 +15,14 @@ export interface Modifier {
 }
 
 export interface ModifiersState {
-  data: Modifier[];
+  allModifiers: Modifier[];
+  ingredients: Modifier[];
   status: "idle" | "pending" | "succeeded" | "failed";
 }
 
 const initialState: ModifiersState = {
-  data: [],
+  allModifiers: [],
+  ingredients: [],
   status: "idle",
 };
 
@@ -29,13 +31,13 @@ const modifiersSlice = createSlice({
   initialState,
   reducers: {
     modifierAdded(state, action: PayloadAction<Modifier>) {
-      const filteredModifiers = state.data.filter(
+      const filteredModifiers = state.allModifiers.filter(
         (modifier) => modifier.id === action.payload.id,
       );
-      state.data = [...filteredModifiers, action.payload];
+      state.allModifiers = [...filteredModifiers, action.payload];
     },
     modifierRemoved(state, action: PayloadAction<Modifier>) {
-      state.data = state.data.filter(
+      state.allModifiers = state.allModifiers.filter(
         (modifier) => modifier.id === action.payload.id,
       );
     },
@@ -47,7 +49,8 @@ const modifiersSlice = createSlice({
       })
       .addCase(fetchModifiers.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload;
+        state.allModifiers = action.payload.allModifiers;
+        state.ingredients = action.payload.ingredients;
       })
       .addCase(fetchModifiers.rejected, (state) => {
         state.status = "failed";
@@ -57,7 +60,7 @@ const modifiersSlice = createSlice({
       })
       .addCase(upsertModifier.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload;
+        state.allModifiers = [...state.allModifiers, ...action.payload];
       })
       .addCase(upsertModifier.rejected, (state) => {
         state.status = "failed";
@@ -68,13 +71,14 @@ const modifiersSlice = createSlice({
 export const { modifierAdded, modifierRemoved } = modifiersSlice.actions;
 export default modifiersSlice.reducer;
 
-export const selectAllModifiers = (state: RootState) => state.modifiers.data;
+export const selectAllModifiers = (state: RootState) =>
+  state.modifiers.allModifiers;
 
 export const selectModifierById = (state: RootState, modifierId: string) =>
-  state.modifiers.data.find((modifier) => modifier.id === modifierId);
+  state.modifiers.allModifiers.find((modifier) => modifier.id === modifierId);
 
 export const selectModifiersStatus = (state: RootState) =>
   state.modifiers.status;
 
 export const selectAllIngredients = (state: RootState) =>
-  state.modifiers.data.filter((modifier) => modifier.is_ingredient);
+  state.modifiers.ingredients;

@@ -8,24 +8,42 @@ import type { Modifier } from "./modifiersSlice";
 export const fetchModifiers = createAsyncThunk(
   "modifiers/fetchModifiers",
   async () => {
-    const { data, error } = await supabase
+    const modifiers = await supabase
       .from("modifiers")
       .select()
       .overrideTypes<Array<Modifier>, { merge: false }>();
 
-    if (error) {
-      console.error(error);
+    const ingredients = await supabase
+      .from("modifiers")
+      .select()
+      .eq("is_ingredient", true)
+      .overrideTypes<Array<Modifier>, { merge: false }>();
+
+    if (modifiers.error) {
+      console.error(modifiers.error);
       notifications.show({
         withCloseButton: false,
-        message: error.message,
-        title: error.name,
+        message: modifiers.error.message,
+        title: modifiers.error.name,
         position: "bottom-right",
         color: "red",
       });
-      throw Error(error.message);
+      throw Error(modifiers.error.message);
     }
 
-    return data;
+    if (ingredients.error) {
+      console.error(ingredients.error);
+      notifications.show({
+        withCloseButton: false,
+        message: ingredients.error.message,
+        title: ingredients.error.name,
+        position: "bottom-right",
+        color: "red",
+      });
+      throw Error(ingredients.error.message);
+    }
+
+    return { allModifiers: modifiers.data, ingredients: ingredients.data };
   },
 );
 
