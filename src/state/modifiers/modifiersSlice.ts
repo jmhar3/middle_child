@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchModifiers, upsertModifier } from "./modifierThunks";
+import {
+  deleteModifier,
+  fetchModifiers,
+  upsertModifiers,
+} from "./modifierThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -55,14 +59,74 @@ const modifiersSlice = createSlice({
       .addCase(fetchModifiers.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(upsertModifier.pending, (state) => {
+      .addCase(upsertModifiers.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(upsertModifier.fulfilled, (state, action) => {
+      .addCase(upsertModifiers.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.allModifiers = [...state.allModifiers, ...action.payload];
+
+        // sort modifiers
+        const newModifiers: Modifier[] = [];
+        const oldModifiers: Modifier[] = [];
+
+        payload.forEach((item) => {
+          if (state.allModifiers.find(({ id }) => id === item.id)) {
+            oldModifiers.push(item);
+          } else {
+            newModifiers.push(item);
+          }
+        });
+
+        const filteredState = state.allModifiers.filter(
+          ({ id: id1 }) => !payload.find(({ id: id2 }) => id1 === id2),
+        );
+
+        state.allModifiers = [
+          ...filteredState,
+          ...oldModifiers,
+          ...newModifiers,
+        ];
+
+        // sort ingredients
+        const newIngredients: Modifier[] = [];
+        const oldIngredients: Modifier[] = [];
+
+        payload
+          .filter((item) => item.is_ingredient)
+          .forEach((item) => {
+            if (state.ingredients.find(({ id }) => id === item.id)) {
+              oldIngredients.push(item);
+            } else {
+              newIngredients.push(item);
+            }
+          });
+
+        const filteredIngredientsState = state.ingredients.filter(
+          ({ id: id1 }) => !payload.find(({ id: id2 }) => id1 === id2),
+        );
+
+        state.ingredients = [
+          ...filteredIngredientsState,
+          ...oldModifiers,
+          ...newModifiers,
+        ];
       })
-      .addCase(upsertModifier.rejected, (state) => {
+      .addCase(upsertModifiers.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(deleteModifier.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(deleteModifier.fulfilled, (state, { payload }) => {
+        state.status = "succeeded";
+        state.allModifiers = state.allModifiers.filter(
+          ({ id }) => id !== payload,
+        );
+        state.ingredients = state.ingredients.filter(
+          ({ id }) => id !== payload,
+        );
+      })
+      .addCase(deleteModifier.rejected, (state) => {
         state.status = "failed";
       });
   },

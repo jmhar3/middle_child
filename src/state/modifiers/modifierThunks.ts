@@ -47,8 +47,8 @@ export const fetchModifiers = createAsyncThunk(
   },
 );
 
-export const upsertModifier = createAsyncThunk(
-  "modifiers/upsertModifier",
+export const upsertModifiers = createAsyncThunk(
+  "modifiers/upsertModifiers",
   async (modifiers: Partial<Modifier>[]) => {
     const formattedModifiers = modifiers.map((modifier) => ({
       ...modifier,
@@ -74,5 +74,26 @@ export const upsertModifier = createAsyncThunk(
     }
 
     return data;
+  },
+);
+
+export const deleteModifier = createAsyncThunk(
+  "menu/deleteModifier",
+  async (id: string) => {
+    const { error } = await supabase.from("modifiers").delete().eq("id", id);
+
+    if (error) {
+      console.log(error);
+      notifications.show({
+        withCloseButton: false,
+        message: error.message,
+        title: error.name,
+        position: "bottom-right",
+        color: "red",
+      });
+      throw Error(error.message);
+    }
+
+    return id;
   },
 );
