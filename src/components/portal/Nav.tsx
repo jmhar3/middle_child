@@ -22,11 +22,6 @@ function Nav(props: PropsWithChildren) {
           path="/portal/orders"
         />
         <NavButton width="fit-content" label="Edit Menu" path="/portal/menu" />
-        <NavButton
-          width="fit-content"
-          label="View Stats"
-          path="/portal/stats"
-        />
       </Group>
 
       <Group gap="sm" w="fit-content">
