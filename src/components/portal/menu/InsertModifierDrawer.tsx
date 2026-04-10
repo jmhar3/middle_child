@@ -12,9 +12,10 @@ interface InsertModifierDrawerProps {
   onClose: () => void;
 }
 
-const blankModifier = {
+const blankModifier: Modifier = {
   id: uuid(),
   label: "",
+  is_ingredient: false,
 };
 
 function InsertModifierDrawer(props: InsertModifierDrawerProps) {
