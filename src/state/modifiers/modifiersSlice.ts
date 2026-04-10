@@ -11,7 +11,7 @@ export interface Modifier {
   price?: number;
   is_in_stock?: boolean;
   is_ingredient?: boolean;
-  color?: string;
+  reference_code?: string;
 }
 
 export interface ModifiersState {

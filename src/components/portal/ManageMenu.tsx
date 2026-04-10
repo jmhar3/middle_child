@@ -1,10 +1,11 @@
 import { Button, em, Menu } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 
-import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
-import UpsertSectionModal from "../../components/portal/menu/UpsertSectionModal";
-import UpsertModifierDrawer from "../../components/portal/menu/UpsertModifierDrawer";
-import UpsertItemOptionDrawer from "../../components/portal/menu/UpsertItemOptionDrawer";
+import UpdateStockDrawer from "./UpdateStockDrawer";
+import UpsertSectionModal from "./menu/UpsertSectionModal";
+import UpdateModifierDrawer from "./menu/UpdateModifierDrawer";
+import InsertModifierDrawer from "./menu/InsertModifierDrawer";
+import UpsertItemOptionDrawer from "./menu/UpsertItemOptionDrawer";
 
 function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -18,8 +19,12 @@ function ManageMenu() {
     { open: openUpsertSectionModal, close: closeUpsertSectionModal },
   ] = useDisclosure(false);
   const [
-    showUpsertModifierDrawer,
-    { open: openUpsertModifierDrawer, close: closeUpsertModifierDrawer },
+    showInsertModifierDrawer,
+    { open: openInsertModifierDrawer, close: closeInsertModifierDrawer },
+  ] = useDisclosure(false);
+  const [
+    showUpdateModifierDrawer,
+    { open: openUpdateModifierDrawer, close: closeUpdateModifierDrawer },
   ] = useDisclosure(false);
   const [
     showUpsertItemOptionDrawer,
@@ -51,8 +56,8 @@ function ManageMenu() {
           <Menu.Divider />
 
           <Menu.Label>Item Modifiers</Menu.Label>
-          <Menu.Item onClick={openUpsertModifierDrawer}>Add Modifier</Menu.Item>
-          <Menu.Item onClick={openUpsertModifierDrawer}>
+          <Menu.Item onClick={openInsertModifierDrawer}>Add Modifier</Menu.Item>
+          <Menu.Item onClick={openUpdateModifierDrawer}>
             Edit Modifier
           </Menu.Item>
           <Menu.Item>Remove Modifier</Menu.Item>
@@ -80,9 +85,14 @@ function ManageMenu() {
         onClose={closeUpsertSectionModal}
       />
 
-      <UpsertModifierDrawer
-        isOpen={showUpsertModifierDrawer}
-        onClose={closeUpsertModifierDrawer}
+      <UpdateModifierDrawer
+        isOpen={showUpdateModifierDrawer}
+        onClose={closeUpdateModifierDrawer}
+      />
+
+      <InsertModifierDrawer
+        isOpen={showInsertModifierDrawer}
+        onClose={closeInsertModifierDrawer}
       />
 
       <UpsertItemOptionDrawer
