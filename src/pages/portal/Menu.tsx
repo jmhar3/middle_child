@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import PageLayout from "./PageLayout";
 import { Accordion, Box, Text } from "@mantine/core";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
+import PageLayout from "./PageLayout";
 import Loading from "../../components/Loading";
 import Section from "../../components/portal/menu/Section";
 import ManageMenu from "../../components/portal/ManageMenu";
