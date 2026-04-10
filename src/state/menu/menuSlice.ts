@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { deleteSection, fetchMenu, upsertSection } from "./menuThunks";
+import {
+  fetchMenu,
+  insertSection,
+  updateSection,
+  deleteSection,
+} from "./menuThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -80,14 +85,26 @@ const menuSlice = createSlice({
       .addCase(fetchMenu.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(upsertSection.pending, (state) => {
+      .addCase(updateSection.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(upsertSection.fulfilled, (state, action) => {
+      .addCase(updateSection.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.data = [...state.data, action.payload];
+        state.data = state.data.map((section) =>
+          section.id === payload.id ? payload : section,
+        );
       })
-      .addCase(upsertSection.rejected, (state) => {
+      .addCase(updateSection.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(insertSection.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(insertSection.fulfilled, (state, { payload }) => {
+        state.status = "succeeded";
+        state.data = [...state.data, payload];
+      })
+      .addCase(insertSection.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(deleteSection.pending, (state) => {
