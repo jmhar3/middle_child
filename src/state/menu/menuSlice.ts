@@ -1,11 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import {
-  fetchMenu,
-  insertSection,
-  updateSection,
-  deleteSection,
-} from "./menuThunks";
+import { fetchMenu, deleteSection, upsertSections } from "./menuThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -85,26 +80,32 @@ const menuSlice = createSlice({
       .addCase(fetchMenu.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(updateSection.pending, (state) => {
+      .addCase(upsertSections.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(updateSection.fulfilled, (state, { payload }) => {
+      .addCase(upsertSections.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.data = state.data.map((section) =>
-          section.id === payload.id ? payload : section,
+
+        const newSections: Section[] = [];
+        const oldSections: Section[] = [];
+
+        payload.forEach((item) => {
+          if (state.data.find(({ id }) => id === item.id)) {
+            oldSections.push(item);
+          } else {
+            newSections.push(item);
+          }
+        });
+
+        const filteredState = state.data.filter(
+          ({ id: id1 }) => !payload.find(({ id: id2 }) => id1 === id2),
+        );
+
+        state.data = [...filteredState, ...oldSections, ...newSections].sort(
+          (a, b) => a.order - b.order,
         );
       })
-      .addCase(updateSection.rejected, (state) => {
-        state.status = "failed";
-      })
-      .addCase(insertSection.pending, (state) => {
-        state.status = "pending";
-      })
-      .addCase(insertSection.fulfilled, (state, { payload }) => {
-        state.status = "succeeded";
-        state.data = [...state.data, payload];
-      })
-      .addCase(insertSection.rejected, (state) => {
+      .addCase(upsertSections.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(deleteSection.pending, (state) => {

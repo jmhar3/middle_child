@@ -97,47 +97,12 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
   return formatSupaBaseMenu(data);
 });
 
-export const insertSection = createAsyncThunk(
-  "menu/insertSection",
-  async (section: Partial<Section>) => {
+export const upsertSections = createAsyncThunk(
+  "menu/upsertSections",
+  async (sections: Partial<Section>[]) => {
     const { data, error } = await supabase
       .from("menu_sections")
-      .insert(section)
-      .select(
-        `
-            *, menu_items (
-              *,
-              menu_items_options (
-                menu_item_options (
-                  *,
-                  menu_item_options_modifiers (
-                    modifiers (*)
-                  )
-                )
-              ),
-              menu_items_modifiers (
-                modifiers (*)
-              )
-            )
-          `,
-      );
-
-    if (error) {
-      console.log(error);
-      throw Error(error.message);
-    }
-
-    return formatSupaBaseMenu(data)[0];
-  },
-);
-
-export const updateSection = createAsyncThunk(
-  "menu/updateSection",
-  async ({ id, ...section }: Partial<Section>) => {
-    const { data, error } = await supabase
-      .from("menu_sections")
-      .update(section)
-      .eq("id", id)
+      .upsert(sections)
       .select(
         `
           *, menu_items (
@@ -162,7 +127,7 @@ export const updateSection = createAsyncThunk(
       throw Error(error.message);
     }
 
-    return formatSupaBaseMenu(data)[0];
+    return formatSupaBaseMenu(data);
   },
 );
 
