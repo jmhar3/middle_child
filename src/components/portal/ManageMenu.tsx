@@ -10,10 +10,6 @@ function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
   const [
-    showReorderSections,
-    { open: openReorderSections, close: closeReorderSections },
-  ] = useDisclosure(false);
-  const [
     showUpdateStockDrawer,
     { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
   ] = useDisclosure(false);
@@ -51,7 +47,6 @@ function ManageMenu() {
 
           <Menu.Label>Menu Sections</Menu.Label>
           <Menu.Item onClick={openUpsertSectionModal}>Add Section</Menu.Item>
-          <Menu.Item onClick={openReorderSections}>Reorder Menu</Menu.Item>
 
           <Menu.Divider />
 

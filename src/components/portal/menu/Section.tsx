@@ -8,7 +8,6 @@ import StyledButton from "../../StyledButton";
 import ItemEditPreview from "./ItemEditPreview";
 import ConfirmationModal from "../../ConfirmationModal";
 import UpsertSectionModal from "./UpsertSectionModal";
-import ReorderDrawer from "./ReorderMenuItemsDrawer";
 
 import type {
   MenuItemType,
@@ -34,10 +33,6 @@ function Section({ section }: { section: SectionType }) {
     section.items.length === 0 ? blankMenuItem : null,
   );
 
-  const [
-    showReorderDrawer,
-    { open: openReorderDrawer, close: closeReorderDrawer },
-  ] = useDisclosure(false);
   const [
     showUpsertSectionModal,
     { open: openUpsertSectionModal, close: closeUpsertSectionModal },
@@ -89,30 +84,23 @@ function Section({ section }: { section: SectionType }) {
   };
 
   return (
-    <Stack gap="0">
-      <Stack pb="sm">
-        <Group
-          grow
-          p="sm"
-          gap="sm"
-          w="100%"
-          bdrs="sm"
-          bg="white"
-          bd="1px solid lightgray"
-        >
-          <StyledButton label="Reorder Items" onClick={openReorderDrawer} />
+    <Stack gap="sm">
+      <Group
+        grow
+        p="sm"
+        gap="sm"
+        w="100%"
+        bdrs="sm"
+        bg="white"
+        bd="1px solid lightgray"
+      >
+        <StyledButton label="Rename Section" onClick={openUpsertSectionModal} />
 
-          <StyledButton
-            label="Rename Section"
-            onClick={openUpsertSectionModal}
-          />
-
-          <StyledButton
-            label="Delete Section"
-            onClick={openConfirmDelete}
-            isLoading={isDeletingSection}
-          />
-        </Group>
+        <StyledButton
+          label="Delete Section"
+          onClick={openConfirmDelete}
+          isLoading={isDeletingSection}
+        />
 
         <StyledButton
           label="Add New Menu Item"
@@ -121,7 +109,7 @@ function Section({ section }: { section: SectionType }) {
             setNewMenuItem(blankMenuItem);
           }}
         />
-      </Stack>
+      </Group>
 
       {newMenuItem && showEditableMenuItem && (
         <>
@@ -149,15 +137,6 @@ function Section({ section }: { section: SectionType }) {
           section={section}
           isOpen={showUpsertSectionModal}
           onClose={closeUpsertSectionModal}
-        />
-      )}
-
-      {showReorderDrawer && (
-        <ReorderDrawer
-          isOpen={showReorderDrawer}
-          onClose={closeReorderDrawer}
-          label="Menu Items"
-          items={section.items}
         />
       )}
 
