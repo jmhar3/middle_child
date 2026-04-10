@@ -6,6 +6,7 @@ import UpsertSectionModal from "./menu/UpsertSectionModal";
 import UpdateModifierDrawer from "./menu/UpdateModifierDrawer";
 import InsertModifierDrawer from "./menu/InsertModifierDrawer";
 import UpsertItemOptionDrawer from "./menu/UpsertItemOptionDrawer";
+import DeleteModifierModal from "./menu/DeleteModifierModal";
 
 function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -25,6 +26,10 @@ function ManageMenu() {
   const [
     showUpdateModifierDrawer,
     { open: openUpdateModifierDrawer, close: closeUpdateModifierDrawer },
+  ] = useDisclosure(false);
+  const [
+    showDeleteModifierModal,
+    { open: openDeleteModifierModal, close: closeDeleteModifierModal },
   ] = useDisclosure(false);
   const [
     showUpsertItemOptionDrawer,
@@ -60,7 +65,9 @@ function ManageMenu() {
           <Menu.Item onClick={openUpdateModifierDrawer}>
             Edit Modifier
           </Menu.Item>
-          <Menu.Item>Remove Modifier</Menu.Item>
+          <Menu.Item onClick={openDeleteModifierModal}>
+            Remove Modifier
+          </Menu.Item>
 
           <Menu.Divider />
 
@@ -93,6 +100,11 @@ function ManageMenu() {
       <InsertModifierDrawer
         isOpen={showInsertModifierDrawer}
         onClose={closeInsertModifierDrawer}
+      />
+
+      <DeleteModifierModal
+        isOpen={showDeleteModifierModal}
+        onClose={closeDeleteModifierModal}
       />
 
       <UpsertItemOptionDrawer
