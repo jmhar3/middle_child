@@ -55,7 +55,7 @@ function Menu() {
           {menu.map((section) => (
             <Accordion.Item key={section.label} value={section.label}>
               <Accordion.Control>
-                <Text component="span">{section.label.toUpperCase()}</Text>
+                <Text component="span">{section.label}</Text>
               </Accordion.Control>
 
               <Accordion.Panel>
