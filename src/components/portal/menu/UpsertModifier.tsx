@@ -5,7 +5,7 @@ import { Group, Switch, Divider, TextInput, NumberInput } from "@mantine/core";
 import StyledButton from "../../StyledButton";
 
 import { useAppDispatch } from "../../../state/hooks";
-import { upsertModifier } from "../../../state/modifiers/modifierThunks";
+import { upsertModifiers } from "../../../state/modifiers/modifierThunks";
 
 import type { Modifier } from "../../../state/modifiers/modifiersSlice";
 
@@ -21,13 +21,12 @@ function UpsertModifier(props: UpsertModifierProps) {
 
   const [editedModifier, setEditedModifier] =
     useState<Partial<Modifier>>(modifier);
-
   const onUpsertModifier = () => {
-    dispatch(upsertModifier([editedModifier]))
+    dispatch(upsertModifiers([editedModifier]))
       .then(() => {
         notifications.show({
           withCloseButton: false,
-          message: `${editedModifier.label} successfully ${modifier.id ? "updated" : "created"}`,
+          message: `${editedModifier.label} successfully ${modifier.label?.length === 0 ? "updated" : "created"}`,
           position: "bottom-right",
           color: "green",
         });
@@ -49,7 +48,7 @@ function UpsertModifier(props: UpsertModifierProps) {
         w="100%"
         withAsterisk
         label="Label"
-        value={modifier.label}
+        value={editedModifier.label}
         onChange={(event) =>
           setEditedModifier(
             (prevModifier) =>
@@ -61,43 +60,42 @@ function UpsertModifier(props: UpsertModifierProps) {
         }
       />
 
-      <NumberInput
-        w="100%"
-        label="Price"
-        value={modifier.price}
-        onChange={(value) =>
-          setEditedModifier(
-            (prevModifier) =>
-              prevModifier && {
-                ...prevModifier,
-                price: typeof value === "number" ? value : parseFloat(value),
-              },
-          )
-        }
-      />
+      <Group grow w="100%">
+        <NumberInput
+          label="Price"
+          value={editedModifier.price}
+          onChange={(value) =>
+            setEditedModifier(
+              (prevModifier) =>
+                prevModifier && {
+                  ...prevModifier,
+                  price: typeof value === "number" ? value : parseFloat(value),
+                },
+            )
+          }
+        />
 
-      <TextInput
-        w="100%"
-        withAsterisk
-        label="Reference Code"
-        value={modifier.reference_code}
-        onChange={(event) =>
-          setEditedModifier(
-            (prevModifier) =>
-              prevModifier && {
-                ...prevModifier,
-                reference_code: event.target.value,
-              },
-          )
-        }
-      />
+        <TextInput
+          label="Reference Code"
+          value={editedModifier.reference_code}
+          onChange={(event) =>
+            setEditedModifier(
+              (prevModifier) =>
+                prevModifier && {
+                  ...prevModifier,
+                  reference_code: event.target.value,
+                },
+            )
+          }
+        />
+      </Group>
 
       <Switch
         w="100%"
         label="Is Ingredient"
         description="Ingredients can be marked out of stock"
         withThumbIndicator={false}
-        checked={modifier.is_ingredient}
+        checked={editedModifier.is_ingredient}
         onChange={(event) =>
           setEditedModifier(
             (prevModifier) =>
@@ -109,13 +107,13 @@ function UpsertModifier(props: UpsertModifierProps) {
         }
       />
 
-      {modifier.is_ingredient && (
+      {editedModifier.is_ingredient && (
         <Switch
           w="100%"
           label="Is In Stock"
           description="Out of stock ingredients affect menu item stock"
           withThumbIndicator={false}
-          checked={modifier.is_in_stock}
+          checked={editedModifier.is_in_stock}
           onChange={(event) =>
             setEditedModifier(
               (prevModifier) =>
