@@ -111,11 +111,9 @@ const menuSlice = createSlice({
       .addCase(deleteSection.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(deleteSection.fulfilled, (state, action) => {
+      .addCase(deleteSection.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.data = state.data.filter(
-          (section) => section.id !== action.payload,
-        );
+        state.data = state.data.filter(({ id }) => id !== payload);
       })
       .addCase(deleteSection.rejected, (state) => {
         state.status = "failed";
