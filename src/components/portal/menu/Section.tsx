@@ -146,6 +146,7 @@ function Section({ section }: { section: SectionType }) {
 
       {showUpsertSectionModal && (
         <UpsertSectionModal
+          section={section}
           isOpen={showUpsertSectionModal}
           onClose={closeUpsertSectionModal}
         />
