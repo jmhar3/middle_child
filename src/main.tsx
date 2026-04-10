@@ -13,8 +13,6 @@ import CustomerMenu from "./pages/customer/Menu.js";
 
 import Orders from "./pages/portal/Orders.js";
 import EditMenu from "./pages/portal/Menu.js";
-import Portal from "./pages/portal/Portal.js";
-import Stats from "./pages/portal/Stats.js";
 
 import { store } from "./state/store.js";
 
@@ -53,10 +51,9 @@ createRoot(document.getElementById("root")!).render(
 
               {/* Private Portal */}
               <Route path="portal">
-                <Route index element={<Portal />} />
+                <Route index element={<Navigate to="/portal/orders" />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="menu" element={<EditMenu />} />
-                <Route path="stats" element={<Stats />} />
               </Route>
             </Routes>
           </BrowserRouter>
