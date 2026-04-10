@@ -6,7 +6,7 @@ import StyledButton from "../../StyledButton";
 
 import { selectMenuLength, type Section } from "../../../state/menu/menuSlice";
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { upsertSection } from "../../../state/menu/menuThunks";
+import { insertSection, updateSection } from "../../../state/menu/menuThunks";
 import { notifications } from "@mantine/notifications";
 
 interface UpsertSectionModalProps {
@@ -32,32 +32,59 @@ function UpsertSectionModal(props: UpsertSectionModalProps) {
   };
 
   const onUpsertSection = () => {
-    const sectionData = {
-      id: section?.id || uuid(),
-      order: section?.order || menuLength + 1,
-      label: sectionLabelInput,
-    };
-
     setIsUpdatingSection(true);
 
-    dispatch(upsertSection(sectionData))
-      .then(() => {
-        notifications.show({
-          withCloseButton: false,
-          message: `${sectionLabelInput} successfully ${section ? "renamed" : "created"}`,
-          position: "bottom-right",
-          color: "green",
-        });
-      })
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
+    if (section?.id) {
+      dispatch(
+        updateSection({
+          id: section.id,
+          order: section.order,
+          label: sectionLabelInput,
         }),
       )
-      .finally(() => setIsUpdatingSection(false));
+        .then(() => {
+          notifications.show({
+            withCloseButton: false,
+            message: `${sectionLabelInput} successfully ${section ? "renamed" : "created"}`,
+            position: "bottom-right",
+            color: "green",
+          });
+        })
+        .catch((error) =>
+          notifications.show({
+            message: error,
+            withCloseButton: false,
+            position: "bottom-right",
+            color: "red",
+          }),
+        )
+        .finally(() => setIsUpdatingSection(false));
+    } else {
+      dispatch(
+        insertSection({
+          id: uuid(),
+          order: menuLength + 1,
+          label: sectionLabelInput,
+        }),
+      )
+        .then(() => {
+          notifications.show({
+            withCloseButton: false,
+            message: `${sectionLabelInput} successfully ${section ? "renamed" : "created"}`,
+            position: "bottom-right",
+            color: "green",
+          });
+        })
+        .catch((error) =>
+          notifications.show({
+            message: error,
+            withCloseButton: false,
+            position: "bottom-right",
+            color: "red",
+          }),
+        )
+        .finally(() => setIsUpdatingSection(false));
+    }
   };
 
   return (
