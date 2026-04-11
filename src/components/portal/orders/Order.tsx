@@ -5,7 +5,7 @@ import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
 import StyledButton from "../../StyledButton";
 import OrderBadge from "./OrderBadge";
 
-import type { OrderType } from "../../../helpers/cart";
+import type { OrderType } from "../../../types/cart";
 
 dayjs.extend(relativeTime);
 

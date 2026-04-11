@@ -18,24 +18,22 @@ import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
 import { useAppSelector } from "../../state/hooks";
 
 import type { Modifier } from "../../state/modifiers/modifiersSlice";
-
-// to be removed
-import type { MenuItemType } from "../../types/menu";
+import type { MenuItemType } from "../../state/menuItems/menuItemsSlice";
 
 interface UpdateStockDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpdateStock: () => void;
 }
 
 function UpdateStockDrawer(props: UpdateStockDrawerProps) {
-  const { isOpen, onClose, onUpdateStock } = props;
+  const { isOpen, onClose } = props;
 
+  // store data
   const menu = useAppSelector(selectMenu);
   const ingredients = useAppSelector(selectAllIngredients);
-
   const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
+  // menu view state toggled between Checkbox List / Multiselect
   const [menuView, setMenuView] = useState("Checkbox List");
 
   const [outOfStockIngredients, setOutOfStockIngredients] = useState<
@@ -59,6 +57,10 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
         .map((value) => menuItems.find(({ id }) => id === value))
         .filter((item) => item !== undefined),
     );
+  };
+
+  const onUpdateStock = () => {
+    onClose();
   };
 
   return (

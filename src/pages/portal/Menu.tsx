@@ -4,7 +4,7 @@ import { Accordion, Box, Text } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
 import Loading from "../../components/Loading";
-import Section from "../../components/portal/menu/Section";
+import Section from "../../components/portal/menu/sections/Section";
 import ManageMenu from "../../components/portal/ManageMenu";
 
 import { fetchMenu } from "../../state/menu/menuThunks";
