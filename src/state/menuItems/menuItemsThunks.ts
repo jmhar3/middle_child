@@ -1,32 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notifications } from "@mantine/notifications";
 
-import type { Modifier } from "../modifiers/modifiersSlice";
-
 import { supabase } from "../../supabase";
-import type { MenuItemType } from "./menuItemsSlice";
 
-interface ItemOptions {
-  id: string;
-  label: string;
-  allowMultipleSelections: boolean;
-  menu_item_options_modifiers: { modifiers: Modifier }[];
-}
+import type { MenuItemType, SupabaseMenuItem } from "../types";
 
-interface SupabaseMenuItem {
-  id: string;
-  label: string;
-  price: number;
-  image?: string;
-  description?: string;
-  is_in_stock: boolean;
-  has_long_prep_time: boolean;
-  is_applicable_loyalty_item: boolean;
-  menu_items_modifiers: { modifiers: Modifier }[];
-  menu_items_options: { menu_item_options: ItemOptions }[];
-}
-
-const formatSupaBaseMenuItems = (supabaseItem: SupabaseMenuItem[]) => {
+const formatSupaBaseMenuItems: (
+  supabaseItem: SupabaseMenuItem[],
+) => MenuItemType[] = (supabaseItem: SupabaseMenuItem[]) => {
   return supabaseItem.map(
     ({ menu_items_options, menu_items_modifiers, ...menuItem }) => {
       return {
@@ -46,7 +27,10 @@ const formatSupaBaseMenuItems = (supabaseItem: SupabaseMenuItem[]) => {
 export const fetchMenuItems = createAsyncThunk(
   "menuItems/fetchMenuItems",
   async () => {
-    const { data, error } = await supabase.from("menu_items").select(`
+    const { data, error } = await supabase
+      .from("menu_items")
+      .select(
+        `
     *,
     menu_items_options (
       menu_item_options (
@@ -59,7 +43,9 @@ export const fetchMenuItems = createAsyncThunk(
     menu_items_modifiers (
       modifiers (*)
     )
-  `);
+  `,
+      )
+      .order("order");
 
     if (error) {
       console.error(error);

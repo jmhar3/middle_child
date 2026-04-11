@@ -4,35 +4,7 @@ import { fetchMenuItems, upsertMenuItems } from "./menuItemsThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-
-export interface Modifier {
-  id: string;
-  label: string;
-  price?: number;
-  is_in_stock?: boolean;
-  is_ingredient?: boolean;
-  color?: string;
-}
-
-export interface ItemOptions {
-  id: string;
-  label: string;
-  allowMultipleSelections: boolean;
-  modifiers: Modifier[];
-}
-
-export interface MenuItemType {
-  id: string;
-  label: string;
-  description?: string;
-  price: number;
-  image?: string;
-  is_in_stock: boolean;
-  has_long_prep_time: boolean;
-  is_applicable_loyalty_item: boolean;
-  modifiers?: Modifier[];
-  modifierCategories?: ItemOptions[];
-}
+import type { MenuItemType } from "../types";
 
 export interface MenuItemsState {
   data: MenuItemType[];

@@ -2,11 +2,12 @@ import { Button, em, Menu } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 
 import UpdateStockDrawer from "./UpdateStockDrawer";
-import UpsertSectionModal from "./menu/UpsertSectionModal";
-import UpdateModifierDrawer from "./menu/UpdateModifierDrawer";
-import InsertModifierDrawer from "./menu/InsertModifierDrawer";
-import UpsertItemOptionDrawer from "./menu/UpsertItemOptionDrawer";
-import DeleteModifierModal from "./menu/DeleteModifierModal";
+import UpsertSectionModal from "./menu/sections/UpsertSectionModal";
+import UpdateModifierDrawer from "./menu/modifiers/UpdateModifierDrawer";
+import InsertModifierDrawer from "./menu/modifiers/InsertModifierDrawer";
+import DeleteModifierModal from "./menu/modifiers/DeleteModifierModal";
+import InsertOptionDrawer from "./menu/itemOptions/InsertOptionDrawer";
+import UpdateOptionDrawer from "./menu/itemOptions/UpdateOptionDrawer";
 
 function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -32,8 +33,12 @@ function ManageMenu() {
     { open: openDeleteModifierModal, close: closeDeleteModifierModal },
   ] = useDisclosure(false);
   const [
-    showUpsertItemOptionDrawer,
-    { open: openUpsertItemOptionDrawer, close: closeUpsertItemOptionDrawer },
+    showInsertOptionDrawer,
+    { open: openInsertOptionDrawer, close: closeInsertOptionDrawer },
+  ] = useDisclosure(false);
+  const [
+    showUpdateOptionDrawer,
+    { open: openUpdateOptionDrawer, close: closeUpdateOptionDrawer },
   ] = useDisclosure(false);
 
   return (
@@ -72,12 +77,8 @@ function ManageMenu() {
           <Menu.Divider />
 
           <Menu.Label>Item Options</Menu.Label>
-          <Menu.Item onClick={openUpsertItemOptionDrawer}>
-            Add Options
-          </Menu.Item>
-          <Menu.Item onClick={openUpsertItemOptionDrawer}>
-            Edit Options
-          </Menu.Item>
+          <Menu.Item onClick={openInsertOptionDrawer}>Add Options</Menu.Item>
+          <Menu.Item onClick={openUpdateOptionDrawer}>Edit Options</Menu.Item>
           <Menu.Item>Remove Options</Menu.Item>
         </Menu.Dropdown>
       </Menu>
@@ -107,9 +108,14 @@ function ManageMenu() {
         onClose={closeDeleteModifierModal}
       />
 
-      <UpsertItemOptionDrawer
-        isOpen={showUpsertItemOptionDrawer}
-        onClose={closeUpsertItemOptionDrawer}
+      <InsertOptionDrawer
+        isOpen={showInsertOptionDrawer}
+        onClose={closeInsertOptionDrawer}
+      />
+
+      <UpdateOptionDrawer
+        isOpen={showUpdateOptionDrawer}
+        onClose={closeUpdateOptionDrawer}
       />
     </>
   );

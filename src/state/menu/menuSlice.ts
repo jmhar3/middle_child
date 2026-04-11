@@ -17,7 +17,7 @@ export interface Modifier {
 export interface ItemOptions {
   id: string;
   label: string;
-  allowMultipleSelections: boolean;
+  allow_multiple_selections: boolean;
   modifiers: Modifier[];
 }
 

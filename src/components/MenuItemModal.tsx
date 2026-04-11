@@ -9,8 +9,9 @@ import NoteInput from "./customer/NoteInput";
 
 import { calculateOrderItemPrice } from "../helpers";
 
-import type { MenuItemType, Modifier } from "../types/menu";
+import type { MenuItemType } from "../types/menu";
 import type { OrderItem } from "../types/cart";
+import type { Modifier } from "../state/types";
 
 interface MenuItemModalProps {
   isOpen: boolean;

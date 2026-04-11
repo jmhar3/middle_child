@@ -7,17 +7,17 @@ import TopIcon from "../icons/TopIcon";
 import DownIcon from "../icons/DownIcon";
 import BottomIcon from "../icons/BottomIcon";
 
-import type { MenuItemType, Section } from "../state/menu/menuSlice";
+import type { MenuItemType, MenuSection } from "../state/types";
 
 interface ReorderListProps {
-  items: (Section | MenuItemType)[];
-  setItems: Dispatch<SetStateAction<(Section | MenuItemType)[]>>;
+  items: (MenuSection | MenuItemType)[];
+  setItems: Dispatch<SetStateAction<(MenuSection | MenuItemType)[]>>;
 }
 
 function ReorderList(props: ReorderListProps) {
   const { items, setItems } = props;
 
-  const onUpClick = (itemToMove: Section | MenuItemType) => {
+  const onUpClick = (itemToMove: MenuSection | MenuItemType) => {
     setItems((prevItems) =>
       prevItems.map((item) => {
         if (item === itemToMove) {
@@ -30,7 +30,7 @@ function ReorderList(props: ReorderListProps) {
     );
   };
 
-  const onDownClick = (itemToMove: Section | MenuItemType) => {
+  const onDownClick = (itemToMove: MenuSection | MenuItemType) => {
     setItems((prevItems) =>
       prevItems.map((item) => {
         if (item === itemToMove) {
@@ -43,7 +43,7 @@ function ReorderList(props: ReorderListProps) {
     );
   };
 
-  const onTopClick = (itemToMove: Section | MenuItemType) => {
+  const onTopClick = (itemToMove: MenuSection | MenuItemType) => {
     setItems((prevItems) => {
       const firstHalf = prevItems.slice(0, itemToMove.order - 2);
       const secondHalf = prevItems.slice(itemToMove.order - 1);
@@ -55,7 +55,7 @@ function ReorderList(props: ReorderListProps) {
     });
   };
 
-  const onBottomClick = (itemToMove: Section | MenuItemType) => {
+  const onBottomClick = (itemToMove: MenuSection | MenuItemType) => {
     setItems((prevItems) => {
       const firstHalf = prevItems.slice(0, itemToMove.order - 2);
       const secondHalf = prevItems.slice(itemToMove.order - 1);

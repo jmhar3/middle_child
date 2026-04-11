@@ -2,17 +2,19 @@ import { Group, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import StyledButton from "../../StyledButton";
+import StyledButton from "../../../StyledButton";
 
-import { selectMenuLength, type Section } from "../../../state/menu/menuSlice";
-import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { upsertSections } from "../../../state/menu/menuThunks";
+import { selectMenuLength } from "../../../../state/menu/menuSlice";
+import { useAppDispatch, useAppSelector } from "../../../../state/hooks";
+import { upsertSections } from "../../../../state/menu/menuThunks";
 import { notifications } from "@mantine/notifications";
+
+import type { MenuSection } from "../../../../state/types";
 
 interface UpsertSectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  section?: Section;
+  section?: MenuSection;
 }
 
 function UpsertSectionModal(props: UpsertSectionModalProps) {

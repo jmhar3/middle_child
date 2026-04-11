@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { v4 as uuid } from "uuid";
-
 import { Text, Stack, Drawer, Divider } from "@mantine/core";
 
 import UpsertModifier from "./UpsertModifier";
 
-import type { Modifier } from "../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
 
 interface InsertModifierDrawerProps {
   isOpen: boolean;
@@ -21,20 +19,13 @@ const blankModifier: Modifier = {
 function InsertModifierDrawer(props: InsertModifierDrawerProps) {
   const { isOpen, onClose } = props;
 
-  const [modifier, setModifier] = useState<Modifier>(blankModifier);
-
-  const clearDrawer = () => {
-    setModifier(blankModifier);
-    onClose();
-  };
-
   return (
     <Drawer
       offset={12}
       radius="sm"
       position="right"
       opened={isOpen}
-      onClose={clearDrawer}
+      onClose={onClose}
       withCloseButton={false}
       trapFocus={false}
     >
@@ -45,7 +36,7 @@ function InsertModifierDrawer(props: InsertModifierDrawerProps) {
 
         <Divider w="100%" />
 
-        <UpsertModifier modifier={modifier} onClose={clearDrawer} />
+        <UpsertModifier modifier={blankModifier} onClose={onClose} />
       </Stack>
     </Drawer>
   );

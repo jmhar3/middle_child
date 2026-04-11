@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Text, Stack, Select, Drawer, Divider } from "@mantine/core";
 
-import StyledButton from "../../StyledButton";
+import StyledButton from "../../../StyledButton";
 import UpsertModifier from "./UpsertModifier";
 
-import { useAppSelector } from "../../../state/hooks";
-import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
+import { useAppSelector } from "../../../../state/hooks";
+import { selectAllModifiers } from "../../../../state/modifiers/modifiersSlice";
 
-import type { Modifier } from "../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
 
 interface UpdateModifierDrawerProps {
   isOpen: boolean;

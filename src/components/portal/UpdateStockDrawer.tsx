@@ -13,12 +13,11 @@ import {
 
 import StyledButton from "../StyledButton";
 
+import { useAppSelector } from "../../state/hooks";
 import { selectMenu } from "../../state/menu/menuSlice";
 import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
-import { useAppSelector } from "../../state/hooks";
 
-import type { Modifier } from "../../state/modifiers/modifiersSlice";
-import type { MenuItemType } from "../../state/menuItems/menuItemsSlice";
+import type { MenuItemType, Modifier } from "../../state/types";
 
 interface UpdateStockDrawerProps {
   isOpen: boolean;

@@ -3,21 +3,18 @@ import { v4 as uuid } from "uuid";
 import { useDisclosure } from "@mantine/hooks";
 import { Stack, Divider, Group } from "@mantine/core";
 
-import EditableItem from "./EditableItem";
-import StyledButton from "../../StyledButton";
-import ItemEditPreview from "./ItemEditPreview";
-import ConfirmationModal from "../../ConfirmationModal";
+import EditableItem from "../items/EditableItem";
+import StyledButton from "../../../StyledButton";
+import ItemEditPreview from "../items/ItemEditPreview";
+import ConfirmationModal from "../../../ConfirmationModal";
 import UpsertSectionModal from "./UpsertSectionModal";
 
-import type {
-  MenuItemType,
-  Section as SectionType,
-} from "../../../state/menu/menuSlice";
-import { useAppDispatch } from "../../../state/hooks";
-import { deleteSection } from "../../../state/menu/menuThunks";
+import { useAppDispatch } from "../../../../state/hooks";
+import { deleteSection } from "../../../../state/menu/menuThunks";
 import { notifications } from "@mantine/notifications";
+import type { MenuItemType, MenuSection } from "../../../../state/types";
 
-function Section({ section }: { section: SectionType }) {
+function Section({ section }: { section: MenuSection }) {
   const blankMenuItem: MenuItemType = {
     id: uuid(),
     label: "",

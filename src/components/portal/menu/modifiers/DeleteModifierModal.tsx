@@ -2,13 +2,13 @@ import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { Text, Stack, Select, Divider, Modal, Group } from "@mantine/core";
 
-import StyledButton from "../../StyledButton";
+import StyledButton from "../../../StyledButton";
 
-import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
-import { deleteModifier } from "../../../state/modifiers/modifierThunks";
+import { useAppDispatch, useAppSelector } from "../../../../state/hooks";
+import { selectAllModifiers } from "../../../../state/modifiers/modifiersSlice";
+import { deleteModifier } from "../../../../state/modifiers/modifierThunks";
 
-import type { Modifier } from "../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
 
 interface DeleteModifierModalProps {
   isOpen: boolean;

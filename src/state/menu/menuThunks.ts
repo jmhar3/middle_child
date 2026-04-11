@@ -1,38 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notifications } from "@mantine/notifications";
 
-import type { Section } from "./menuSlice";
-import type { Modifier } from "../modifiers/modifiersSlice";
-
 import { supabase } from "../../supabase";
 
-interface ItemOptions {
-  id: string;
-  label: string;
-  allowMultipleSelections: boolean;
-  menu_item_options_modifiers: { modifiers: Modifier }[];
-}
-
-interface MenuItemType {
-  id: string;
-  label: string;
-  price: number;
-  image?: string;
-  order: number;
-  description?: string;
-  is_in_stock: boolean;
-  has_long_prep_time: boolean;
-  is_applicable_loyalty_item: boolean;
-  menu_items_modifiers: { modifiers: Modifier }[];
-  menu_items_options: { menu_item_options: ItemOptions }[];
-}
-
-interface SupabaseSection {
-  id: string;
-  label: string;
-  order: number;
-  menu_items: MenuItemType[];
-}
+import type { MenuSection, SupabaseSection } from "../types";
 
 const formatSupaBaseMenu = (supabaseData: SupabaseSection[]) => {
   return supabaseData.map(({ menu_items, ...section }) => ({
@@ -99,7 +70,7 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
 
 export const upsertSections = createAsyncThunk(
   "menu/upsertSections",
-  async (sections: Partial<Section>[]) => {
+  async (sections: Partial<MenuSection>[]) => {
     const { data, error } = await supabase
       .from("menu_sections")
       .upsert(sections)

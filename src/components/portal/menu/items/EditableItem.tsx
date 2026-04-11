@@ -15,15 +15,15 @@ import {
   NumberInput,
 } from "@mantine/core";
 
-import MenuItemModal from "../../MenuItemModal";
-import StyledButton from "../../StyledButton";
+import MenuItemModal from "../../../MenuItemModal";
+import StyledButton from "../../../StyledButton";
 
-import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
-import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
-import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
+import { useAppDispatch, useAppSelector } from "../../../../state/hooks";
+import { selectAllModifiers } from "../../../../state/modifiers/modifiersSlice";
+import { selectAllItemOptions } from "../../../../state/itemOptions/itemOptionsSlice";
+import { upsertMenuItems } from "../../../../state/menuItems/menuItemsThunks";
 
-import type { MenuItemType } from "../../../state/menu/menuSlice";
+import type { MenuItemType } from "../../../../state/types";
 
 interface EditableItemProps {
   menuItem: MenuItemType;

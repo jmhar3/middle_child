@@ -2,12 +2,12 @@ import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { Group, Switch, Divider, TextInput, NumberInput } from "@mantine/core";
 
-import StyledButton from "../../StyledButton";
+import StyledButton from "../../../StyledButton";
 
-import { useAppDispatch } from "../../../state/hooks";
-import { upsertModifiers } from "../../../state/modifiers/modifierThunks";
+import { useAppDispatch } from "../../../../state/hooks";
+import { upsertModifiers } from "../../../../state/modifiers/modifierThunks";
 
-import type { Modifier } from "../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
 
 interface UpsertModifierProps {
   modifier: Partial<Modifier>;
@@ -21,6 +21,7 @@ function UpsertModifier(props: UpsertModifierProps) {
 
   const [editedModifier, setEditedModifier] =
     useState<Partial<Modifier>>(modifier);
+
   const onUpsertModifier = () => {
     dispatch(upsertModifiers([editedModifier]))
       .then(() => {

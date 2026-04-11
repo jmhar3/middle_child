@@ -1,12 +1,13 @@
 import { ActionIcon, Flex, Group, Popover, Stack, Text } from "@mantine/core";
-
-import Badges from "../../Badges";
-import EditIcon from "../../../icons/EditIcon";
-
-import type { MenuItemType } from "../../../helpers/menu";
-import DeleteIcon from "../../../icons/DeleteIcon";
-import StyledButton from "../../StyledButton";
 import { useDisclosure } from "@mantine/hooks";
+
+import StyledButton from "../../../StyledButton";
+import Badges from "../../../Badges";
+
+import EditIcon from "../../../../icons/EditIcon";
+import DeleteIcon from "../../../../icons/DeleteIcon";
+
+import type { MenuItemType } from "../../../../state/types";
 
 interface ListItemProps {
   onDeleteItemClick: () => void;

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchItemOptions } from "./itemOptionThunks";
+import { fetchItemOptions, upsertOptions } from "./itemOptionThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -9,7 +9,7 @@ import type { Modifier } from "../modifiers/modifiersSlice";
 export interface ItemOption {
   id: string;
   label: string;
-  allowMultipleSelections: boolean;
+  allow_multiple_selections: boolean;
   modifiers: Modifier[];
 }
 
@@ -49,6 +49,16 @@ const itemOptionsSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchItemOptions.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(upsertOptions.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(upsertOptions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+      })
+      .addCase(upsertOptions.rejected, (state) => {
         state.status = "failed";
       });
   },
