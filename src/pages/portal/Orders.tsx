@@ -10,8 +10,13 @@ import OrdersList from "../../components/portal/orders/OrdersList";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 import ToggleStoreOpenModal from "../../components/portal/orders/ToggleStoreOpenModal";
 
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { fetchMenu } from "../../state/menu/menuThunks";
+import { fetchOrders } from "../../state/orders/ordersThunks";
 import { fetchModifiers } from "../../state/modifiers/modifierThunks";
 import { fetchOrderTimes } from "../../state/orderTimes/orderTimesThunks";
+import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
+import { selectMenuStatus } from "../../state/menu/menuSlice";
 
 import {
   fetchStoreInfo,
@@ -27,17 +32,12 @@ import {
   selectAllOrderTimes,
   selectOrderTimesStatus,
 } from "../../state/orderTimes/orderTimesSlice";
-
-import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
-
-import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import {
+  selectOrders,
+  selectOrdersStatus,
+} from "../../state/orders/ordersSlice";
 
 import type { OrderTime } from "../../state/types";
-
-// to be removed
-import { mockOrders } from "../../types/cart";
-import { selectMenuStatus } from "../../state/menu/menuSlice";
-import { fetchMenu } from "../../state/menu/menuThunks";
 
 function Orders() {
   // handle dialog/drawer state
@@ -60,17 +60,20 @@ function Orders() {
   const modifiersStatus = useAppSelector(selectModifiersStatus);
   const orderTimesStatus = useAppSelector(selectOrderTimesStatus);
   const storeInfoStatus = useAppSelector(selectModifiersStatus);
+  const ordersStatus = useAppSelector(selectOrdersStatus);
 
   // store data
   const orderTimes = useAppSelector(selectAllOrderTimes);
   const storeInfo = useAppSelector(selectStoreInfo);
   const storeIsOpen = useAppSelector(selectStoreIsOpen);
+  const orders = useAppSelector(selectOrders);
 
   const isLoading =
     modifiersStatus === "pending" ||
     storeInfoStatus === "pending" ||
     orderTimesStatus === "pending" ||
-    menuStatus === "pending";
+    menuStatus === "pending" ||
+    ordersStatus === "pending";
 
   useEffect(() => {
     if (menuStatus === "idle") {
@@ -85,12 +88,16 @@ function Orders() {
     if (storeInfoStatus === "idle") {
       dispatch(fetchStoreInfo());
     }
+    if (ordersStatus === "idle") {
+      dispatch(fetchOrders());
+    }
   }, [
     dispatch,
     menuStatus,
     modifiersStatus,
     orderTimesStatus,
     storeInfoStatus,
+    ordersStatus,
   ]);
 
   const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
@@ -101,6 +108,8 @@ function Orders() {
       setIsUpdatingOrderTime(false);
     });
   };
+
+  console.log(orders);
 
   if (isLoading) return <Loading message="Loading store data" />;
 
@@ -167,7 +176,7 @@ function Orders() {
         </Box>
       )}
 
-      <OrdersList orders={mockOrders} />
+      {orders && orders.length > 0 && <OrdersList orders={orders} />}
     </PageLayout>
   );
 }
