@@ -6,6 +6,7 @@ import modifiersReducer from "./modifiers/modifiersSlice";
 import itemOptionsReducer from "./itemOptions/itemOptionsSlice";
 import storeInfoReducer from "./storeInfo/storeInfoSlice";
 import orderTimesReducer from "./orderTimes/orderTimesSlice";
+import ordersReducer from "./orders/ordersSlice";
 
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     modifiers: modifiersReducer,
     orderTimes: orderTimesReducer,
     storeInfo: storeInfoReducer,
+    orders: ordersReducer,
   },
 });
 
