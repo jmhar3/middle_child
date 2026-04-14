@@ -77,12 +77,11 @@ export interface Cart {
 export interface OrderType {
   id: string;
   user: User;
-  dueAt: dayjs.Dayjs;
+  due_at: dayjs.Dayjs;
   total: number;
   notes?: string;
   items: OrderItem[];
-  isComplete: boolean;
-  cancellationMessage?: string;
+  is_complete: boolean;
 }
 
 export interface SupabaseItemOptions {
