@@ -1,6 +1,15 @@
 import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
-import { Box, Button, em, Image, Modal, Stack } from "@mantine/core";
+import {
+  em,
+  Box,
+  Text,
+  Image,
+  Modal,
+  Stack,
+  Button,
+  Divider,
+} from "@mantine/core";
 
 import ModifierCheckbox from "./customer/ModifierCheckbox";
 import ButtonWithPrice from "./customer/ButtonWithPrice";
@@ -86,10 +95,18 @@ function MenuItemModal(props: MenuItemModalProps) {
       }}
     >
       <Stack pb={60} align="center">
+        <Divider w="100%" />
+        {menuItem.description && (
+          <>
+            <Text fs="italic">{menuItem.description}</Text>
+            <Divider w="100%" />
+          </>
+        )}
         {menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
 
-        {menuItem.modifiers && (
+        {menuItem.modifiers && menuItem.modifiers.length > 0 && (
           <ModifierCheckbox
+            isRequired={false}
             modifiers={menuItem.modifiers}
             selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
             onModifierSelect={onModifierSelect}
@@ -100,6 +117,7 @@ function MenuItemModal(props: MenuItemModalProps) {
           modifierCategory.allow_multiple_selections ? (
             <ModifierCheckbox
               key={modifierCategory.label}
+              isRequired={modifierCategory.is_required}
               selectedModifiers={filterSelectedModifiers(
                 modifierCategory.modifiers,
               )}
@@ -109,6 +127,7 @@ function MenuItemModal(props: MenuItemModalProps) {
           ) : (
             <ModifierRadio
               key={modifierCategory.label}
+              isRequired={modifierCategory.is_required}
               selectedModifiers={filterSelectedModifiers(
                 modifierCategory.modifiers,
               )}
