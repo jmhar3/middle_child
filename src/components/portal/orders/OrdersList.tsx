@@ -3,7 +3,7 @@ import { Stack } from "@mantine/core";
 
 import Order from "./Order";
 
-import type { OrderType } from "../../../helpers/cart";
+import type { OrderType } from "../../../state/types";
 
 interface OrdersProps {
   orders: OrderType[];
@@ -13,8 +13,8 @@ function OrdersList(props: OrdersProps) {
   const [orders, setOrders] = useState(props.orders);
 
   const sortedOrders = useMemo(() => {
-    const incompleteOrders = orders.filter((order) => !order.isComplete);
-    const completedOrders = orders.filter((order) => order.isComplete);
+    const incompleteOrders = orders.filter((order) => !order.is_complete);
+    const completedOrders = orders.filter((order) => order.is_complete);
     return [...incompleteOrders, ...completedOrders];
   }, [orders]);
 
@@ -22,7 +22,7 @@ function OrdersList(props: OrdersProps) {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
         order.id === completedOrder.id
-          ? { ...completedOrder, isComplete: true }
+          ? { ...completedOrder, is_complete: true }
           : order,
       ),
     );

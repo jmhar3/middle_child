@@ -5,7 +5,7 @@ import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
 import StyledButton from "../../StyledButton";
 import OrderBadge from "./OrderBadge";
 
-import type { OrderType } from "../../../types/cart";
+import type { OrderType } from "../../../state/types";
 
 dayjs.extend(relativeTime);
 
@@ -17,7 +17,7 @@ interface OrderProps {
 function Order(props: OrderProps) {
   const { order, onCompleteOrder } = props;
 
-  const { user, items, notes, isComplete, cancellationMessage } = order;
+  const { user, items, notes, is_complete } = order;
 
   return (
     <Stack
@@ -25,7 +25,7 @@ function Order(props: OrderProps) {
       bg="white"
       bdrs="sm"
       bd="solid 1px darkslategray"
-      opacity={cancellationMessage || isComplete ? "50%" : "100%"}
+      opacity={is_complete ? "50%" : "100%"}
     >
       <Flex
         w="100%"
@@ -49,7 +49,7 @@ function Order(props: OrderProps) {
       </Flex>
 
       <Stack p="sm" gap="xs">
-        {items.map((item, index) => (
+        {items?.map((item, index) => (
           <>
             {index > 0 && <Divider w="100%" />}
             <Flex key={item.id} gap="sm" justify="space-between">

@@ -3,23 +3,21 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@mantine/core";
 import { useMemo } from "react";
 
-import type { OrderType } from "../../../types/cart";
+import type { OrderType } from "../../../state/types";
 
 dayjs.extend(relativeTime);
 
 function OrderBadge({ order }: { order: OrderType }) {
   const badgeColour = useMemo(() => {
-    if (order.isComplete) return "gray";
-    if (order.cancellationMessage) return "red";
-    if (dayjs().isAfter(dayjs(order.dueAt))) return "red";
-    if (dayjs().isBefore(dayjs(order.dueAt))) return "green";
+    if (order.is_complete) return "gray";
+    if (dayjs().isAfter(dayjs(order.due_at))) return "red";
+    if (dayjs().isBefore(dayjs(order.due_at))) return "green";
     return "gray";
   }, [order]);
 
   const badgeLabel = useMemo(() => {
-    if (order.isComplete) return "COMPLETE";
-    if (order.cancellationMessage) return "CANCELLED";
-    return dayjs(order.dueAt).fromNow();
+    if (order.is_complete) return "COMPLETE";
+    return dayjs(order.due_at).fromNow();
   }, [order]);
 
   return (
