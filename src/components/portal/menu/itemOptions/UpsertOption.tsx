@@ -8,10 +8,10 @@ import { useAppDispatch, useAppSelector } from "../../../../state/hooks";
 import { selectAllModifiers } from "../../../../state/modifiers/modifiersSlice";
 import { upsertOptions } from "../../../../state/itemOptions/itemOptionThunks";
 
-import type { ItemOption } from "../../../../state/itemOptions/itemOptionsSlice";
+import type { ItemOptions } from "../../../../state/types";
 
 interface UpsertOptionProps {
-  itemOption: Partial<ItemOption>;
+  itemOption: Partial<ItemOptions>;
   onClose: () => void;
 }
 
@@ -22,7 +22,7 @@ function UpsertOption(props: UpsertOptionProps) {
   const modifiers = useAppSelector(selectAllModifiers);
 
   const [editedOption, setEditedOption] =
-    useState<Partial<ItemOption>>(itemOption);
+    useState<Partial<ItemOptions>>(itemOption);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onUpsertOption = () => {
@@ -92,7 +92,7 @@ function UpsertOption(props: UpsertOptionProps) {
         onChange={(event) =>
           setEditedOption((itemOption) => ({
             ...itemOption,
-            allowMultipleSelections: event.target.checked,
+            allow_multiple_selections: event.target.checked,
           }))
         }
       />

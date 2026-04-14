@@ -7,7 +7,7 @@ import StyledButton from "../../../StyledButton";
 import { useAppDispatch } from "../../../../state/hooks";
 import { upsertModifiers } from "../../../../state/modifiers/modifierThunks";
 
-import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/types";
 
 interface UpsertModifierProps {
   modifier: Partial<Modifier>;

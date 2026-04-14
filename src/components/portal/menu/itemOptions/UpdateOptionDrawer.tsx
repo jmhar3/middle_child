@@ -7,7 +7,7 @@ import UpsertOption from "./UpsertOption";
 import { useAppSelector } from "../../../../state/hooks";
 import { selectAllItemOptions } from "../../../../state/itemOptions/itemOptionsSlice";
 
-import type { ItemOption } from "../../../../state/itemOptions/itemOptionsSlice";
+import type { ItemOptions } from "../../../../state/types";
 
 interface UpdateOptionDrawerProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ function UpdateOptionDrawer(props: UpdateOptionDrawerProps) {
   const { isOpen, onClose } = props;
 
   const options = useAppSelector(selectAllItemOptions);
-  const [optionToEdit, setOptionToEdit] = useState<ItemOption | undefined>();
+  const [optionToEdit, setOptionToEdit] = useState<ItemOptions | undefined>();
   const [editOption, setEditOption] = useState(false);
 
   const clearDrawer = () => {

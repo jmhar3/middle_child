@@ -8,15 +8,7 @@ import {
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-
-export interface Modifier {
-  id: string;
-  label: string;
-  price?: number;
-  is_in_stock?: boolean;
-  is_ingredient?: boolean;
-  reference_code?: string;
-}
+import type { Modifier } from "../types";
 
 export interface ModifiersState {
   allModifiers: Modifier[];

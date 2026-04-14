@@ -4,13 +4,7 @@ import { fetchOrderTimes, upsertOrderTime } from "./orderTimesThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-
-export interface OrderTime {
-  id: string;
-  label: string;
-  short: number;
-  long: number;
-}
+import type { OrderTime } from "../types";
 
 export interface OrderTimesState {
   data: OrderTime[];

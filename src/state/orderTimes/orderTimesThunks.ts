@@ -3,7 +3,7 @@ import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
 
-import type { OrderTime } from "./orderTimesSlice";
+import type { OrderTime } from "../types";
 
 export const fetchOrderTimes = createAsyncThunk(
   "orderTimes/fetchOrderTimes",

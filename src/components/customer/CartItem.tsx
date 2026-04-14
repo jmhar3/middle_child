@@ -5,7 +5,7 @@ import { calculateOrderItemPrice } from "../../helpers";
 import EditIcon from "../../icons/EditIcon";
 import CloseIcon from "../../icons/CloseIcon";
 
-import type { OrderItem } from "../../types/cart";
+import type { OrderItem } from "../../state/types";
 
 interface OrderListItem extends OrderItem {
   quantity: number;

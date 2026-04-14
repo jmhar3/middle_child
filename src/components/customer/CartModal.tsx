@@ -10,7 +10,7 @@ import LoginButton from "../LoginButton";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
 
-import type { Cart, OrderItem } from "../../types/cart";
+import type { Cart, OrderItem } from "../../state/types";
 
 interface CartModalProps {
   order: Cart;

@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../../state/hooks";
 import { selectAllModifiers } from "../../../../state/modifiers/modifiersSlice";
 import { deleteModifier } from "../../../../state/modifiers/modifierThunks";
 
-import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/types";
 
 interface DeleteModifierModalProps {
   isOpen: boolean;

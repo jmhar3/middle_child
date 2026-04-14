@@ -32,7 +32,7 @@ import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
-import type { OrderTime } from "../../state/orderTimes/orderTimesSlice";
+import type { OrderTime } from "../../state/types";
 
 // to be removed
 import { mockOrders } from "../../types/cart";

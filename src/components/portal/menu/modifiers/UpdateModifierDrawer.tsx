@@ -7,7 +7,7 @@ import UpsertModifier from "./UpsertModifier";
 import { useAppSelector } from "../../../../state/hooks";
 import { selectAllModifiers } from "../../../../state/modifiers/modifiersSlice";
 
-import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/types";
 
 interface UpdateModifierDrawerProps {
   isOpen: boolean;

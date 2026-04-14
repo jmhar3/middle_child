@@ -3,7 +3,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 import { calculateOrderItemPrice } from "../../helpers";
 
-import type { MenuItemType, Modifier } from "../../types/menu";
+import type { MenuItemType, Modifier } from "../../state/types";
 
 interface MenuItemButtonProps {
   onClick: () => void;

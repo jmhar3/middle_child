@@ -4,20 +4,7 @@ import { fetchStoreInfo, updateStoreInfo } from "./storeInfoThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-
-export interface StoreInfo {
-  id: string;
-  is_open: boolean;
-  current_order_time: OrderTime;
-  weekly_records: string;
-}
-
-export interface OrderTime {
-  id: string;
-  label: string;
-  short: number;
-  long: number;
-}
+import type { StoreInfo } from "../types";
 
 export interface StoreInfoState {
   data: StoreInfo;

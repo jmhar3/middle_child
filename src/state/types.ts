@@ -1,3 +1,19 @@
+import type dayjs from "dayjs";
+
+export interface OrderTime {
+  id: string;
+  label: string;
+  short: number;
+  long: number;
+}
+
+export interface StoreInfo {
+  id: string;
+  is_open: boolean;
+  current_order_time: OrderTime;
+  weekly_records: string;
+}
+
 export interface Modifier {
   id: string;
   label: string;
@@ -5,6 +21,7 @@ export interface Modifier {
   is_in_stock?: boolean;
   is_ingredient?: boolean;
   color?: string;
+  reference_code?: string;
 }
 
 export interface ItemOptions {
@@ -34,6 +51,38 @@ export interface MenuSection {
   label: string;
   order: number;
   items: MenuItemType[];
+}
+
+export interface User {
+  id: string;
+  name: string;
+  loyaltyPoints?: number;
+}
+
+export interface OrderItem {
+  id: string;
+  menuItem: MenuItemType;
+  modifiers: Modifier[];
+  quantity: number;
+  note?: string;
+}
+
+export interface Cart {
+  items: OrderItem[];
+  total: number;
+  pickUpTimeFromNow: number;
+  notes?: string;
+}
+
+export interface OrderType {
+  id: string;
+  user: User;
+  dueAt: dayjs.Dayjs;
+  total: number;
+  notes?: string;
+  items: OrderItem[];
+  isComplete: boolean;
+  cancellationMessage?: string;
 }
 
 export interface SupabaseItemOptions {

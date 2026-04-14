@@ -3,6 +3,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
+import Loading from "../../components/Loading";
 import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/MenuItemModal";
 import MenuItemButton from "../../components/customer/MenuItemButton";
@@ -26,11 +27,7 @@ import {
   findExistingOrderItem,
 } from "../../helpers";
 
-// to be removed
-import type { MenuItemType } from "../../types/menu";
-import type { Cart, OrderItem } from "../../types/cart";
-import Loading from "../../components/Loading";
-// to be removed
+import type { MenuItemType, Cart, OrderItem } from "../../state/types";
 
 function Menu() {
   const dispatch = useAppDispatch();
@@ -59,14 +56,18 @@ function Menu() {
   const [order, setOrder] = useState<Cart | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
-  const recentlyOrderedItems: OrderItem[] | null = [
-    {
-      id: "1",
-      quantity: 1,
-      menuItem: menu[0].items[0],
-      modifiers: [],
-    },
-  ];
+  console.log(menu);
+  const recentlyOrderedItems: OrderItem[] | null =
+    menu.length > 0
+      ? [
+          {
+            id: "1",
+            quantity: 1,
+            menuItem: menu[0]?.items[0],
+            modifiers: [],
+          },
+        ]
+      : null;
 
   const totalItemsInOrder = useMemo(
     () =>
@@ -85,13 +86,13 @@ function Menu() {
     const orderItemPrice =
       calculateOrderItemPrice(item.menuItem, item.modifiers) * item.quantity;
 
-    setOrder((prevOrder) => {
-      if (prevOrder) {
-        const existingOrderItem = findExistingOrderItem(prevOrder.items, item);
+    setOrder((cart) => {
+      if (cart) {
+        const existingOrderItem = findExistingOrderItem(cart.items, item);
 
         const filteredOrderItems =
           existingOrderItem &&
-          filterItemFromOrder(prevOrder.items, existingOrderItem);
+          filterItemFromOrder(cart.items, existingOrderItem);
 
         if (existingOrderItem && filteredOrderItems) {
           const newOrderItems = [
@@ -104,7 +105,7 @@ function Menu() {
 
           const hasManyItems = totalItemsInOrder && totalItemsInOrder > 5;
           const hasItemsWithLongPrepTime = newOrderItems.find(
-            (item: OrderItem) => item.menuItem.has_long_prep_time || false,
+            (item) => item.menuItem.has_long_prep_time || false,
           );
           const orderTime =
             hasItemsWithLongPrepTime || hasManyItems
@@ -116,8 +117,8 @@ function Menu() {
             items:
               existingOrderItem && filteredOrderItems
                 ? newOrderItems
-                : [...prevOrder.items, item],
-            total: prevOrder.total + orderItemPrice,
+                : [...cart.items, item],
+            total: cart.total + orderItemPrice,
             pickUpTimeFromNow: orderTime,
           };
         }

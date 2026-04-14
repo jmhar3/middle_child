@@ -2,8 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
-
-import type { Modifier } from "./modifiersSlice";
+import type { Modifier } from "../types";
 
 export const fetchModifiers = createAsyncThunk(
   "modifiers/fetchModifiers",

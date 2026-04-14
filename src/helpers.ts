@@ -1,6 +1,4 @@
-import type { Modifier } from "./state/modifiers/modifiersSlice";
-import type { OrderItem } from "./types/cart";
-import type { MenuItemType } from "./types/menu";
+import type { MenuItemType, Modifier, OrderItem } from "./state/types";
 
 export const calculateOrderItemPrice = (
   menuItem: MenuItemType,

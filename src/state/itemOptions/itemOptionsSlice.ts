@@ -4,17 +4,10 @@ import { fetchItemOptions, upsertOptions } from "./itemOptionThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import type { Modifier } from "../modifiers/modifiersSlice";
-
-export interface ItemOption {
-  id: string;
-  label: string;
-  allow_multiple_selections: boolean;
-  modifiers: Modifier[];
-}
+import type { ItemOptions } from "../types";
 
 export interface ItemOptionsState {
-  data: ItemOption[];
+  data: ItemOptions[];
   status: "idle" | "pending" | "succeeded" | "failed";
 }
 
@@ -27,13 +20,13 @@ const itemOptionsSlice = createSlice({
   name: "itemOptions",
   initialState,
   reducers: {
-    itemOptionAdded(state, action: PayloadAction<ItemOption>) {
+    itemOptionAdded(state, action: PayloadAction<ItemOptions>) {
       const filteredItemOptions = state.data.filter(
         (itemOption) => itemOption.id === action.payload.id,
       );
       state.data = [...filteredItemOptions, action.payload];
     },
-    itemOptionRemoved(state, action: PayloadAction<ItemOption>) {
+    itemOptionRemoved(state, action: PayloadAction<ItemOptions>) {
       state.data = state.data.filter(
         (itemOption) => itemOption.id === action.payload.id,
       );

@@ -3,7 +3,7 @@ import { Text, Stack, Drawer, Divider } from "@mantine/core";
 
 import UpsertModifier from "./UpsertModifier";
 
-import type { Modifier } from "../../../../state/modifiers/modifiersSlice";
+import type { Modifier } from "../../../../state/types";
 
 interface InsertModifierDrawerProps {
   isOpen: boolean;

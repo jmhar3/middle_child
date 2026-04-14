@@ -9,9 +9,7 @@ import NoteInput from "./customer/NoteInput";
 
 import { calculateOrderItemPrice } from "../helpers";
 
-import type { MenuItemType } from "../types/menu";
-import type { OrderItem } from "../types/cart";
-import type { Modifier } from "../state/types";
+import type { Modifier, OrderItem, MenuItemType } from "../state/types";
 
 interface MenuItemModalProps {
   isOpen: boolean;
@@ -99,7 +97,7 @@ function MenuItemModal(props: MenuItemModalProps) {
         )}
 
         {menuItem.modifierCategories?.map((modifierCategory) =>
-          modifierCategory.allowMultipleSelections ? (
+          modifierCategory.allow_multiple_selections ? (
             <ModifierCheckbox
               key={modifierCategory.label}
               selectedModifiers={filterSelectedModifiers(

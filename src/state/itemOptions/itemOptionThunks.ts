@@ -3,10 +3,9 @@ import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
 
-import type { ItemOption } from "./itemOptionsSlice";
-import type { Modifier } from "../modifiers/modifiersSlice";
+import type { ItemOptions, Modifier } from "../types";
 
-interface SupabaseItemOption extends ItemOption {
+interface SupabaseItemOption extends ItemOptions {
   options_modifiers: { modifiers: Modifier }[];
 }
 
@@ -51,7 +50,7 @@ export const fetchItemOptions = createAsyncThunk(
 
 export const upsertOptions = createAsyncThunk(
   "itemOptions/upsertOptions",
-  async (params: Partial<ItemOption>[]) => {
+  async (params: Partial<ItemOptions>[]) => {
     const { data, error } = await supabase
       .from("options")
       .upsert(params)

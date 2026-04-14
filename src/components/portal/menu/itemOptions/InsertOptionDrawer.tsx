@@ -15,6 +15,7 @@ const blankOption: ItemOptions = {
   label: "",
   modifiers: [],
   allow_multiple_selections: true,
+  is_required: false,
 };
 
 function InsertOptionDrawer(props: InsertOptionDrawerProps) {
