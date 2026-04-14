@@ -1,16 +1,18 @@
-import { Box, Button, Divider, Stack, Text } from "@mantine/core";
+import { Box, Button, Divider, Flex, Stack, Text } from "@mantine/core";
 
-import type { Modifier } from "../../helpers/menu";
+import type { Modifier } from "../../state/types";
 
 interface ModifierRadioProps {
   label?: string;
+  isRequired: boolean;
   modifiers: Modifier[];
   onModifierSelect: (selectedModifier: Modifier, isSelected: boolean) => void;
   selectedModifiers: Modifier[];
 }
 
 function ModifierRadio(props: ModifierRadioProps) {
-  const { label, modifiers, selectedModifiers, onModifierSelect } = props;
+  const { label, isRequired, modifiers, selectedModifiers, onModifierSelect } =
+    props;
 
   const onSelection = (newSelection: Modifier) => {
     const previousSelection = selectedModifiers[0];
@@ -22,7 +24,17 @@ function ModifierRadio(props: ModifierRadioProps) {
 
   return (
     <Stack w="100%" gap="6">
-      {label && <Text pl="3">{label}</Text>}
+      {label && (
+        <Flex>
+          <Text pl="3">{label}</Text>
+          {isRequired && (
+            <Text c="red" pl="3">
+              *
+            </Text>
+          )}
+        </Flex>
+      )}
+
       <Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
         <Button.Group w="100%" orientation="vertical">
           {modifiers.map((modifier, index) => {
