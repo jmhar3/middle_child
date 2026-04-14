@@ -11,6 +11,7 @@ export interface ItemOptions {
   id: string;
   label: string;
   allow_multiple_selections: boolean;
+  is_required: boolean;
   modifiers: Modifier[];
 }
 
@@ -38,8 +39,9 @@ export interface MenuSection {
 export interface SupabaseItemOptions {
   id: string;
   label: string;
+  is_required: boolean;
   allow_multiple_selections: boolean;
-  menu_item_options_modifiers: { modifiers: Modifier }[];
+  options_modifiers: { modifiers: Modifier }[];
 }
 
 export interface SupabaseMenuItem {
@@ -53,7 +55,7 @@ export interface SupabaseMenuItem {
   has_long_prep_time: boolean;
   is_applicable_loyalty_item: boolean;
   menu_items_modifiers: { modifiers: Modifier }[];
-  menu_items_options: { menu_item_options: SupabaseItemOptions }[];
+  menu_items_options: { options: SupabaseItemOptions }[];
 }
 
 export interface SupabaseSection {

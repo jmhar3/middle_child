@@ -13,16 +13,9 @@ const formatSupaBaseMenu = (supabaseData: SupabaseSection[]) => {
         ...item,
         modifiers: menu_items_modifiers.map(({ modifiers }) => modifiers),
         modifierCategories: menu_items_options.map(
-          ({
-            menu_item_options: {
-              menu_item_options_modifiers,
-              ...menu_item_options
-            },
-          }) => ({
-            ...menu_item_options,
-            modifiers: menu_item_options_modifiers.map(
-              ({ modifiers }) => modifiers,
-            ),
+          ({ options: { options_modifiers, ...options } }) => ({
+            ...options,
+            modifiers: options_modifiers.map(({ modifiers }) => modifiers),
           }),
         ),
       }),
@@ -38,9 +31,9 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
         *, menu_items (
           *,
           menu_items_options (
-            menu_item_options (
+            options (
               *,
-              menu_item_options_modifiers (
+              options_modifiers (
                 modifiers (*)
               )
             )
@@ -79,9 +72,9 @@ export const upsertSections = createAsyncThunk(
           *, menu_items (
             *,
             menu_items_options (
-              menu_item_options (
+              options (
                 *,
-                menu_item_options_modifiers (
+                options_modifiers (
                   modifiers (*)
                 )
               )

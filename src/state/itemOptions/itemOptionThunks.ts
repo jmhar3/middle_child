@@ -7,16 +7,16 @@ import type { ItemOption } from "./itemOptionsSlice";
 import type { Modifier } from "../modifiers/modifiersSlice";
 
 interface SupabaseItemOption extends ItemOption {
-  menu_item_options_modifiers: { modifiers: Modifier }[];
+  options_modifiers: { modifiers: Modifier }[];
 }
 
 const formatData = (data: SupabaseItemOption[]) =>
   data.map((itemOption) => {
-    const { menu_item_options_modifiers, ...option } = itemOption;
+    const { options_modifiers, ...option } = itemOption;
 
     return {
       ...option,
-      modifiers: menu_item_options_modifiers.map(
+      modifiers: options_modifiers.map(
         ({ modifiers }: { modifiers: Modifier }) => modifiers,
       ),
     };
@@ -25,10 +25,10 @@ const formatData = (data: SupabaseItemOption[]) =>
 export const fetchItemOptions = createAsyncThunk(
   "itemOptions/fetchItemOptions",
   async () => {
-    const { data, error } = await supabase.from("menu_item_options").select(
+    const { data, error } = await supabase.from("options").select(
       `
         *,
-        menu_item_options_modifiers (
+        options_modifiers (
           modifiers (*)
         )`,
     );
@@ -53,7 +53,7 @@ export const upsertOptions = createAsyncThunk(
   "itemOptions/upsertOptions",
   async (params: Partial<ItemOption>[]) => {
     const { data, error } = await supabase
-      .from("menu_item_options")
+      .from("options")
       .upsert(params)
       .select();
 

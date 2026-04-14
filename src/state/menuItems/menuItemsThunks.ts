@@ -13,9 +13,9 @@ const formatSupaBaseMenuItems: (
       return {
         ...menuItem,
         modifiers: menu_items_modifiers.map(({ modifiers }) => modifiers),
-        modifierCategories: menu_items_options.map(({ menu_item_options }) => ({
-          ...menu_item_options,
-          modifiers: menu_item_options.menu_item_options_modifiers.map(
+        modifierCategories: menu_items_options.map(({ options }) => ({
+          ...options,
+          modifiers: options.options_modifiers.map(
             ({ modifiers }) => modifiers,
           ),
         })),
@@ -33,9 +33,9 @@ export const fetchMenuItems = createAsyncThunk(
         `
     *,
     menu_items_options (
-      menu_item_options (
+      options (
         *,
-        menu_item_options_modifiers (
+        options_modifiers (
          modifiers (*)
         )
       )
