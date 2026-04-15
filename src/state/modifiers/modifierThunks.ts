@@ -51,7 +51,6 @@ export const upsertModifiers = createAsyncThunk(
   async (modifiers: Partial<Modifier>[]) => {
     const formattedModifiers = modifiers.map((modifier) => ({
       ...modifier,
-      price: modifier.price === 0 ? null : modifier.price,
       is_in_stock: modifier.is_ingredient ? modifier.is_in_stock : null,
     }));
 
@@ -61,7 +60,7 @@ export const upsertModifiers = createAsyncThunk(
       .select();
 
     if (error) {
-      console.log(error);
+      console.error(error);
       notifications.show({
         withCloseButton: false,
         message: error.message,
