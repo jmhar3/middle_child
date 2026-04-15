@@ -60,7 +60,7 @@ const ordersSlice = createSlice({
         state.status = "succeeded";
         state.data = state.data.map((order) => {
           if (order.id === action.payload)
-            return { ...order, is_completed: true };
+            return { ...order, is_complete: true };
           return order;
         });
       })
