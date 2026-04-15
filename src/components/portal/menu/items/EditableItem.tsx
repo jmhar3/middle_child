@@ -48,7 +48,7 @@ function EditableItem(props: EditableItemProps) {
 
   const onUpsertMenuItem = () => {
     setIsUpdatingMenuItems(true);
-    dispatch(upsertMenuItems(editedMenuItem)).finally(() => {
+    dispatch(upsertMenuItems([editedMenuItem])).finally(() => {
       setIsUpdatingMenuItems(false);
       onCloseEditableItem();
     });
