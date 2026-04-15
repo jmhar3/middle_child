@@ -1,23 +1,45 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Flex, Text, Stack, Badge, Divider } from "@mantine/core";
+import { Flex, Text, Stack, Divider } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 
 import StyledButton from "../../StyledButton";
 import OrderBadge from "./OrderBadge";
+import OrderItem from "./OrderItem";
 
 import type { OrderType } from "../../../state/types";
+import { useAppDispatch } from "../../../state/hooks";
+import { completeOrder } from "../../../state/orders/ordersThunks";
+import { useState } from "react";
 
 dayjs.extend(relativeTime);
 
 interface OrderProps {
   order: OrderType;
-  onCompleteOrder: () => void;
 }
 
 function Order(props: OrderProps) {
-  const { order, onCompleteOrder } = props;
+  const { order } = props;
 
-  const { user, items, notes, is_complete } = order;
+  const { user, items, note, is_complete } = order;
+
+  const [isCompletingOrder, setIsCompletingOrder] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const onCompleteOrder = () => {
+    setIsCompletingOrder(true);
+    dispatch(completeOrder(order.id))
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsCompletingOrder(true));
+  };
 
   return (
     <Stack
@@ -45,6 +67,7 @@ function Order(props: OrderProps) {
           radius="0"
           label="Complete Order"
           onClick={onCompleteOrder}
+          isLoading={isCompletingOrder}
         />
       </Flex>
 
@@ -52,34 +75,15 @@ function Order(props: OrderProps) {
         {items?.map((item, index) => (
           <>
             {index > 0 && <Divider w="100%" />}
-            <Flex key={item.id} gap="sm" justify="space-between">
-              <Stack gap="0">
-                <Text>
-                  {item.quantity} x {item.menuItem.label}
-                </Text>
-                <Text fs="italic">{item.note}</Text>
-              </Stack>
-              <Flex gap="sm">
-                {item.modifiers.map((modifier) => (
-                  <Badge
-                    radius="sm"
-                    size="lg"
-                    color={modifier.color}
-                    key={modifier.id}
-                  >
-                    {modifier.label}
-                  </Badge>
-                ))}
-              </Flex>
-            </Flex>
+            <OrderItem item={item} />
           </>
         ))}
 
-        {notes && (
+        {note && (
           <>
             <Divider w="100%" />
 
-            <Text fs="italic">{notes}</Text>
+            <Text fs="italic">{note}</Text>
           </>
         )}
       </Stack>
