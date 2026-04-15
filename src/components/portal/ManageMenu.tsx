@@ -8,6 +8,7 @@ import InsertModifierDrawer from "./menu/modifiers/InsertModifierDrawer";
 import DeleteModifierModal from "./menu/modifiers/DeleteModifierModal";
 import InsertOptionDrawer from "./menu/itemOptions/InsertOptionDrawer";
 import UpdateOptionDrawer from "./menu/itemOptions/UpdateOptionDrawer";
+import UpdateOrderTimesModal from "./UpdateOrderTimesModal";
 
 function ManageMenu() {
   const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -40,6 +41,10 @@ function ManageMenu() {
     showUpdateOptionDrawer,
     { open: openUpdateOptionDrawer, close: closeUpdateOptionDrawer },
   ] = useDisclosure(false);
+  const [
+    showUpdateOrderTimesDrawer,
+    { open: openUpdateOrderTimesDrawer, close: closeUpdateOrderTimesDrawer },
+  ] = useDisclosure(false);
 
   return (
     <>
@@ -51,12 +56,15 @@ function ManageMenu() {
             color="darkslategray"
             size={isMobile ? "md" : "lg"}
           >
-            Manage Menu
+            Manage Store
           </Button>
         </Menu.Target>
 
         <Menu.Dropdown pos="absolute">
           <Menu.Item onClick={openUpdateStockDrawer}>Update Stock</Menu.Item>
+          <Menu.Item onClick={openUpdateOrderTimesDrawer}>
+            Update Order Times
+          </Menu.Item>
 
           <Menu.Divider />
 
@@ -116,6 +124,11 @@ function ManageMenu() {
       <UpdateOptionDrawer
         isOpen={showUpdateOptionDrawer}
         onClose={closeUpdateOptionDrawer}
+      />
+
+      <UpdateOrderTimesModal
+        isOpen={showUpdateOrderTimesDrawer}
+        onClose={closeUpdateOrderTimesDrawer}
       />
     </>
   );

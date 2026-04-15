@@ -29,9 +29,9 @@ export const fetchOrderTimes = createAsyncThunk(
   },
 );
 
-export const upsertOrderTime = createAsyncThunk(
-  "orderTimes/upsertOrderTime",
-  async (params: Partial<OrderTime>) => {
+export const updateOrderTimes = createAsyncThunk(
+  "orderTimes/updateOrderTimes",
+  async (params: Partial<OrderTime>[]) => {
     const { data, error } = await supabase
       .from("order_times")
       .upsert(params)
