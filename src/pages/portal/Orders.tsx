@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Box, Group } from "@mantine/core";
+import { Box, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 import PageLayout from "./PageLayout";
@@ -32,6 +33,7 @@ import {
   selectAllOrderTimes,
   selectOrderTimesStatus,
 } from "../../state/orderTimes/orderTimesSlice";
+
 import {
   selectOrders,
   selectOrdersStatus,
@@ -40,29 +42,25 @@ import {
 import type { OrderTime } from "../../state/types";
 
 function Orders() {
-  // handle dialog/drawer state
+  const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
+
   const [
     showUpdateStockDrawer,
     { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
   ] = useDisclosure(false);
   const [
-    showConfirmOpenDialog,
-    { open: openConfirmOpenDialog, close: closeConfirmOpenDialog },
+    showToggleStoreOpenModal,
+    { open: openToggleStoreOpenModal, close: closeToggleStoreOpenModal },
   ] = useDisclosure(false);
-
-  // update order time loading state
-  const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
 
   const dispatch = useAppDispatch();
 
-  // store status
   const menuStatus = useAppSelector(selectMenuStatus);
   const modifiersStatus = useAppSelector(selectModifiersStatus);
   const orderTimesStatus = useAppSelector(selectOrderTimesStatus);
   const storeInfoStatus = useAppSelector(selectModifiersStatus);
   const ordersStatus = useAppSelector(selectOrdersStatus);
 
-  // store data
   const orderTimes = useAppSelector(selectAllOrderTimes);
   const storeInfo = useAppSelector(selectStoreInfo);
   const storeIsOpen = useAppSelector(selectStoreIsOpen);
@@ -104,12 +102,19 @@ function Orders() {
     setIsUpdatingOrderTime(true);
     dispatch(
       updateStoreInfo({ ...storeInfo, current_order_time: selectedOrderTime }),
-    ).finally(() => {
-      setIsUpdatingOrderTime(false);
-    });
+    )
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => {
+        setIsUpdatingOrderTime(false);
+      });
   };
-
-  console.log(orders);
 
   if (isLoading) return <Loading message="Loading store data" />;
 
@@ -127,7 +132,7 @@ function Orders() {
             <StyledButton
               variant="outline"
               label="Close Store"
-              onClick={openConfirmOpenDialog}
+              onClick={openToggleStoreOpenModal}
             />
           )}
         </>
@@ -140,12 +145,8 @@ function Orders() {
 
       {storeInfo && (
         <ToggleStoreOpenModal
-          isOpen={storeInfo.is_open}
-          showConfirmationDialog={showConfirmOpenDialog}
-          setShowConfirmationDialog={(isOpen) =>
-            isOpen ? openConfirmOpenDialog() : closeConfirmOpenDialog()
-          }
-          onStoreOpenSuccess={closeConfirmOpenDialog}
+          isOpen={showToggleStoreOpenModal}
+          onClose={closeToggleStoreOpenModal}
         />
       )}
 
@@ -176,7 +177,19 @@ function Orders() {
         </Box>
       )}
 
-      {orders && orders.length > 0 && <OrdersList orders={orders} />}
+      {storeIsOpen ? (
+        orders && orders.length > 0 && <OrdersList orders={orders} />
+      ) : (
+        <Stack align="center" gap="sm" pt="3em">
+          <Text ta="center" mb="sm" size="1.6em" fw="600">
+            Middle Child is currently closed
+          </Text>
+          <StyledButton
+            label="Start Accepting Orders"
+            onClick={openToggleStoreOpenModal}
+          />
+        </Stack>
+      )}
     </PageLayout>
   );
 }

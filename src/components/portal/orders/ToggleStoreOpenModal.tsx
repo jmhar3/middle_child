@@ -1,77 +1,83 @@
-import { Group, Modal, Overlay, Stack, Text } from "@mantine/core";
+import { useState } from "react";
+import { notifications } from "@mantine/notifications";
+import { Group, Modal, Stack, Text } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
 
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import { updateStoreInfo } from "../../../state/storeInfo/storeInfoThunks";
+
+import {
+  selectStoreInfo,
+  selectStoreIsOpen,
+} from "../../../state/storeInfo/storeInfoSlice";
+
 interface ToggleStoreOpenModalProps {
   isOpen: boolean;
-  onStoreOpenSuccess: () => void;
-  showConfirmationDialog: boolean;
-  setShowConfirmationDialog: (showConfirmation: boolean) => void;
+  onClose: () => void;
 }
 
 function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
-  const {
-    isOpen,
-    onStoreOpenSuccess,
-    showConfirmationDialog,
-    setShowConfirmationDialog,
-  } = props;
+  const { isOpen, onClose } = props;
+
+  const dispatch = useAppDispatch();
+  const storeInfo = useAppSelector(selectStoreInfo);
+  const storeIsOpen = useAppSelector(selectStoreIsOpen);
+
+  const [isUpdatingStore, setIsUpdatingStore] = useState(false);
+
+  const onUpdateStore = () => {
+    setIsUpdatingStore(true);
+    dispatch(updateStoreInfo({ ...storeInfo, is_open: !storeIsOpen }))
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => {
+        setIsUpdatingStore(false);
+      });
+    onClose();
+  };
 
   return (
-    <>
-      {(!isOpen || showConfirmationDialog) && (
-        <Overlay color="darkslategray" backgroundOpacity={0.6} blur={3} />
-      )}
+    <Modal
+      pt="6em"
+      centered
+      radius="sm"
+      onClose={onClose}
+      withCloseButton={false}
+      opened={isOpen}
+      transitionProps={{ transition: "fade", duration: 200 }}
+      styles={{
+        content: { background: "whitesmoke" },
+      }}
+    >
+      <Stack>
+        <Text ta="center" mb="sm" size="1.6em" c="red.9" fw="600">
+          {storeIsOpen
+            ? "Are you sure you want to stop accepting orders?"
+            : "Are you sure you're ready to start accepting orders?"}
+        </Text>
 
-      <Modal
-        pt="6em"
-        centered
-        radius="sm"
-        onClose={() => {}}
-        withCloseButton={false}
-        opened={!isOpen || showConfirmationDialog}
-        transitionProps={{ transition: "fade", duration: 200 }}
-        overlayProps={{
-          opacity: 0,
-          style: { pointerEvents: "none" },
-        }}
-        styles={{
-          content: { background: "whitesmoke" },
-        }}
-      >
-        <Stack>
-          {showConfirmationDialog ? (
-            <Text ta="center" mb="sm" size="1.6em" c="red.9" fw="600">
-              {isOpen
-                ? "Are you sure you want to stop accepting orders?"
-                : "Are you sure you're ready to start accepting orders?"}
-            </Text>
-          ) : (
-            <Text ta="center" mb="sm" size="1.6em" fw="600">
-              Middle Child is currently closed
-            </Text>
-          )}
-
-          <Group grow>
-            {showConfirmationDialog ? (
-              <>
-                <StyledButton label="Confirm" onClick={onStoreOpenSuccess} />
-                <StyledButton
-                  label="Cancel"
-                  variant="outline"
-                  onClick={() => setShowConfirmationDialog(false)}
-                />
-              </>
-            ) : (
-              <StyledButton
-                label="Start Accepting Orders"
-                onClick={() => setShowConfirmationDialog(true)}
-              />
-            )}
-          </Group>
-        </Stack>
-      </Modal>
-    </>
+        <Group grow>
+          <StyledButton
+            label="Confirm"
+            onClick={onUpdateStore}
+            isLoading={isUpdatingStore}
+          />
+          <StyledButton
+            label="Cancel"
+            variant="outline"
+            onClick={onClose}
+            isLoading={isUpdatingStore}
+          />
+        </Group>
+      </Stack>
+    </Modal>
   );
 }
 
