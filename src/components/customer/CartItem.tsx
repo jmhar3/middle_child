@@ -19,15 +19,15 @@ interface CartItemProps {
 
 function CartItem(props: CartItemProps) {
   const { orderItem, onEditClick, onDeleteClick } = props;
-  const { modifiers, menuItem, quantity, note } = orderItem;
+  const { modifiers, item, quantity, note } = orderItem;
 
-  const orderItemPrice = calculateOrderItemPrice(menuItem, modifiers);
+  const orderItemPrice = calculateOrderItemPrice(item, modifiers);
 
   return (
     <Stack gap="3">
-      <Flex key={menuItem.label} justify="space-between" align="center">
+      <Flex key={item.label} justify="space-between" align="center">
         <Text>
-          {quantity} x {menuItem.label}
+          {quantity} x {item.label}
         </Text>
 
         <Flex align="center" gap="sm">

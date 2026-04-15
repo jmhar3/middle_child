@@ -16,7 +16,7 @@ export const findExistingOrderItem = (
 ) => {
   return existingOrder.find(
     (existingItem) =>
-      existingItem.menuItem.id === newOrderItem.menuItem.id &&
+      existingItem.item.id === newOrderItem.item.id &&
       JSON.stringify(existingItem.modifiers) ===
         JSON.stringify(newOrderItem.modifiers) &&
       existingItem.note === newOrderItem.note,

@@ -7,18 +7,18 @@ import type { MenuItemType, Modifier } from "../../state/types";
 
 interface MenuItemButtonProps {
   onClick: () => void;
-  menuItem: MenuItemType;
+  item: MenuItemType;
   modifiers?: Modifier[];
 }
 
 function MenuItemButton(props: MenuItemButtonProps) {
-  const { onClick, menuItem, modifiers } = props;
+  const { onClick, item, modifiers } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   const totalPrice = modifiers
-    ? calculateOrderItemPrice(menuItem, modifiers)
-    : menuItem.price;
+    ? calculateOrderItemPrice(item, modifiers)
+    : item.price;
 
   return (
     <Button
@@ -34,8 +34,8 @@ function MenuItemButton(props: MenuItemButtonProps) {
       onClick={onClick}
     >
       <Stack gap="3" w="100%" justify="center" align="flex-start" py="xs">
-        <Text fw={700}>{menuItem.label}</Text>
-        <Text>{menuItem.description}</Text>
+        <Text fw={700}>{item.label}</Text>
+        <Text>{item.description}</Text>
 
         {modifiers && modifiers.length > 0 && (
           <ScrollArea h="20px" w="100%">

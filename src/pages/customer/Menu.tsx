@@ -57,13 +57,14 @@ function Menu() {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   console.log(menu);
+
   const recentlyOrderedItems: OrderItem[] | null =
     menu.length > 0
       ? [
           {
             id: "1",
             quantity: 1,
-            menuItem: menu[0]?.items[0],
+            item: menu[0]?.items[0],
             modifiers: [],
           },
         ]
@@ -84,7 +85,7 @@ function Menu() {
 
   const addItemToOrder = (item: OrderItem) => {
     const orderItemPrice =
-      calculateOrderItemPrice(item.menuItem, item.modifiers) * item.quantity;
+      calculateOrderItemPrice(item.item, item.modifiers) * item.quantity;
 
     setOrder((cart) => {
       if (cart) {
@@ -105,7 +106,7 @@ function Menu() {
 
           const hasManyItems = totalItemsInOrder && totalItemsInOrder > 5;
           const hasItemsWithLongPrepTime = newOrderItems.find(
-            (item) => item.menuItem.has_long_prep_time || false,
+            (item) => item.item.has_long_prep_time || false,
           );
           const orderTime =
             hasItemsWithLongPrepTime || hasManyItems
@@ -145,11 +146,11 @@ function Menu() {
     newOrderItem: OrderItem,
   ) => {
     const oldOrderItemPrice =
-      calculateOrderItemPrice(oldOrderItem.menuItem, oldOrderItem.modifiers) *
+      calculateOrderItemPrice(oldOrderItem.item, oldOrderItem.modifiers) *
       oldOrderItem.quantity;
 
     const newOrderItemPrice =
-      calculateOrderItemPrice(newOrderItem.menuItem, newOrderItem.modifiers) *
+      calculateOrderItemPrice(newOrderItem.item, newOrderItem.modifiers) *
       newOrderItem.quantity;
 
     setOrder((prevOrder) => {
@@ -174,7 +175,7 @@ function Menu() {
 
   const onDeleteOrderItem = (orderItem: OrderItem) => {
     const orderItemPrice =
-      calculateOrderItemPrice(orderItem.menuItem, orderItem.modifiers) *
+      calculateOrderItemPrice(orderItem.item, orderItem.modifiers) *
       orderItem.quantity;
 
     setOrder((prevOrder) => {
@@ -243,7 +244,7 @@ function Menu() {
                     <>
                       {index !== 0 && <Divider />}
                       <MenuItemButton
-                        key={order.menuItem.label}
+                        key={order.item.label}
                         onClick={() => addItemToOrder(order)}
                         {...order}
                       />
@@ -266,7 +267,7 @@ function Menu() {
                       {index !== 0 && <Divider />}
                       <MenuItemButton
                         key={menuItem.label}
-                        menuItem={menuItem}
+                        item={menuItem}
                         onClick={() => handleOpenMenuItemModal(menuItem)}
                       />
                     </>

@@ -46,8 +46,7 @@ function CartModal(props: CartModalProps) {
   };
 
   const additionalLoyaltyPoints = useMemo(
-    () =>
-      items.filter((item) => item.menuItem.is_applicable_loyalty_item).length,
+    () => items.filter((item) => item.item.is_applicable_loyalty_item).length,
     [items],
   );
 
@@ -62,7 +61,7 @@ function CartModal(props: CartModalProps) {
             setOldOrderItem(undefined);
             setShowMenuItemModal(false);
           }}
-          menuItem={oldOrderItem.menuItem}
+          menuItem={oldOrderItem.item}
           orderItem={oldOrderItem}
           onAddToOrder={(newOrderItem: OrderItem) =>
             onEditOrderItem(oldOrderItem, newOrderItem)

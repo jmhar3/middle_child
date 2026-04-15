@@ -37,7 +37,7 @@ function MenuItemModal(props: MenuItemModalProps) {
     orderItem = {
       id: "1",
       quantity: 1,
-      menuItem: menuItem,
+      item: menuItem,
       modifiers: [],
     },
   } = props;
@@ -77,7 +77,7 @@ function MenuItemModal(props: MenuItemModalProps) {
     );
 
   const menuItemPrice = useMemo(
-    () => calculateOrderItemPrice(selection.menuItem, selection.modifiers),
+    () => calculateOrderItemPrice(selection.item, selection.modifiers),
     [selection],
   );
 
