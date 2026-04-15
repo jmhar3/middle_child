@@ -2,31 +2,26 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
-import type { OrderType } from "../types";
 
-// const formatSupaBaseMenu = (supabaseData: SupabaseSection[]) => {
-//   return supabaseData.map(({ menu_items, ...section }) => ({
-//     ...section,
-//     items: menu_items.map(
-//       ({ menu_items_options, menu_items_modifiers, ...item }) => ({
-//         ...item,
-//         modifiers: menu_items_modifiers.map(({ modifiers }) => modifiers),
-//         modifierCategories: menu_items_options.map(
-//           ({ options: { options_modifiers, ...options } }) => ({
-//             ...options,
-//             modifiers: options_modifiers.map(({ modifiers }) => modifiers),
-//           }),
-//         ),
-//       }),
-//     ),
-//   }));
-// };
+import type { OrderType, SupabaseOrders } from "../types";
+
+const formatSupaBaseOrders = (supabaseData: SupabaseOrders[]) => {
+  return supabaseData.map(({ order_items, ...order }) => ({
+    ...order,
+    items: order_items.map(({ menu_item, order_items_modifiers, ...item }) => ({
+      ...item,
+      item: menu_item,
+      modifiers: order_items_modifiers.map(({ modifiers }) => modifiers),
+    })),
+  }));
+};
 
 export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      `*, order_items (
+      `*, user (*),
+      order_items (
         *, menu_item (*),
         order_items_modifiers(
           modifiers (*)
@@ -47,20 +42,31 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
     throw Error(error.message);
   }
 
-  return data;
+  return formatSupaBaseOrders(data);
 });
 
 export const insertOrder = createAsyncThunk(
   "menu/insertOrder",
   async (sections: Partial<OrderType>[]) => {
-    const { data, error } = await supabase.from("orders").insert(sections);
+    const { data, error } = await supabase
+      .from("orders")
+      .insert(sections)
+      .select(
+        `*, user (*),
+        order_items (
+          *, menu_item (*),
+          order_items_modifiers(
+            modifiers (*)
+          )
+        )`,
+      );
 
     if (error) {
       console.log(error);
       throw Error(error.message);
     }
 
-    return data;
+    return formatSupaBaseOrders(data);
   },
 );
 
@@ -69,7 +75,7 @@ export const completeOrder = createAsyncThunk(
   async (orderId: string) => {
     const { error } = await supabase
       .from("orders")
-      .update({ is_completed: true })
+      .update({ is_complete: true })
       .eq("id", orderId);
 
     if (error) {

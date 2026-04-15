@@ -1,5 +1,3 @@
-import type dayjs from "dayjs";
-
 export interface OrderTime {
   id: string;
   label: string;
@@ -44,6 +42,7 @@ export interface MenuItemType {
   modifierCategories?: ItemOptions[];
   modifiers?: Modifier[];
   order: number;
+  reference_code?: string;
 }
 
 export interface MenuSection {
@@ -56,12 +55,13 @@ export interface MenuSection {
 export interface User {
   id: string;
   name: string;
-  loyaltyPoints?: number;
+  is_admin: boolean;
+  loyalty_points?: number;
 }
 
 export interface OrderItem {
   id: string;
-  menuItem: MenuItemType;
+  item: MenuItemType;
   modifiers: Modifier[];
   quantity: number;
   note?: string;
@@ -77,11 +77,30 @@ export interface Cart {
 export interface OrderType {
   id: string;
   user: User;
-  due_at: dayjs.Dayjs;
+  due_at: string;
   total: number;
-  notes?: string;
+  note?: string;
   items: OrderItem[];
   is_complete: boolean;
+}
+
+export interface SupabaseOrderItem {
+  id: string;
+  note?: string;
+  quantity: number;
+  menu_item: SupabaseMenuItem;
+  order_items_modifiers: { modifiers: Modifier }[];
+}
+
+export interface SupabaseOrders {
+  id: string;
+  created_at: string;
+  due_at: string;
+  is_complete: boolean;
+  note?: string;
+  total: number;
+  user: User;
+  order_items: SupabaseOrderItem[];
 }
 
 export interface SupabaseItemOptions {
