@@ -65,19 +65,20 @@ export const fetchMenuItems = createAsyncThunk(
 
 export const upsertMenuItems = createAsyncThunk(
   "menuItems/upsertMenuItems",
-  async (params: Partial<MenuItemType>) => {
-    const { modifiers, modifierCategories, ...menuItem } = params;
-
-    console.log(modifiers);
-    console.log(modifierCategories);
+  async (menuItems: Partial<MenuItemType>[]) => {
+    const formattedMenuItems = menuItems.map((item) => {
+      delete item.modifiers;
+      delete item.modifierCategories;
+      return item;
+    });
 
     const { data, error } = await supabase
       .from("menu_items")
-      .upsert(menuItem)
+      .upsert(formattedMenuItems)
       .select();
 
     if (error) {
-      console.log(error);
+      console.error(error);
       notifications.show({
         withCloseButton: false,
         message: error.message,
