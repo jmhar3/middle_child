@@ -47,9 +47,25 @@ const menuItemsSlice = createSlice({
       .addCase(upsertMenuItems.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(upsertMenuItems.fulfilled, (state, action) => {
+      .addCase(upsertMenuItems.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
-        state.data = action.payload;
+
+        const newMenuItems: MenuItemType[] = [];
+        const oldMenuItems: MenuItemType[] = [];
+
+        payload.forEach((item) => {
+          if (state.data.find(({ id }) => id === item.id)) {
+            oldMenuItems.push(item);
+          } else {
+            newMenuItems.push(item);
+          }
+        });
+
+        const filteredState = state.data.filter(
+          ({ id: id1 }) => !payload.find(({ id: id2 }) => id1 === id2),
+        );
+
+        state.data = [...filteredState, ...oldMenuItems, ...newMenuItems];
       })
       .addCase(upsertMenuItems.rejected, (state) => {
         state.status = "failed";
