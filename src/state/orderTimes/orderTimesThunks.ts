@@ -11,7 +11,7 @@ export const fetchOrderTimes = createAsyncThunk(
     const { data, error } = await supabase
       .from("order_times")
       .select()
-      .overrideTypes<Array<OrderTime>, { merge: false }>();
+      .order("order");
 
     if (error) {
       console.error(error);
@@ -35,7 +35,8 @@ export const updateOrderTimes = createAsyncThunk(
     const { data, error } = await supabase
       .from("order_times")
       .upsert(params)
-      .select();
+      .select()
+      .order("order");
 
     if (error) {
       console.error(error);
