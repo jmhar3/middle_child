@@ -46,7 +46,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const existingInStockMenuItems = menuItems.filter((item) => item.is_in_stock);
 
   // menu view state toggled between Checkbox List / Multiselect
-  const [menuView, setMenuView] = useState("Checkbox List");
+  const [menuView, setMenuView] = useState<"Checkbox List" | "Multiselect">(
+    "Multiselect",
+  );
 
   // loading state
   const [isUpdatingStock, setIsUpdatingStock] = useState(false);
@@ -194,6 +196,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
           w="100%"
           size="md"
           label="Select out of stock ingredients"
+          placeholder="Select out of stock menu items"
           nothingFoundMessage="No ingredients found matching your search"
           value={outOfStockIngredients?.map(({ id }) => id)}
           onChange={onSelectOutOfStockIngredients}
@@ -212,7 +215,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
             <SegmentedControl
               w="100%"
               value={menuView}
-              onChange={setMenuView}
+              onChange={(value) =>
+                setMenuView(value as "Checkbox List" | "Multiselect")
+              }
               data={["Multiselect", "Checkbox List"]}
             />
           </Stack>
