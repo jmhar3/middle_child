@@ -46,6 +46,7 @@ function ModifierRadio(props: ModifierRadioProps) {
                 <Button
                   fullWidth
                   radius="0"
+                  h={modifier.description && "4.1em"}
                   key={modifier.id}
                   color="darkslategray"
                   justify="space-between"
@@ -57,7 +58,12 @@ function ModifierRadio(props: ModifierRadioProps) {
                   rightSection={modifier.price && `+ $${modifier.price}`}
                   variant={isSelected ? "filled" : "transparent"}
                 >
-                  {modifier.label}
+                  <Stack gap="3" align="flex-start" justify="center">
+                    {modifier.label}
+                    {modifier.description && (
+                      <Text size="sm">{modifier.description}</Text>
+                    )}
+                  </Stack>
                 </Button>
               </>
             );
