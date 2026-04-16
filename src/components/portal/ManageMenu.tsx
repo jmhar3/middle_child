@@ -68,26 +68,77 @@ function ManageMenu() {
 
           <Menu.Divider />
 
-          <Menu.Label>Menu Sections</Menu.Label>
           <Menu.Item onClick={openUpsertSectionModal}>Add Section</Menu.Item>
 
           <Menu.Divider />
 
-          <Menu.Label>Item Modifiers</Menu.Label>
-          <Menu.Item onClick={openInsertModifierDrawer}>Add Modifier</Menu.Item>
-          <Menu.Item onClick={openUpdateModifierDrawer}>
-            Edit Modifier
-          </Menu.Item>
-          <Menu.Item onClick={openDeleteModifierModal}>
-            Remove Modifier
-          </Menu.Item>
+          <Menu.Sub openDelay={120} closeDelay={150}>
+            <Menu.Sub.Target>
+              <Menu.Sub.Item>Edit Menu Items</Menu.Sub.Item>
+            </Menu.Sub.Target>
+
+            <Menu.Sub.Dropdown>
+              <Menu.Item onClick={openInsertModifierDrawer}>
+                Duplicate Item
+              </Menu.Item>
+              <Menu.Item onClick={openUpdateModifierDrawer}>
+                Mass Update Items
+              </Menu.Item>
+            </Menu.Sub.Dropdown>
+          </Menu.Sub>
 
           <Menu.Divider />
 
-          <Menu.Label>Item Options</Menu.Label>
-          <Menu.Item onClick={openInsertOptionDrawer}>Add Options</Menu.Item>
-          <Menu.Item onClick={openUpdateOptionDrawer}>Edit Options</Menu.Item>
-          <Menu.Item>Remove Options</Menu.Item>
+          <Menu.Sub openDelay={120} closeDelay={150}>
+            <Menu.Sub.Target>
+              <Menu.Sub.Item>Edit Modifiers</Menu.Sub.Item>
+            </Menu.Sub.Target>
+
+            <Menu.Sub.Dropdown>
+              <Menu.Item onClick={openInsertModifierDrawer}>
+                Add Modifier
+              </Menu.Item>
+              <Menu.Item onClick={openUpdateModifierDrawer}>
+                Edit Modifier
+              </Menu.Item>
+              <Menu.Item onClick={openDeleteModifierModal}>
+                Remove Modifier
+              </Menu.Item>
+            </Menu.Sub.Dropdown>
+          </Menu.Sub>
+
+          <Menu.Divider />
+
+          <Menu.Sub openDelay={120} closeDelay={150}>
+            <Menu.Sub.Target>
+              <Menu.Sub.Item>Edit Options</Menu.Sub.Item>
+            </Menu.Sub.Target>
+
+            <Menu.Sub.Dropdown>
+              <Menu.Item onClick={openInsertOptionDrawer}>
+                Add Options
+              </Menu.Item>
+              <Menu.Item onClick={openUpdateOptionDrawer}>
+                Edit Options
+              </Menu.Item>
+              <Menu.Item>Remove Options</Menu.Item>
+            </Menu.Sub.Dropdown>
+          </Menu.Sub>
+
+          <Menu.Divider />
+
+          <Menu.Sub openDelay={120} closeDelay={150}>
+            <Menu.Sub.Target>
+              <Menu.Sub.Item>Reorder</Menu.Sub.Item>
+            </Menu.Sub.Target>
+
+            <Menu.Sub.Dropdown>
+              <Menu.Item>Sort Sections</Menu.Item>
+              <Menu.Item>Sort Menu Items</Menu.Item>
+              <Menu.Item>Sort Options</Menu.Item>
+              <Menu.Item>Sort Options Modifiers</Menu.Item>
+            </Menu.Sub.Dropdown>
+          </Menu.Sub>
         </Menu.Dropdown>
       </Menu>
 
