@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { Box, Flex, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
@@ -122,6 +122,16 @@ function Orders() {
     <PageLayout
       navComponents={
         <>
+          <Stack gap="0">
+            <Flex justify="space-between" gap="xs">
+              <Text>Today:</Text>
+              <Text>$11</Text>
+            </Flex>
+            <Flex justify="space-between" gap="xs">
+              <Text>This Week:</Text>
+              <Text>$332</Text>
+            </Flex>
+          </Stack>
           <StyledButton
             variant="outline"
             label="Update Stock"
