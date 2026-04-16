@@ -17,11 +17,11 @@ const initialState: StoreInfoState = {
     is_open: false,
     current_order_time: {
       id: "",
-      label: "",
+      label: "Not Busy",
       short: 10,
       long: 15,
+      order: 0,
     },
-    weekly_records: JSON.stringify({}),
   },
   status: "idle",
 };
@@ -72,6 +72,3 @@ export const selectStoreIsOpen = (state: RootState) =>
 
 export const selectStoreInfoCurrentOrderTime = (state: RootState) =>
   state.storeInfo.data?.current_order_time;
-
-export const selectStoreInfoWeeklyRecords = (state: RootState) =>
-  state.storeInfo.data?.weekly_records;
