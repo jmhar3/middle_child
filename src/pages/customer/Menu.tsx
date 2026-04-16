@@ -9,17 +9,16 @@ import MenuItemModal from "../../components/MenuItemModal";
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
 
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { fetchMenu } from "../../state/menu/menuThunks";
+import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
+import { selectMenu, selectMenuStatus } from "../../state/menu/menuSlice";
+
 import {
   selectStoreInfo,
   selectStoreInfoStatus,
+  selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
-
-import { selectMenu, selectMenuStatus } from "../../state/menu/menuSlice";
-
-import { fetchMenu } from "../../state/menu/menuThunks";
-import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
-
-import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
 import {
   calculateOrderItemPrice,
@@ -31,10 +30,11 @@ import type { MenuItemType, Cart, OrderItem } from "../../state/types";
 
 function Menu() {
   const dispatch = useAppDispatch();
-  const menu = useAppSelector(selectMenu);
   const menuStatus = useAppSelector(selectMenuStatus);
-  const storeInfo = useAppSelector(selectStoreInfo);
+  const menu = useAppSelector(selectMenu);
   const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
+  const storeInfo = useAppSelector(selectStoreInfo);
+  const storeIsOpen = useAppSelector(selectStoreIsOpen);
 
   const isLoading = menuStatus === "pending" || storeInfoStatus === "pending";
 
@@ -55,8 +55,6 @@ function Menu() {
   );
   const [order, setOrder] = useState<Cart | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
-
-  console.log(menu);
 
   const recentlyOrderedItems: OrderItem[] | null =
     menu.length > 0
@@ -218,6 +216,32 @@ function Menu() {
             />
           </Box>
         )}
+
+      <Stack w="100%" p="xs" gap="0" align="center">
+        {!storeIsOpen ? (
+          <>
+            <Text>
+              We're currently {storeInfo.current_order_time.label.toLowerCase()}
+            </Text>
+            <Text pb="xs">
+              Pick up time from {storeInfo.current_order_time.short} minutes
+            </Text>
+
+            <Divider w="100%" />
+
+            <Text pt="xs">You're 2 coffees away from a freebie!</Text>
+          </>
+        ) : (
+          <>
+            <Text>Sorry, we're closed.</Text>
+            <Text>Our brewing hours are:</Text>
+            <Text>Mon - Fri 7:30am - 1pm</Text>
+            <Text>Sat - Sun 7:30am - 2pm</Text>
+          </>
+        )}
+      </Stack>
+
+      <Divider w="100%" />
 
       <Stack w="100%" pb="60">
         <Accordion
