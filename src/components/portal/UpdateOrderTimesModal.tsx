@@ -54,8 +54,6 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
     );
   };
 
-  console.log(editedOrderTimes);
-
   const onUpdateOrderTimes = () => {
     setIsUpdatingOrderTimes(true);
 
