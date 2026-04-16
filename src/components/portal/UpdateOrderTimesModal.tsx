@@ -37,19 +37,16 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
     }
   }, [dispatch, orderTimesStatus]);
 
-  const updateOrderTime = (
-    orderTimeId: string,
-    variant: "short" | "long",
-    time: number,
-  ) => {
+  const updateOrderTime = (time: number) => {
     setEditedOrderTimes((prevOrderTimes) =>
       prevOrderTimes.map((orderTime) => {
-        if (orderTime.id === orderTimeId) {
-          return variant === "short"
-            ? { ...orderTime, short: time }
-            : { ...orderTime, long: time };
+        if (orderTime.order === 0) {
+          return { ...orderTime, short: time, long: time + 5 };
+        } else if (orderTime.order === 1) {
+          return { ...orderTime, short: time + 5, long: time + 10 };
+        } else {
+          return { ...orderTime, short: time + 10, long: time + 20 };
         }
-        return orderTime;
       }),
     );
   };
@@ -95,9 +92,9 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
           Update Order Times
         </Text>
 
-        {editedOrderTimes?.map((orderTime, index) => (
+        {editedOrderTimes?.map((orderTime) => (
           <>
-            {index !== 0 && <Divider w="100%" />}
+            {orderTime.order !== 0 && <Divider w="100%" />}
             <Stack key={orderTime.id} gap="sm">
               <Text size="1em" fw="600">
                 {orderTime.label}
@@ -106,30 +103,20 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
                 <TextInput
                   w="100%"
                   size="md"
-                  withAsterisk
-                  label="Few Coffees"
+                  label="<5 Coffees"
                   value={orderTime.short}
+                  disabled={orderTime.order !== 0}
                   onChange={(event) =>
-                    updateOrderTime(
-                      orderTime.id,
-                      "short",
-                      Number(event.target.value),
-                    )
+                    orderTime.order === 0 &&
+                    updateOrderTime(Number(event.target.value))
                   }
                 />
                 <TextInput
                   w="100%"
                   size="md"
-                  withAsterisk
-                  label="Many Coffees / Food"
+                  label=">5 Coffees / Food"
                   value={orderTime.long}
-                  onChange={(event) =>
-                    updateOrderTime(
-                      orderTime.id,
-                      "long",
-                      Number(event.target.value),
-                    )
-                  }
+                  disabled={true}
                 />
               </Group>
             </Stack>
