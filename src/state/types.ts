@@ -3,13 +3,13 @@ export interface OrderTime {
   label: string;
   short: number;
   long: number;
+  order: number;
 }
 
 export interface StoreInfo {
   id: string;
   is_open: boolean;
   current_order_time: OrderTime;
-  weekly_records: string;
 }
 
 export interface Modifier {
@@ -18,8 +18,8 @@ export interface Modifier {
   price?: number;
   is_in_stock?: boolean;
   is_ingredient?: boolean;
-  color?: string;
   reference_code?: string;
+  description?: string;
 }
 
 export interface ItemOptions {
