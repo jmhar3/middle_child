@@ -76,6 +76,17 @@ function Menu() {
     [order],
   );
 
+  const calculatePickUpTimeFromNow = (items: OrderItem[]) => {
+    const hasLongPrepTime = items.find(
+      (orderItem) => orderItem.item.has_long_prep_time || false,
+    );
+    if (hasLongPrepTime || items.length > 5) {
+      return storeInfo.current_order_time.long;
+    } else {
+      return storeInfo.current_order_time.short;
+    }
+  };
+
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
     setSelectedMenuItem(menuItem);
     setIsMenuItemModalOpen(true);
@@ -102,15 +113,6 @@ function Menu() {
             },
           ];
 
-          const hasManyItems = totalItemsInOrder && totalItemsInOrder > 5;
-          const hasItemsWithLongPrepTime = newOrderItems.find(
-            (item) => item.item.has_long_prep_time || false,
-          );
-          const orderTime =
-            hasItemsWithLongPrepTime || hasManyItems
-              ? storeInfo.current_order_time.long
-              : storeInfo.current_order_time.short;
-
           return {
             // if matching item exists in order, return filtered order + update quantity on item
             items:
@@ -118,21 +120,21 @@ function Menu() {
                 ? newOrderItems
                 : [...cart.items, item],
             total: cart.total + orderItemPrice,
-            pickUpTimeFromNow: orderTime,
+            pickUpTimeFromNow: calculatePickUpTimeFromNow(newOrderItems),
           };
         }
 
         return {
           items: [item],
           total: orderItemPrice,
-          pickUpTimeFromNow: storeInfo.current_order_time.short,
+          pickUpTimeFromNow: calculatePickUpTimeFromNow([item]),
         };
       }
 
       return {
         items: [item],
         total: orderItemPrice,
-        pickUpTimeFromNow: storeInfo.current_order_time.short,
+        pickUpTimeFromNow: calculatePickUpTimeFromNow([item]),
       };
     });
 
@@ -161,7 +163,10 @@ function Menu() {
         return {
           items: [...filteredOrderItems, newOrderItem],
           total: prevOrder.total - oldOrderItemPrice + newOrderItemPrice,
-          pickUpTimeFromNow: storeInfo.current_order_time.short,
+          pickUpTimeFromNow: calculatePickUpTimeFromNow([
+            ...filteredOrderItems,
+            newOrderItem,
+          ]),
         };
       } else {
         return null;
@@ -186,7 +191,7 @@ function Menu() {
         return {
           items: filteredOrderItems,
           total: prevOrder.total - orderItemPrice,
-          pickUpTimeFromNow: storeInfo.current_order_time.short,
+          pickUpTimeFromNow: calculatePickUpTimeFromNow(filteredOrderItems),
         };
       }
       return null;
@@ -218,7 +223,7 @@ function Menu() {
         )}
 
       <Stack w="100%" p="xs" gap="0" align="center">
-        {!storeIsOpen ? (
+        {storeIsOpen ? (
           <>
             <Text>
               We're currently {storeInfo.current_order_time.label.toLowerCase()}
