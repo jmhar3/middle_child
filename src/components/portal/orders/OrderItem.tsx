@@ -30,7 +30,7 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
       </Stack>
       <Flex gap="sm">
         {modifiers.map((modifier) => (
-          <Badge radius="sm" size="lg" color={modifier.color} key={modifier.id}>
+          <Badge radius="sm" size="lg" color="darkslategray" key={modifier.id}>
             {modifier.label}
           </Badge>
         ))}
