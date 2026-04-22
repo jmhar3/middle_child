@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 
+import banner from "/assets/cafe-counter.jpeg";
+
 import PageLayout from "./PageLayout";
 import Loading from "../../components/Loading";
 import CartModal from "../../components/customer/CartModal";
@@ -201,7 +203,7 @@ function Menu() {
   if (isLoading) return <Loading message="Loading store data" />;
 
   return (
-    <PageLayout>
+    <PageLayout image={banner}>
       {order &&
         order.items.length > 0 &&
         !isCartModalOpen &&
