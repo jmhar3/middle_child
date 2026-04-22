@@ -29,6 +29,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
       variant="transparent"
       color="darkslategray"
       justify="space-between"
+      disabled={!item.is_in_stock}
       size={isMobile ? "sm" : "lg"}
       rightSection={<Text fw={700}>${totalPrice}</Text>}
       onClick={onClick}

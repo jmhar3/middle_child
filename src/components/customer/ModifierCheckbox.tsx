@@ -43,6 +43,7 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
                   key={modifier.id}
                   color="darkslategray"
                   justify="space-between"
+                  disabled={modifier.is_ingredient && !modifier.is_in_stock}
                   onClick={() => onModifierSelect(modifier, !isSelected)}
                   rightSection={modifier.price && `+ $${modifier.price}`}
                   variant={isSelected ? "filled" : "transparent"}

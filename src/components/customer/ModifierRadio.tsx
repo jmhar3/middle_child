@@ -55,6 +55,7 @@ function ModifierRadio(props: ModifierRadioProps) {
                       ? onModifierSelect(modifier, false)
                       : onSelection(modifier)
                   }
+                  disabled={modifier.is_ingredient && !modifier.is_in_stock}
                   rightSection={modifier.price && `+ $${modifier.price}`}
                   variant={isSelected ? "filled" : "transparent"}
                 >
