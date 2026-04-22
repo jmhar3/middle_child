@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { useMediaQuery } from "@mantine/hooks";
 import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { v4 as uuid } from "uuid";
 
 import banner from "/assets/cafe-counter.jpeg";
 
@@ -200,6 +201,23 @@ function Menu() {
     });
   };
 
+  const onMenuItemClick = (menuItem: MenuItemType) => {
+    if (
+      menuItem.description ||
+      menuItem.image ||
+      menuItem.modifiers ||
+      menuItem.modifierCategories
+    ) {
+      handleOpenMenuItemModal(menuItem);
+    }
+    addItemToOrder({
+      id: uuid(),
+      quantity: 1,
+      item: menuItem,
+      modifiers: [],
+    });
+  };
+
   if (isLoading) return <Loading message="Loading store data" />;
 
   return (
@@ -271,13 +289,13 @@ function Menu() {
               </Accordion.Control>
               <Accordion.Panel>
                 <Stack gap="3">
-                  {recentlyOrderedItems.map((order, index) => (
+                  {recentlyOrderedItems.map((orderItem, index) => (
                     <>
                       {index !== 0 && <Divider />}
                       <MenuItemButton
-                        key={order.item.label}
-                        onClick={() => addItemToOrder(order)}
-                        {...order}
+                        key={orderItem.item.label}
+                        onClick={() => addItemToOrder(orderItem)}
+                        {...orderItem}
                       />
                     </>
                   ))}
@@ -299,7 +317,7 @@ function Menu() {
                       <MenuItemButton
                         key={menuItem.label}
                         item={menuItem}
-                        onClick={() => handleOpenMenuItemModal(menuItem)}
+                        onClick={() => onMenuItemClick(menuItem)}
                       />
                     </>
                   ))}
