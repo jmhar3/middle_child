@@ -167,7 +167,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 
       notifications.show({
         withCloseButton: false,
-        message: "Order times successfully updated",
+        message: "Menu items stock successfully updated",
         position: "bottom-right",
         color: "green",
       });
