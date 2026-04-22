@@ -12,9 +12,10 @@ import { fetchUser } from "../../state/user/userThunks";
 
 import MapPinIcon from "../../icons/MapPinIcon";
 import InstagramIcon from "../../icons/InstagramIcon";
+import EmailIcon from "../../icons/EmailIcon";
 
 function Home() {
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isMobile = useMediaQuery(`(max-width: ${em(900)})`);
 
   const dispatch = useAppDispatch();
   const userStatus = useAppSelector(selectUserStatus);
@@ -105,6 +106,12 @@ function Home() {
                 icon={<MapPinIcon />}
                 link="https://www.google.com/maps/place/Middle+Child/data=!4m2!3m1!1s0x0:0x254649be2689f48e?sa=X&ved=1t:2428&ictx=111"
                 label="327 Maribyrnong Rd, Ascot Vale VIC 3032"
+              />
+
+              <Link
+                icon={<EmailIcon />}
+                link="mailto:middlechildcafe@gmail.com"
+                label="GOT ANY QUESTIONS? EMAIL US"
               />
 
               <Link
