@@ -11,12 +11,8 @@ export const fetchStoreInfo = createAsyncThunk(
     const { data, error } = await supabase
       .from("store_info")
       .select("*, current_order_time (id, label, short, long)")
-      .eq("id", "bb1749fd-91a9-4fc4-bd22-7b9ced12c0d9")
-      .overrideTypes<Array<StoreInfo>, { merge: false }>();
-
-    if (data) {
-      return data[0];
-    }
+      .limit(1)
+      .single();
 
     if (error) {
       console.error(error);
@@ -29,6 +25,8 @@ export const fetchStoreInfo = createAsyncThunk(
       });
       throw Error(error.message);
     }
+
+    return data;
   },
 );
 
@@ -39,7 +37,8 @@ export const updateStoreInfo = createAsyncThunk(
       .from("store_info")
       .update({ current_order_time: current_order_time?.id, is_open: is_open })
       .eq("id", id)
-      .select("*, current_order_time (id, label, short, long)");
+      .select("*, current_order_time (id, label, short, long)")
+      .single();
 
     if (error) {
       notifications.show({
@@ -53,8 +52,6 @@ export const updateStoreInfo = createAsyncThunk(
       throw Error(error.message);
     }
 
-    if (data) {
-      return data[0];
-    }
+    return data;
   },
 );
