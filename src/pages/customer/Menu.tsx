@@ -209,13 +209,14 @@ function Menu() {
       menuItem.modifierCategories
     ) {
       handleOpenMenuItemModal(menuItem);
+    } else {
+      addItemToOrder({
+        id: uuid(),
+        quantity: 1,
+        item: menuItem,
+        modifiers: [],
+      });
     }
-    addItemToOrder({
-      id: uuid(),
-      quantity: 1,
-      item: menuItem,
-      modifiers: [],
-    });
   };
 
   if (isLoading) return <Loading message="Loading store data" />;
