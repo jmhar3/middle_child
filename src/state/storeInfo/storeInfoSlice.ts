@@ -22,6 +22,15 @@ const initialState: StoreInfoState = {
       long: 15,
       order: 0,
     },
+    weekly_record: {
+      monday: 0,
+      tuesday: 0,
+      wednesday: 0,
+      thursday: 0,
+      friday: 0,
+      saturday: 0,
+      sunday: 0,
+    },
   },
   status: "idle",
 };
@@ -41,7 +50,7 @@ const storeInfoSlice = createSlice({
       })
       .addCase(fetchStoreInfo.fulfilled, (state, action) => {
         state.status = "succeeded";
-        if (action.payload) state.data = action.payload;
+        state.data = action.payload;
       })
       .addCase(fetchStoreInfo.rejected, (state) => {
         state.status = "failed";
@@ -51,7 +60,7 @@ const storeInfoSlice = createSlice({
       })
       .addCase(updateStoreInfo.fulfilled, (state, action) => {
         state.status = "succeeded";
-        if (action.payload) state.data = action.payload;
+        state.data = action.payload;
       })
       .addCase(updateStoreInfo.rejected, (state) => {
         state.status = "failed";
