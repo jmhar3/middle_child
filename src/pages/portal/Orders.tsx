@@ -40,6 +40,7 @@ import {
 } from "../../state/orders/ordersSlice";
 
 import type { OrderTime } from "../../state/types";
+import dayjs from "dayjs";
 
 function Orders() {
   const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
@@ -116,6 +117,22 @@ function Orders() {
       });
   };
 
+  const weeklyTotal = Object.values(storeInfo.weekly_record).reduce(
+    (acc, val) => acc + val,
+    0,
+  );
+
+  const dayOfWeek = dayjs().format("dddd").toLowerCase() as
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
+
+  const todaysTotal = storeInfo.weekly_record[dayOfWeek];
+
   if (isLoading) return <Loading message="Loading store data" />;
 
   return (
@@ -125,11 +142,11 @@ function Orders() {
           <Stack gap="0">
             <Flex justify="space-between" gap="xs">
               <Text>Today:</Text>
-              <Text>$11</Text>
+              <Text>${todaysTotal}</Text>
             </Flex>
             <Flex justify="space-between" gap="xs">
               <Text>This Week:</Text>
-              <Text>$332</Text>
+              <Text>${weeklyTotal}</Text>
             </Flex>
           </Stack>
           <StyledButton
