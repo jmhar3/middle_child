@@ -25,6 +25,7 @@ import {
 
 import {
   calculateOrderItemPrice,
+  checkIsAuthenticated,
   filterItemFromOrder,
   findExistingOrderItem,
 } from "../../helpers";
@@ -40,6 +41,8 @@ function Menu() {
   const storeIsOpen = useAppSelector(selectStoreIsOpen);
 
   const isLoading = menuStatus === "pending" || storeInfoStatus === "pending";
+
+  const isAuthenticated = checkIsAuthenticated();
 
   useEffect(() => {
     if (menuStatus === "idle") {
@@ -238,7 +241,6 @@ function Menu() {
               onClick={() => setIsCartModalOpen(true)}
               label={`Review Order ${order.items && `( ${totalItemsInOrder} )`}`}
               price={order.total}
-              variant="outline"
             />
           </Box>
         )}
@@ -253,9 +255,13 @@ function Menu() {
               Pick up time from {storeInfo.current_order_time.short} minutes
             </Text>
 
-            <Divider w="100%" />
+            {isAuthenticated && (
+              <>
+                <Divider w="100%" />
 
-            <Text pt="xs">You're 2 coffees away from a freebie!</Text>
+                <Text pt="xs">You're 2 coffees away from a freebie!</Text>
+              </>
+            )}
           </>
         ) : (
           <>

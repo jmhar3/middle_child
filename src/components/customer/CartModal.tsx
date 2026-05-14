@@ -1,14 +1,15 @@
 import { Button, Divider, Modal, Stack, Text } from "@mantine/core";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useCounter } from "@mantine/hooks";
 import { useMemo, useState } from "react";
 
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
 import MenuItemModal from "../MenuItemModal";
-import LoginButton from "../LoginButton";
+import LoginButton from "../Login";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
+
+import { checkIsAuthenticated } from "../../helpers";
 
 import type { Cart, OrderItem } from "../../state/types";
 
@@ -28,8 +29,7 @@ function CartModal(props: CartModalProps) {
     onDeleteOrderItem,
     order: { total, items, pickUpTimeFromNow },
   } = props;
-
-  const { isAuthenticated } = useAuth0();
+  const isAuthenticated = checkIsAuthenticated();
 
   const [note, setNote] = useState<string | undefined>();
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
