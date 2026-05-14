@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import { Auth0Provider } from "@auth0/auth0-react";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
@@ -30,34 +29,25 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <MantineProvider>
         <Notifications />
+        <BrowserRouter>
+          <Routes>
+            <Route path="*" element={<Navigate to="/" replace />} />
 
-        <Auth0Provider
-          domain={import.meta.env.VITE_AUTH0_DOMAIN}
-          clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-          authorizationParams={{
-            redirect_uri: window.location.origin,
-          }}
-        >
-          <BrowserRouter>
-            <Routes>
-              <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Customer Routes */}
+            <Route index element={<Home />} />
+            <Route path="about-us" element={<AboutUs />} />
+            <Route path="about-us/ai" element={<AboutUs />} />
+            <Route path="partners" element={<Partners />} />
+            <Route path="menu" element={<CustomerMenu />} />
 
-              {/* Customer Routes */}
-              <Route index element={<Home />} />
-              <Route path="about-us" element={<AboutUs />} />
-              <Route path="about-us/ai" element={<AboutUs />} />
-              <Route path="partners" element={<Partners />} />
-              <Route path="menu" element={<CustomerMenu />} />
-
-              {/* Private Portal */}
-              <Route path="portal">
-                <Route index element={<Navigate to="/portal/orders" />} />
-                <Route path="orders" element={<Orders />} />
-                <Route path="menu" element={<EditMenu />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </Auth0Provider>
+            {/* Private Portal */}
+            <Route path="portal">
+              <Route index element={<Navigate to="/portal/orders" />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="menu" element={<EditMenu />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
       </MantineProvider>
     </Provider>
   </StrictMode>,
