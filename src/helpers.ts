@@ -1,5 +1,21 @@
 import type { MenuItemType, Modifier, OrderItem } from "./state/types";
 
+export const checkIsAuthenticated = () => {
+  const accessToken = localStorage.getItem("access_token");
+  const jwtExpiry = localStorage.getItem("jwt_expiry");
+
+  if (!accessToken) return false;
+
+  const now = new Date();
+
+  if (now.getTime() > Number(jwtExpiry)) {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("jwt_expiry"); // Delete expired item
+    return false;
+  }
+  return true;
+};
+
 export const calculateOrderItemPrice = (
   menuItem: MenuItemType,
   modifiers: Modifier[],
