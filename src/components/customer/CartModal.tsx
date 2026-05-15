@@ -1,6 +1,6 @@
 import { Button, Divider, Modal, Stack, Text } from "@mantine/core";
 import { useCounter } from "@mantine/hooks";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
@@ -9,7 +9,13 @@ import LoginButton from "../Login";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
 
-import { checkIsAuthenticated } from "../../helpers";
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { fetchUser } from "../../state/user/userThunks";
+
+import {
+  selectUserLoyaltyPoints,
+  selectUserStatus,
+} from "../../state/user/userSlice";
 
 import type { Cart, OrderItem } from "../../state/types";
 
@@ -29,7 +35,15 @@ function CartModal(props: CartModalProps) {
     onDeleteOrderItem,
     order: { total, items, pickUpTimeFromNow },
   } = props;
-  const isAuthenticated = checkIsAuthenticated();
+  const dispatch = useAppDispatch();
+  const userStatus = useAppSelector(selectUserStatus);
+  const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
+
+  useEffect(() => {
+    if (userStatus === "idle") {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, userStatus]);
 
   const [note, setNote] = useState<string | undefined>();
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
@@ -45,12 +59,12 @@ function CartModal(props: CartModalProps) {
     onClose();
   };
 
-  const additionalLoyaltyPoints = useMemo(
-    () => items.filter((item) => item.item.is_applicable_loyalty_item).length,
-    [items],
-  );
-
-  const onClaimFreeCoffee = () => {};
+  const additionalLoyaltyPoints = useMemo(() => {
+    return items
+      .filter((item) => item.item.is_applicable_loyalty_item)
+      .map(({ quantity }) => quantity)
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }, [items]);
 
   return (
     <>
@@ -129,10 +143,10 @@ function CartModal(props: CartModalProps) {
             </Button>
           </Button.Group>
 
-          {isAuthenticated ? (
+          {loyaltyPoints ? (
             <LoyaltyPoints
+              existingPoints={loyaltyPoints}
               additionalPoints={additionalLoyaltyPoints}
-              onClaimFreeCoffee={onClaimFreeCoffee}
             />
           ) : (
             <LoginButton />

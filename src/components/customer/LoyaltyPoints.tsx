@@ -1,20 +1,15 @@
-import { ThemeIcon, Group, Stack, Text, Button, em } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Stack, Text, Progress, Flex } from "@mantine/core";
 
 import OutlineStarIcon from "../../icons/StarOutlineIcon";
 import StarFilledIcon from "../../icons/StarFilledIcon";
 
 interface LoyaltyPointsProps {
+  existingPoints: number;
   additionalPoints: number;
-  onClaimFreeCoffee: () => void;
 }
 
 function LoyaltyPoints(props: LoyaltyPointsProps) {
-  const { additionalPoints, onClaimFreeCoffee } = props;
-
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
-
-  const existingPoints = 6;
+  const { existingPoints, additionalPoints } = props;
 
   const newPointTotal = existingPoints + additionalPoints;
 
@@ -28,55 +23,37 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
       align="center"
       bd="darkslategray solid 1px"
     >
-      {newPointTotal <= 10 && (
+      {newPointTotal <= 12 && (
         <>
-          <Group gap="3">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((point) => {
-              let iconColour = "lightgray";
-              if (point <= existingPoints) {
-                iconColour = "yellow";
-              } else if (point <= existingPoints + additionalPoints) {
-                iconColour = "gold";
-              }
+          <Flex w="100%" gap="sm" align="center">
+            <OutlineStarIcon />
 
-              return (
-                <ThemeIcon key={point} radius="100%" bg={iconColour}>
-                  {existingPoints >= point ? (
-                    <StarFilledIcon />
-                  ) : (
-                    <OutlineStarIcon />
-                  )}
-                </ThemeIcon>
-              );
-            })}
-          </Group>
+            <Progress.Root size="xl" w="100%">
+              <Progress.Section
+                value={(existingPoints / 12) * 100}
+                color="yellow"
+                animated
+              />
+              <Progress.Section
+                value={(additionalPoints / 12) * 100}
+                color="gold"
+                animated
+              />
+            </Progress.Root>
+            <StarFilledIcon />
+          </Flex>
 
-          {newPointTotal < 10 && (
+          {newPointTotal < 12 && (
             <Text>
-              You're {10 - existingPoints} coffees away from a freebie!
+              You're {12 - existingPoints} coffees away from a freebie!
             </Text>
           )}
 
-          {newPointTotal >= 10 && (
-            <Text>This order will unlock a free coffee!</Text>
-          )}
+          {newPointTotal >= 12 && <Text>You've unlocked a free coffee!</Text>}
         </>
       )}
 
-      {existingPoints >= 10 && (
-        <>
-          <Text>You've unlocked a free coffee!</Text>
-          <Button
-            fullWidth
-            color="yellow"
-            variant="filled"
-            size={isMobile ? "md" : "xl"}
-            onClick={onClaimFreeCoffee}
-          >
-            Claim Free Coffee!
-          </Button>
-        </>
-      )}
+      {existingPoints >= 12 && <Text>You've unlocked a free coffee!</Text>}
     </Stack>
   );
 }

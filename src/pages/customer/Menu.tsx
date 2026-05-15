@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchMenu } from "../../state/menu/menuThunks";
 import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 import { selectMenu, selectMenuStatus } from "../../state/menu/menuSlice";
+import { fetchUser } from "../../state/user/userThunks";
 
 import {
   selectStoreInfo,
@@ -24,8 +25,13 @@ import {
 } from "../../state/storeInfo/storeInfoSlice";
 
 import {
+  selectRecentlyOrderedItems,
+  selectUserLoyaltyPoints,
+  selectUserStatus,
+} from "../../state/user/userSlice";
+
+import {
   calculateOrderItemPrice,
-  checkIsAuthenticated,
   filterItemFromOrder,
   findExistingOrderItem,
 } from "../../helpers";
@@ -39,10 +45,16 @@ function Menu() {
   const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
   const storeInfo = useAppSelector(selectStoreInfo);
   const storeIsOpen = useAppSelector(selectStoreIsOpen);
+  const userStatus = useAppSelector(selectUserStatus);
+  const recentlyOrderedItems = useAppSelector(selectRecentlyOrderedItems);
+  const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
 
-  const isLoading = menuStatus === "pending" || storeInfoStatus === "pending";
+  console.log(recentlyOrderedItems);
 
-  const isAuthenticated = checkIsAuthenticated();
+  const isLoading =
+    menuStatus === "pending" ||
+    storeInfoStatus === "pending" ||
+    userStatus === "pending";
 
   useEffect(() => {
     if (menuStatus === "idle") {
@@ -51,7 +63,10 @@ function Menu() {
     if (storeInfoStatus === "idle") {
       dispatch(fetchStoreInfo());
     }
-  }, [dispatch, menuStatus, storeInfoStatus]);
+    if (userStatus === "idle") {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, menuStatus, storeInfoStatus, userStatus]);
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
@@ -62,17 +77,31 @@ function Menu() {
   const [order, setOrder] = useState<Cart | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
-  const recentlyOrderedItems: OrderItem[] | null =
-    menu.length > 0
-      ? [
-          {
-            id: "1",
-            quantity: 1,
-            item: menu[0]?.items[0],
-            modifiers: [],
-          },
-        ]
-      : null;
+  const pointsRemaining = useMemo(() => {
+    const additionalLoyaltyPoints = order?.items
+      .filter((item) => item.item.is_applicable_loyalty_item)
+      .map(({ quantity }) => quantity)
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    if (loyaltyPoints === undefined || loyaltyPoints === 0) {
+      if (
+        additionalLoyaltyPoints === undefined ||
+        additionalLoyaltyPoints === 0
+      ) {
+        return null;
+      }
+      return 12 - additionalLoyaltyPoints;
+    }
+
+    if (
+      additionalLoyaltyPoints === undefined ||
+      additionalLoyaltyPoints === 0
+    ) {
+      return 12 - loyaltyPoints;
+    }
+
+    return 12 - loyaltyPoints - additionalLoyaltyPoints;
+  }, [order, loyaltyPoints]);
 
   const totalItemsInOrder = useMemo(
     () =>
@@ -245,21 +274,30 @@ function Menu() {
           </Box>
         )}
 
-      <Stack w="100%" p="xs" gap="0" align="center">
+      <Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
         {storeIsOpen ? (
           <>
-            <Text>
-              We're currently {storeInfo.current_order_time.label.toLowerCase()}
-            </Text>
-            <Text pb="xs">
-              Pick up time from {storeInfo.current_order_time.short} minutes
-            </Text>
+            <Stack gap="0" align="center">
+              <Text>
+                We're currently{" "}
+                {storeInfo.current_order_time.label.toLowerCase()}
+              </Text>
+              <Text>
+                Pick up time from {storeInfo.current_order_time.short} minutes
+              </Text>
+            </Stack>
 
-            {isAuthenticated && (
+            {pointsRemaining && (
               <>
                 <Divider w="100%" />
 
-                <Text pt="xs">You're 2 coffees away from a freebie!</Text>
+                {pointsRemaining > 0 ? (
+                  <Text>
+                    You're {pointsRemaining} coffees away from a freebie!
+                  </Text>
+                ) : (
+                  <Text>You've unlocked a free coffee!</Text>
+                )}
               </>
             )}
           </>
@@ -296,7 +334,7 @@ function Menu() {
               </Accordion.Control>
               <Accordion.Panel>
                 <Stack gap="3">
-                  {recentlyOrderedItems.map((orderItem, index) => (
+                  {recentlyOrderedItems?.map((orderItem, index) => (
                     <>
                       {index !== 0 && <Divider />}
                       <MenuItemButton
