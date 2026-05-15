@@ -7,6 +7,7 @@ import itemOptionsReducer from "./itemOptions/itemOptionsSlice";
 import storeInfoReducer from "./storeInfo/storeInfoSlice";
 import orderTimesReducer from "./orderTimes/orderTimesSlice";
 import ordersReducer from "./orders/ordersSlice";
+import userReducer from "./user/userSlice";
 
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 
@@ -19,6 +20,7 @@ export const store = configureStore({
     orderTimes: orderTimesReducer,
     storeInfo: storeInfoReducer,
     orders: ordersReducer,
+    user: userReducer,
   },
 });
 

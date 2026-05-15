@@ -68,6 +68,7 @@ export interface User {
   name: string;
   is_admin: boolean;
   loyalty_points?: number;
+  recent_items?: OrderItem[];
 }
 
 export interface OrderItem {
