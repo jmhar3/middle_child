@@ -75,7 +75,7 @@ export interface User {
 export interface OrderItem {
   id: string;
   item: MenuItemType;
-  modifiers: Modifier[];
+  modifiers?: Modifier[];
   quantity: number;
   note?: string;
 }

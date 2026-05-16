@@ -7,7 +7,7 @@ interface ModifierRadioProps {
   isRequired: boolean;
   modifiers: Modifier[];
   onModifierSelect: (selectedModifier: Modifier, isSelected: boolean) => void;
-  selectedModifiers: Modifier[];
+  selectedModifiers?: Modifier[];
 }
 
 function ModifierRadio(props: ModifierRadioProps) {
@@ -15,7 +15,7 @@ function ModifierRadio(props: ModifierRadioProps) {
     props;
 
   const onSelection = (newSelection: Modifier) => {
-    const previousSelection = selectedModifiers[0];
+    const previousSelection = selectedModifiers?.[0];
     // unselect old modifier
     if (previousSelection) onModifierSelect(previousSelection, false);
     // select old modifier
@@ -38,7 +38,7 @@ function ModifierRadio(props: ModifierRadioProps) {
       <Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
         <Button.Group w="100%" orientation="vertical">
           {modifiers.map((modifier, index) => {
-            const selectedModifier = selectedModifiers[0];
+            const selectedModifier = selectedModifiers?.[0];
             const isSelected = selectedModifier === modifier;
             return (
               <>

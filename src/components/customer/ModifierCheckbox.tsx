@@ -9,7 +9,7 @@ interface ModifierCheckboxProps {
   isRequired: boolean;
   modifiers: Modifier[];
   onModifierSelect: (selectedModifier: Modifier, isSelected: boolean) => void;
-  selectedModifiers: Modifier[];
+  selectedModifiers?: Modifier[];
 }
 
 function ModifierCheckbox(props: ModifierCheckboxProps) {
@@ -32,7 +32,7 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
       <Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
         <Button.Group w="100%" orientation="vertical">
           {modifiers.map((modifier, index) => {
-            const isSelected = selectedModifiers.includes(modifier);
+            const isSelected = selectedModifiers?.includes(modifier);
 
             return (
               <>

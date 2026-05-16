@@ -18,25 +18,15 @@ export const checkIsAuthenticated = () => {
 
 export const calculateOrderItemPrice = (
   menuItem: MenuItemType,
-  modifiers: Modifier[],
+  modifiers?: Modifier[],
 ) => {
-  const modifiersTotalPrice = modifiers.reduce((accumulator, modifier) => {
-    return modifier.price ? accumulator + modifier.price : accumulator;
-  }, 0);
-  return modifiersTotalPrice + menuItem.price;
-};
-
-export const findExistingOrderItem = (
-  existingOrder: OrderItem[],
-  newOrderItem: OrderItem,
-) => {
-  return existingOrder.find(
-    (existingItem) =>
-      existingItem.item.id === newOrderItem.item.id &&
-      JSON.stringify(existingItem.modifiers) ===
-        JSON.stringify(newOrderItem.modifiers) &&
-      existingItem.note === newOrderItem.note,
-  );
+  if (modifiers) {
+    const modifiersTotalPrice = modifiers?.reduce((accumulator, modifier) => {
+      return modifier.price ? accumulator + modifier.price : accumulator;
+    }, 0);
+    return modifiersTotalPrice + menuItem.price;
+  }
+  return menuItem.price;
 };
 
 export const filterItemFromOrder = (

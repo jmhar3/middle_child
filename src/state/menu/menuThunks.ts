@@ -11,13 +11,21 @@ const formatSupaBaseMenu = (supabaseData: SupabaseSection[]) => {
     items: menu_items.map(
       ({ menu_items_options, menu_items_modifiers, ...item }) => ({
         ...item,
-        modifiers: menu_items_modifiers.map(({ modifiers }) => modifiers),
-        modifierCategories: menu_items_options.map(
-          ({ options: { options_modifiers, ...options } }) => ({
-            ...options,
-            modifiers: options_modifiers.map(({ modifiers }) => modifiers),
-          }),
-        ),
+        modifiers:
+          menu_items_modifiers.length > 0
+            ? menu_items_modifiers.map(({ modifiers }) => modifiers)
+            : undefined,
+        modifierCategories:
+          menu_items_options.length > 0
+            ? menu_items_options.map(
+                ({ options: { options_modifiers, ...options } }) => ({
+                  ...options,
+                  modifiers: options_modifiers.map(
+                    ({ modifiers }) => modifiers,
+                  ),
+                }),
+              )
+            : undefined,
       }),
     ),
   }));

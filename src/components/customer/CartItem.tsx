@@ -54,13 +54,15 @@ function CartItem(props: CartItemProps) {
           </Flex>
         </Flex>
       </Flex>
-      {modifiers?.length > 0 && (
+
+      {modifiers && (
         <ScrollArea h="20px" w="100%">
           <Text size="xs">
             {modifiers.map((ingredient) => ingredient.label).join(", ")}
           </Text>
         </ScrollArea>
       )}
+
       {note && <Text fz="xs">Note: {note}</Text>}
     </Stack>
   );

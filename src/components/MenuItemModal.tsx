@@ -72,7 +72,7 @@ function MenuItemModal(props: MenuItemModalProps) {
   };
 
   const filterSelectedModifiers = (modifierOptions: Modifier[]) =>
-    selection.modifiers.filter((selectedModifier) =>
+    selection.modifiers?.filter((selectedModifier) =>
       modifierOptions.includes(selectedModifier),
     );
 
