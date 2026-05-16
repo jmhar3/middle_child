@@ -13,10 +13,10 @@ function NoteInput({ label, note, setNote }: NoteInputProps) {
 
       <Textarea
         w="100%"
-        bd="darkslategray solid 1px"
         bdrs="sm"
-        value={note}
+        bd="darkslategray solid 1px"
         onChange={(e) => setNote(e.target.value)}
+        value={note}
       />
     </Stack>
   );
