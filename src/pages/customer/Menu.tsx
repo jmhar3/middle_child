@@ -228,7 +228,6 @@ function Menu() {
         id: uuid(),
         quantity: 1,
         item: menuItem,
-        modifiers: [],
       });
     }
   };
@@ -333,7 +332,7 @@ function Menu() {
 
           {menu.map((section) => (
             <Accordion.Item key={section.label} value={section.label}>
-              <Accordion.Control>
+              <Accordion.Control disabled={!section.is_in_stock}>
                 <Text component="span">{section.label.toUpperCase()}</Text>
               </Accordion.Control>
               <Accordion.Panel>
