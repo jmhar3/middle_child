@@ -61,6 +61,7 @@ export interface MenuSection {
   label: string;
   order: number;
   items: MenuItemType[];
+  is_in_stock?: boolean;
 }
 
 export interface User {
