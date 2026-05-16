@@ -1,49 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchMenu, deleteSection, upsertSections } from "./menuThunks";
+import {
+  fetchMenu,
+  deleteSection,
+  upsertSections,
+  updateSection,
+} from "./menuThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-
-export interface Modifier {
-  id: string;
-  label: string;
-  price?: number;
-  is_in_stock?: boolean;
-  is_ingredient?: boolean;
-  color?: string;
-}
-
-export interface ItemOptions {
-  id: string;
-  label: string;
-  allow_multiple_selections: boolean;
-  modifiers: Modifier[];
-}
-
-export interface MenuItemType {
-  id: string;
-  label: string;
-  description?: string;
-  price: number;
-  image?: string;
-  is_in_stock: boolean;
-  has_long_prep_time: boolean;
-  is_applicable_loyalty_item: boolean;
-  modifiers?: Modifier[];
-  modifierCategories?: ItemOptions[];
-  order: number;
-}
-
-export interface Section {
-  id: string;
-  label: string;
-  order: number;
-  items: MenuItemType[];
-}
+import type { MenuSection } from "../types";
 
 export interface MenuState {
-  data: Section[];
+  data: MenuSection[];
   status: "idle" | "pending" | "succeeded" | "failed";
 }
 
@@ -56,13 +25,13 @@ const menuSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
-    sectionAdded(state, action: PayloadAction<Section>) {
+    sectionAdded(state, action: PayloadAction<MenuSection>) {
       const filteredMenu = state.data.filter(
         (section) => section.id === action.payload.id,
       );
       state.data = [...filteredMenu, action.payload];
     },
-    sectionRemoved(state, action: PayloadAction<Section>) {
+    sectionRemoved(state, action: PayloadAction<MenuSection>) {
       state.data = state.data.filter(
         (section) => section.id === action.payload.id,
       );
@@ -86,8 +55,8 @@ const menuSlice = createSlice({
       .addCase(upsertSections.fulfilled, (state, { payload }) => {
         state.status = "succeeded";
 
-        const newSections: Section[] = [];
-        const oldSections: Section[] = [];
+        const newSections: MenuSection[] = [];
+        const oldSections: MenuSection[] = [];
 
         payload.forEach((item) => {
           if (state.data.find(({ id }) => id === item.id)) {
@@ -106,6 +75,19 @@ const menuSlice = createSlice({
         );
       })
       .addCase(upsertSections.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(updateSection.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(updateSection.fulfilled, (state, { payload }) => {
+        state.status = "succeeded";
+        state.data = [
+          ...state.data.filter(({ id }) => id !== payload.id),
+          payload,
+        ];
+      })
+      .addCase(updateSection.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(deleteSection.pending, (state) => {
