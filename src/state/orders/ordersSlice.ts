@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { completeOrder, fetchOrders, insertOrder } from "./ordersThunks";
+import { completeOrder, fetchOrders, placeOrder } from "./ordersThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -44,13 +44,13 @@ const ordersSlice = createSlice({
       .addCase(fetchOrders.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(insertOrder.pending, (state) => {
+      .addCase(placeOrder.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(insertOrder.fulfilled, (state) => {
+      .addCase(placeOrder.fulfilled, (state) => {
         state.status = "succeeded";
       })
-      .addCase(insertOrder.rejected, (state) => {
+      .addCase(placeOrder.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(completeOrder.pending, (state) => {

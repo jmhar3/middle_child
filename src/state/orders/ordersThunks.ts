@@ -45,12 +45,12 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
   return formatSupaBaseOrders(data);
 });
 
-export const insertOrder = createAsyncThunk(
-  "menu/insertOrder",
-  async (sections: Partial<OrderType>[]) => {
+export const placeOrder = createAsyncThunk(
+  "menu/placeOrder",
+  async (order: Partial<OrderType>[]) => {
     const { data, error } = await supabase
       .from("orders")
-      .insert(sections)
+      .insert(order)
       .select(
         `*, user (*),
         order_items (
