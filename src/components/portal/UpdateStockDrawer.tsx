@@ -21,6 +21,7 @@ import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
 
 import { upsertMenuItems } from "../../state/menuItems/menuItemsThunks";
 import { upsertModifiers } from "../../state/modifiers/modifierThunks";
+import { updateSection } from "../../state/menu/menuThunks";
 
 interface UpdateStockDrawerProps {
   isOpen: boolean;
@@ -37,6 +38,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
   // existing stock
+  const existingOutOfStockSections = menu.filter(
+    (section) => !section.is_in_stock,
+  );
   const existingOutOfStockIngredients = ingredients.filter(
     (ingredient) => !ingredient.is_in_stock,
   );
@@ -54,6 +58,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const [isUpdatingStock, setIsUpdatingStock] = useState(false);
 
   // edited stock state
+  const [outOfStockSections, setOutOfStockSections] = useState(
+    existingOutOfStockSections,
+  );
   const [outOfStockIngredients, setOutOfStockIngredients] = useState(
     existingOutOfStockIngredients,
   );
@@ -63,6 +70,12 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
   const [inStockMenuItems, setInStockMenuItems] = useState(
     existingInStockMenuItems,
   );
+
+  const onSelectOutOfStockSections = (values: string[]) => {
+    setOutOfStockSections(
+      menu.filter(({ id }) => values.find((value) => value === id)),
+    );
+  };
 
   const onSelectOutOfStockIngredients = (values: string[]) => {
     setOutOfStockIngredients(
@@ -97,6 +110,46 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 
   const onUpdateStock = () => {
     setIsUpdatingStock(true);
+
+    if (
+      JSON.stringify(outOfStockSections) !==
+      JSON.stringify(existingOutOfStockSections)
+    ) {
+      const newlyOutOfStockSections = outOfStockSections
+        .filter((section) => !existingOutOfStockSections.includes(section))
+        .map(({ id, label }) => ({ id: id, label: label, is_in_stock: false }));
+
+      const nowInStockSections = existingOutOfStockSections
+        .filter((section) => !outOfStockSections.includes(section))
+        .map(({ id, label }) => ({ id: id, label: label, is_in_stock: true }));
+
+      const sectionsToUpdate = [
+        ...newlyOutOfStockSections,
+        ...nowInStockSections,
+      ];
+
+      sectionsToUpdate.forEach((section) => {
+        dispatch(updateSection(section))
+          .catch((error) =>
+            notifications.show({
+              message: error,
+              withCloseButton: false,
+              position: "bottom-right",
+              color: "red",
+            }),
+          )
+          .finally(() => setIsUpdatingStock(false));
+
+        notifications.show({
+          withCloseButton: false,
+          message: `${section.label} availability updated successfully`,
+          position: "bottom-right",
+          color: "green",
+        });
+      });
+
+      onClose();
+    }
 
     if (
       JSON.stringify(outOfStockIngredients) !==
@@ -196,13 +249,29 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
           w="100%"
           size="md"
           label="Select out of stock ingredients"
-          placeholder="Select out of stock menu items"
+          placeholder="Select out of stock ingredients"
           nothingFoundMessage="No ingredients found matching your search"
           value={outOfStockIngredients?.map(({ id }) => id)}
           onChange={onSelectOutOfStockIngredients}
           data={ingredients?.map((ingredient) => ({
             value: ingredient.id,
             label: ingredient.label,
+          }))}
+          hidePickedOptions
+          searchable
+        />
+
+        <MultiSelect
+          w="100%"
+          size="md"
+          label="Select out of stock menu sections"
+          placeholder="Select out of stock sections"
+          nothingFoundMessage="No sections found matching your search"
+          value={outOfStockSections?.map(({ id }) => id)}
+          onChange={onSelectOutOfStockSections}
+          data={menu?.map((section) => ({
+            value: section.id,
+            label: section.label,
           }))}
           hidePickedOptions
           searchable
