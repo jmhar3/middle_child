@@ -30,11 +30,7 @@ import {
   selectUserStatus,
 } from "../../state/user/userSlice";
 
-import {
-  calculateOrderItemPrice,
-  filterItemFromOrder,
-  findExistingOrderItem,
-} from "../../helpers";
+import { calculateOrderItemPrice, filterItemFromOrder } from "../../helpers";
 
 import type { MenuItemType, Cart, OrderItem } from "../../state/types";
 
@@ -48,8 +44,6 @@ function Menu() {
   const userStatus = useAppSelector(selectUserStatus);
   const recentlyOrderedItems = useAppSelector(selectRecentlyOrderedItems);
   const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
-
-  console.log(recentlyOrderedItems);
 
   const isLoading =
     menuStatus === "pending" ||
@@ -74,7 +68,9 @@ function Menu() {
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItemType | null>(
     null,
   );
-  const [order, setOrder] = useState<Cart | null>(null);
+  const [order, setOrder] = useState<Omit<Cart, "pickUpTimeFromNow"> | null>(
+    null,
+  );
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const pointsRemaining = useMemo(() => {
@@ -111,17 +107,6 @@ function Menu() {
     [order],
   );
 
-  const calculatePickUpTimeFromNow = (items: OrderItem[]) => {
-    const hasLongPrepTime = items.find(
-      (orderItem) => orderItem.item.has_long_prep_time || false,
-    );
-    if (hasLongPrepTime || items.length > 5) {
-      return storeInfo.current_order_time.long;
-    } else {
-      return storeInfo.current_order_time.short;
-    }
-  };
-
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
     setSelectedMenuItem(menuItem);
     setIsMenuItemModalOpen(true);
@@ -133,7 +118,13 @@ function Menu() {
 
     setOrder((cart) => {
       if (cart) {
-        const existingOrderItem = findExistingOrderItem(cart.items, item);
+        const existingOrderItem = cart.items.find(
+          (existingItem) =>
+            existingItem.item.id === item.item.id &&
+            JSON.stringify(existingItem.modifiers) ===
+              JSON.stringify(item.modifiers) &&
+            existingItem.note === item.note,
+        );
 
         const filteredOrderItems =
           existingOrderItem &&
@@ -149,27 +140,23 @@ function Menu() {
           ];
 
           return {
-            // if matching item exists in order, return filtered order + update quantity on item
             items:
               existingOrderItem && filteredOrderItems
                 ? newOrderItems
                 : [...cart.items, item],
             total: cart.total + orderItemPrice,
-            pickUpTimeFromNow: calculatePickUpTimeFromNow(newOrderItems),
           };
         }
 
         return {
-          items: [item],
-          total: orderItemPrice,
-          pickUpTimeFromNow: calculatePickUpTimeFromNow([item]),
+          items: [...cart.items, item],
+          total: cart.total + orderItemPrice,
         };
       }
 
       return {
         items: [item],
         total: orderItemPrice,
-        pickUpTimeFromNow: calculatePickUpTimeFromNow([item]),
       };
     });
 
@@ -198,10 +185,6 @@ function Menu() {
         return {
           items: [...filteredOrderItems, newOrderItem],
           total: prevOrder.total - oldOrderItemPrice + newOrderItemPrice,
-          pickUpTimeFromNow: calculatePickUpTimeFromNow([
-            ...filteredOrderItems,
-            newOrderItem,
-          ]),
         };
       } else {
         return null;
@@ -226,7 +209,6 @@ function Menu() {
         return {
           items: filteredOrderItems,
           total: prevOrder.total - orderItemPrice,
-          pickUpTimeFromNow: calculatePickUpTimeFromNow(filteredOrderItems),
         };
       }
       return null;
