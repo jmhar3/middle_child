@@ -5,12 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
 import MenuItemModal from "../MenuItemModal";
-import LoginButton from "../Login";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchUser } from "../../state/user/userThunks";
+import { selectStoreInfo } from "../../state/storeInfo/storeInfoSlice";
 
 import {
   selectUserLoyaltyPoints,
@@ -20,7 +20,7 @@ import {
 import type { Cart, OrderItem } from "../../state/types";
 
 interface CartModalProps {
-  order: Cart;
+  order: Omit<Cart, "pickUpTimeFromNow">;
   isOpen: boolean;
   onClose: () => void;
   onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
@@ -33,11 +33,12 @@ function CartModal(props: CartModalProps) {
     onClose,
     onEditOrderItem,
     onDeleteOrderItem,
-    order: { total, items, pickUpTimeFromNow },
+    order: { total, items },
   } = props;
   const dispatch = useAppDispatch();
   const userStatus = useAppSelector(selectUserStatus);
   const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
+  const storeInfo = useAppSelector(selectStoreInfo);
 
   useEffect(() => {
     if (userStatus === "idle") {
@@ -49,6 +50,29 @@ function CartModal(props: CartModalProps) {
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
 
+  const additionalLoyaltyPoints = useMemo(() => {
+    return items
+      .filter((item) => item.item.is_applicable_loyalty_item)
+      .map(({ quantity }) => quantity)
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }, [items]);
+
+  const pickUpTimeFromNow = useMemo(() => {
+    const hasLongPrepTime = items.find(
+      (orderItem) => orderItem.item.has_long_prep_time || false,
+    );
+
+    const numOfItems = items
+      .map(({ quantity }) => quantity)
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    if (hasLongPrepTime || numOfItems > 5) {
+      return storeInfo.current_order_time.long;
+    } else {
+      return storeInfo.current_order_time.short;
+    }
+  }, [items, storeInfo]);
+
   const [pickUpTime, { increment, decrement, reset }] = useCounter(
     pickUpTimeFromNow,
     { min: pickUpTimeFromNow },
@@ -58,13 +82,6 @@ function CartModal(props: CartModalProps) {
     reset();
     onClose();
   };
-
-  const additionalLoyaltyPoints = useMemo(() => {
-    return items
-      .filter((item) => item.item.is_applicable_loyalty_item)
-      .map(({ quantity }) => quantity)
-      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  }, [items]);
 
   return (
     <>
@@ -96,6 +113,11 @@ function CartModal(props: CartModalProps) {
         }}
       >
         <Stack mih="100%" align="center">
+          <LoyaltyPoints
+            existingPoints={loyaltyPoints}
+            additionalPoints={additionalLoyaltyPoints}
+          />
+
           <Stack w="100%">
             {!items && <Text>Your cart is empty.</Text>}
             {items?.map((orderItem, index) => (
@@ -142,15 +164,6 @@ function CartModal(props: CartModalProps) {
               +
             </Button>
           </Button.Group>
-
-          {loyaltyPoints ? (
-            <LoyaltyPoints
-              existingPoints={loyaltyPoints}
-              additionalPoints={additionalLoyaltyPoints}
-            />
-          ) : (
-            <LoginButton />
-          )}
 
           <Stack gap="3" w="100%" align="center">
             <ButtonWithPrice
