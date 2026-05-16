@@ -106,3 +106,67 @@ export const updateUser = createAsyncThunk(
     return data;
   },
 );
+
+interface SignUpUserProps {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export const signUpUser = createAsyncThunk(
+  "user/signUpUser",
+  async ({ email, password, name }: SignUpUserProps) => {
+    const { error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          name: name,
+        },
+      },
+    });
+
+    if (error) {
+      notifications.show({
+        withCloseButton: false,
+        message: error.message,
+        title: error.name,
+        position: "bottom-right",
+        color: "red",
+      });
+      console.error(error);
+      throw Error(error.message);
+    }
+  },
+);
+
+export const signInUser = createAsyncThunk(
+  "user/signInUser",
+  async ({ email, password }: { email: string; password: string }) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      notifications.show({
+        withCloseButton: false,
+        message: error.message,
+        title: error.name,
+        position: "bottom-right",
+        color: "red",
+      });
+      console.error(error);
+      throw Error(error.message);
+    }
+
+    const futureDate = new Date();
+    localStorage.setItem("access_token", data.session.access_token);
+    localStorage.setItem(
+      "jwt_expiry",
+      futureDate
+        .setSeconds(futureDate.getSeconds() + data.session.expires_in)
+        .toString(),
+    );
+  },
+);

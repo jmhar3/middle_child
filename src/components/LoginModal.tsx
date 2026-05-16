@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 
 import {
-  Button,
-  Modal,
-  PasswordInput,
-  Stack,
   Text,
+  Modal,
+  Stack,
+  Button,
   TextInput,
+  PasswordInput,
   UnstyledButton,
 } from "@mantine/core";
 
 import PasswordInputWithRequirements from "./PasswordInput";
 
-import { supabase } from "../supabase";
+import { useAppDispatch } from "../state/hooks";
+import { signInUser, signUpUser } from "../state/user/userThunks";
 
 interface LoginModalProps {
   isModalOpen: boolean;
@@ -21,6 +23,7 @@ interface LoginModalProps {
 }
 
 const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
+  const dispatch = useAppDispatch();
   const [opened, { close, toggle }] = useDisclosure(false);
   const showSignUp = opened;
 
@@ -59,42 +62,60 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
         setIsSubmitting(false);
         return;
       }
-      const { error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            name: name,
-          },
-        },
-      });
-      if (error) {
-        setErrorMessage(error.message);
-      } else {
-        setSignUpSuccess(true);
-      }
-      setIsSubmitting(false);
+
+      dispatch(
+        signUpUser({
+          email: email,
+          password: password,
+          name: name,
+        }),
+      )
+        .then(() => {
+          notifications.show({
+            withCloseButton: false,
+            message: "Order times successfully updated",
+            position: "bottom-right",
+            color: "green",
+          });
+          setSignUpSuccess(true);
+          onClose();
+        })
+        .catch((error) =>
+          notifications.show({
+            message: error,
+            withCloseButton: false,
+            position: "bottom-right",
+            color: "red",
+          }),
+        )
+        .finally(() => setIsSubmitting(false));
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      setErrorMessage(error.message);
-    } else {
-      const futureDate = new Date();
-      localStorage.setItem("access_token", data.session.access_token);
-      localStorage.setItem(
-        "jwt_expiry",
-        futureDate
-          .setSeconds(futureDate.getSeconds() + data.session.expires_in)
-          .toString(),
-      );
-      onClose();
-    }
-    setIsSubmitting(false);
+    dispatch(
+      signInUser({
+        email: email,
+        password: password,
+      }),
+    )
+      .then(() => {
+        notifications.show({
+          withCloseButton: false,
+          message: "Order times successfully updated",
+          position: "bottom-right",
+          color: "green",
+        });
+        onClose();
+      })
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsSubmitting(false));
   };
 
   return (

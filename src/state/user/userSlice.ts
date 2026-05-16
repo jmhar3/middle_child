@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchUser, updateUser } from "./userThunks";
+import { fetchUser, signInUser, signUpUser, updateUser } from "./userThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -44,6 +44,24 @@ const userSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(updateUser.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(signUpUser.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(signUpUser.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(signUpUser.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(signInUser.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(signInUser.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(signInUser.rejected, (state) => {
         state.status = "failed";
       });
   },
