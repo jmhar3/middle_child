@@ -26,6 +26,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
         <Button
           href="/"
           pos="fixed"
+          c="white"
           component="a"
           w="fit-content"
           variant="filled"

@@ -34,7 +34,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
       rightSection={<Text fw={700}>${totalPrice}</Text>}
       onClick={onClick}
     >
-      <Stack gap="3" w="100%" justify="center" align="flex-start" py="xs">
+      <Stack gap="0" w="100%" justify="center" align="flex-start" py="xs">
         <Text fw={700}>{item.label}</Text>
         <Text>{item.description}</Text>
 

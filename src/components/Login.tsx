@@ -12,8 +12,7 @@ const Login = () => {
     <>
       <Button
         fullWidth
-        bg="white"
-        variant="outline"
+        variant="filled"
         color="darkslategray"
         size={isMobile ? "md" : "xl"}
         onClick={open}
