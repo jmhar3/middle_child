@@ -1,6 +1,13 @@
-import { Button, Divider, Modal, Stack, Text } from "@mantine/core";
-import { useCounter } from "@mantine/hooks";
 import { useEffect, useMemo, useState } from "react";
+import { Button, Divider, Modal, Stack, Text, TextInput } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { useCounter } from "@mantine/hooks";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
@@ -11,8 +18,10 @@ import CartItem from "./CartItem";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchUser } from "../../state/user/userThunks";
 import { selectStoreInfo } from "../../state/storeInfo/storeInfoSlice";
+import { placeOrder } from "../../state/orders/ordersThunks";
 
 import {
+  selectUser,
   selectUserLoyaltyPoints,
   selectUserStatus,
 } from "../../state/user/userSlice";
@@ -37,6 +46,7 @@ function CartModal(props: CartModalProps) {
   } = props;
   const dispatch = useAppDispatch();
   const userStatus = useAppSelector(selectUserStatus);
+  const user = useAppSelector(selectUser);
   const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
   const storeInfo = useAppSelector(selectStoreInfo);
 
@@ -46,9 +56,11 @@ function CartModal(props: CartModalProps) {
     }
   }, [dispatch, userStatus]);
 
+  const [name, setName] = useState<string | undefined>();
   const [note, setNote] = useState<string | undefined>();
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const additionalLoyaltyPoints = useMemo(() => {
     return items
@@ -81,6 +93,39 @@ function CartModal(props: CartModalProps) {
   const onModalClose = () => {
     reset();
     onClose();
+  };
+
+  const onPlaceOrder = async () => {
+    setIsPlacingOrder(true);
+
+    dispatch(
+      placeOrder({
+        name: user?.name,
+        userId: user?.id,
+        orderData: {
+          ...props.order,
+          due_at: dayjs().add(pickUpTime, "minute").toISOString(),
+        },
+      }),
+    )
+      .then(() => {
+        notifications.show({
+          withCloseButton: false,
+          message: "Order successfully placed",
+          position: "bottom-right",
+          color: "green",
+        });
+        onClose();
+      })
+      .catch((error) =>
+        notifications.show({
+          message: error,
+          withCloseButton: false,
+          position: "bottom-right",
+          color: "red",
+        }),
+      )
+      .finally(() => setIsPlacingOrder(false));
   };
 
   return (
@@ -117,6 +162,21 @@ function CartModal(props: CartModalProps) {
             existingPoints={loyaltyPoints}
             additionalPoints={additionalLoyaltyPoints}
           />
+
+          {!user && (
+            <TextInput
+              w="100%"
+              label="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              styles={{
+                input: {
+                  borderRadius: "sm",
+                  border: "darkslategray solid 1px",
+                },
+              }}
+            />
+          )}
 
           <Stack w="100%">
             {!items && <Text>Your cart is empty.</Text>}
@@ -167,7 +227,8 @@ function CartModal(props: CartModalProps) {
 
           <Stack gap="3" w="100%" align="center">
             <ButtonWithPrice
-              onClick={() => ""}
+              isLoading={isPlacingOrder}
+              onClick={onPlaceOrder}
               label="Order Now"
               price={total}
             />

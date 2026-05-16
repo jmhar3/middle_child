@@ -45,28 +45,63 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
   return formatSupaBaseOrders(data);
 });
 
+interface PlaceOrderProps {
+  name?: string;
+  userId?: string;
+  orderData: Partial<OrderType>;
+}
+
 export const placeOrder = createAsyncThunk(
   "menu/placeOrder",
-  async (order: Partial<OrderType>[]) => {
-    const { data, error } = await supabase
+  async ({ name, userId, orderData }: PlaceOrderProps) => {
+    // create order
+    const order = await supabase
       .from("orders")
-      .insert(order)
-      .select(
-        `*, user (*),
-        order_items (
-          *, menu_item (*),
-          order_items_modifiers(
-            modifiers (*)
-          )
-        )`,
-      );
+      .insert({
+        name: name || null,
+        user: userId || null,
+        due_at: orderData.due_at,
+        total: orderData.total,
+        note: orderData.note,
+      })
+      .select("id")
+      .single();
 
-    if (error) {
-      console.log(error);
-      throw Error(error.message);
+    if (order.error) {
+      console.log(order.error);
+      throw Error(order.error.message);
+    } else {
+      // for each order item, create order item and modifiers
+      orderData.items?.forEach(async (item) => {
+        const orderItem = await supabase
+          .from("order_items")
+          .insert({
+            order: order.data.id,
+            menu_item: item.item.id,
+            quantity: item.quantity,
+            note: item.note,
+          })
+          .select()
+          .single();
+
+        if (orderItem.error) {
+          console.log(orderItem.error);
+          throw Error(orderItem.error.message);
+        } else {
+          if (item.modifiers) {
+            item.modifiers.forEach(async (modifier) => {
+              await supabase
+                .from("order_items_modifiers")
+                .insert({
+                  order_item_id: orderItem.data.id,
+                  modifier_id: modifier.id,
+                })
+                .select();
+            });
+          }
+        }
+      });
     }
-
-    return formatSupaBaseOrders(data);
   },
 );
 
