@@ -7,10 +7,18 @@ interface ButtonWithPriceProps {
   price: number;
   variant?: "filled" | "outline";
   isDisabled?: boolean;
+  isLoading?: boolean;
 }
 
 function ButtonWithPrice(props: ButtonWithPriceProps) {
-  const { onClick, label, price, variant = "filled", isDisabled } = props;
+  const {
+    onClick,
+    label,
+    price,
+    variant = "filled",
+    isDisabled,
+    isLoading,
+  } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
@@ -24,6 +32,7 @@ function ButtonWithPrice(props: ButtonWithPriceProps) {
       size={isMobile ? "md" : "xl"}
       bg={variant === "outline" ? "white" : undefined}
       rightSection={<Text fw={700}>${price.toFixed(2)}</Text>}
+      loading={isLoading}
       onClick={onClick}
     >
       {label}
