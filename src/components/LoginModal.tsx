@@ -15,7 +15,7 @@ import {
 import PasswordInputWithRequirements from "./PasswordInput";
 
 import { useAppDispatch } from "../state/hooks";
-import { signInUser, signUpUser } from "../state/user/userThunks";
+import { fetchUser, signInUser, signUpUser } from "../state/user/userThunks";
 
 interface LoginModalProps {
   isModalOpen: boolean;
@@ -99,22 +99,9 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
       }),
     )
       .then(() => {
-        notifications.show({
-          withCloseButton: false,
-          message: "Order times successfully updated",
-          position: "bottom-right",
-          color: "green",
-        });
+        dispatch(fetchUser());
         onClose();
       })
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
       .finally(() => setIsSubmitting(false));
   };
 
