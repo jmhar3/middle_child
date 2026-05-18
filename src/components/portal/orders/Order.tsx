@@ -21,7 +21,7 @@ interface OrderProps {
 function Order(props: OrderProps) {
   const { order } = props;
 
-  const { user, items, note, is_complete } = order;
+  const { user, name, items, note, is_complete } = order;
 
   const [isCompletingOrder, setIsCompletingOrder] = useState(false);
 
@@ -59,7 +59,7 @@ function Order(props: OrderProps) {
         <Flex pl="sm" py="8px" gap="sm" align="center">
           <OrderBadge order={order} />
           <Text fw="700" size="1.2em">
-            {user.name}
+            {user?.name || name}
           </Text>
         </Flex>
 
