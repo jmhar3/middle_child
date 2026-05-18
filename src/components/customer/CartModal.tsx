@@ -27,9 +27,10 @@ import {
 } from "../../state/user/userSlice";
 
 import type { Cart, OrderItem } from "../../state/types";
+import PlacedOrderModal from "./PlacedOrderModal";
 
 interface CartModalProps {
-  order: Omit<Cart, "pickUpTimeFromNow">;
+  order: Omit<Cart, "pickUpTime">;
   isOpen: boolean;
   onClose: () => void;
   onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
@@ -58,9 +59,11 @@ function CartModal(props: CartModalProps) {
 
   const [name, setName] = useState<string | undefined>();
   const [note, setNote] = useState<string | undefined>();
+  const [showNameError, setShowNameError] = useState(false);
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [showPlacedOrder, setShowPlacedOrder] = useState(false);
 
   const additionalLoyaltyPoints = useMemo(() => {
     return items
@@ -92,15 +95,24 @@ function CartModal(props: CartModalProps) {
 
   const onModalClose = () => {
     reset();
+    setShowPlacedOrder(false);
+    setShowNameError(false);
     onClose();
   };
 
   const onPlaceOrder = async () => {
     setIsPlacingOrder(true);
+    setShowNameError(false);
+
+    if (!user && !name) {
+      setShowNameError(true);
+      setIsPlacingOrder(false);
+      return;
+    }
 
     dispatch(
       placeOrder({
-        name: user?.name,
+        name: name,
         userId: user?.id,
         orderData: {
           ...props.order,
@@ -109,12 +121,7 @@ function CartModal(props: CartModalProps) {
       }),
     )
       .then(() => {
-        notifications.show({
-          withCloseButton: false,
-          message: "Order successfully placed",
-          position: "bottom-right",
-          color: "green",
-        });
+        setShowPlacedOrder(true);
         onClose();
       })
       .catch((error) =>
@@ -145,97 +152,112 @@ function CartModal(props: CartModalProps) {
         />
       )}
 
-      <Modal
-        fullScreen
-        radius={0}
-        title="CART"
-        opened={isOpen}
-        onClose={onModalClose}
-        transitionProps={{ transition: "fade", duration: 200 }}
-        styles={{
-          header: { background: "whitesmoke" },
-          content: { background: "whitesmoke" },
-        }}
-      >
-        <Stack mih="100%" align="center">
-          <LoyaltyPoints
-            existingPoints={loyaltyPoints}
-            additionalPoints={additionalLoyaltyPoints}
-          />
-
-          {!user && (
-            <TextInput
-              w="100%"
-              label="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              styles={{
-                input: {
-                  borderRadius: "sm",
-                  border: "darkslategray solid 1px",
-                },
-              }}
+      {showPlacedOrder ? (
+        <PlacedOrderModal
+          order={{ ...props.order, pickUpTime: pickUpTime }}
+          isOpen={showPlacedOrder}
+          onClose={onModalClose}
+        />
+      ) : (
+        <Modal
+          fullScreen
+          radius={0}
+          title="CART"
+          opened={isOpen}
+          onClose={onModalClose}
+          transitionProps={{ transition: "fade", duration: 200 }}
+          styles={{
+            header: { background: "whitesmoke" },
+            content: { background: "whitesmoke" },
+          }}
+        >
+          <Stack mih="100%" align="center">
+            <LoyaltyPoints
+              existingPoints={loyaltyPoints}
+              additionalPoints={additionalLoyaltyPoints}
             />
-          )}
 
-          <Stack w="100%">
-            {!items && <Text>Your cart is empty.</Text>}
-            {items?.map((orderItem, index) => (
-              <>
-                {index === 0 && <Divider />}
-                <CartItem
-                  orderItem={orderItem}
-                  onDeleteClick={() => onDeleteOrderItem(orderItem)}
-                  onEditClick={() => {
-                    setOldOrderItem(orderItem);
-                    setShowMenuItemModal(true);
-                  }}
-                />
-                <Divider />
-              </>
-            ))}
+            {!user && (
+              <TextInput
+                w="100%"
+                label="Name"
+                value={name}
+                withAsterisk
+                error={showNameError && "Name is required"}
+                onChange={(e) => {
+                  if (e.target.value.length > 0) setShowNameError(false);
+                  setName(e.target.value);
+                }}
+                styles={{
+                  input: {
+                    borderRadius: "sm",
+                    border: showNameError
+                      ? "crimson solid 1px"
+                      : "darkslategray solid 1px",
+                  },
+                }}
+              />
+            )}
+
+            <Stack w="100%">
+              {!items && <Text>Your cart is empty.</Text>}
+              {items?.map((orderItem, index) => (
+                <>
+                  {index === 0 && <Divider />}
+                  <CartItem
+                    orderItem={orderItem}
+                    onDeleteClick={() => onDeleteOrderItem(orderItem)}
+                    onEditClick={() => {
+                      setOldOrderItem(orderItem);
+                      setShowMenuItemModal(true);
+                    }}
+                  />
+                  <Divider />
+                </>
+              ))}
+            </Stack>
+
+            <NoteInput label="Notes" note={note} setNote={setNote} />
+
+            <Button.Group>
+              <Button
+                radius="md"
+                variant="filled"
+                color="darkslategray"
+                onClick={decrement}
+                disabled={pickUpTime === pickUpTimeFromNow}
+              >
+                -
+              </Button>
+              <Button.GroupSection
+                bg="white"
+                color="darkslategray"
+                variant="outline"
+              >
+                Pick Up in {pickUpTime} Minutes
+              </Button.GroupSection>
+              <Button
+                radius="md"
+                variant="filled"
+                color="darkslategray"
+                onClick={increment}
+              >
+                +
+              </Button>
+            </Button.Group>
+
+            <Stack gap="3" w="100%" align="center">
+              <ButtonWithPrice
+                isLoading={isPlacingOrder}
+                onClick={onPlaceOrder}
+                label="Order Now"
+                price={total}
+              />
+              <Text>Pay securely using Square</Text>
+            </Stack>
           </Stack>
-
-          <NoteInput label="Notes" note={note} setNote={setNote} />
-
-          <Button.Group>
-            <Button
-              radius="md"
-              variant="filled"
-              color="darkslategray"
-              onClick={decrement}
-              disabled={pickUpTime === pickUpTimeFromNow}
-            >
-              -
-            </Button>
-            <Button.GroupSection
-              bg="white"
-              color="darkslategray"
-              variant="outline"
-            >
-              Pick Up in {pickUpTime} Minutes
-            </Button.GroupSection>
-            <Button
-              radius="md"
-              variant="filled"
-              color="darkslategray"
-              onClick={increment}
-            >
-              +
-            </Button>
-          </Button.Group>
-
-          <Stack gap="3" w="100%" align="center">
-            <ButtonWithPrice
-              isLoading={isPlacingOrder}
-              onClick={onPlaceOrder}
-              label="Order Now"
-              price={total}
-            />
-            <Text>Pay securely using Square</Text>
-          </Stack>
-        </Stack>
-      </Modal>
+        </Modal>
+      )}
     </>
   );
 }
