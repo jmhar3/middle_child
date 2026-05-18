@@ -68,9 +68,7 @@ function Menu() {
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItemType | null>(
     null,
   );
-  const [order, setOrder] = useState<Omit<Cart, "pickUpTimeFromNow"> | null>(
-    null,
-  );
+  const [order, setOrder] = useState<Omit<Cart, "pickUpTime"> | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const pointsRemaining = useMemo(() => {
