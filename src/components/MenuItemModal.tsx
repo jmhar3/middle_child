@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
+import { v4 as uuid } from "uuid";
+
 import {
   em,
   Box,
@@ -35,10 +37,9 @@ function MenuItemModal(props: MenuItemModalProps) {
     menuItem,
     onAddToOrder,
     orderItem = {
-      id: "1",
+      id: uuid(),
       quantity: 1,
       item: menuItem,
-      modifiers: [],
     },
   } = props;
 
