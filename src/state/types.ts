@@ -83,13 +83,14 @@ export interface OrderItem {
 export interface Cart {
   items: OrderItem[];
   total: number;
-  pickUpTimeFromNow: number;
+  pickUpTime: number;
   notes?: string;
 }
 
 export interface OrderType {
   id: string;
-  user: User;
+  user?: User;
+  name?: string;
   due_at: string;
   total: number;
   note?: string;
