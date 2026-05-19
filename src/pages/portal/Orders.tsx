@@ -190,7 +190,7 @@ function Orders() {
             {orderTimes.map((orderTime) => (
               <StyledButton
                 key={orderTime.label}
-                label={orderTime.label}
+                label={`${orderTime.label}: ${orderTime.short}+ mins`}
                 onClick={() => onUpdateCurrentOrderTime(orderTime)}
                 isLoading={isUpdatingOrderTime}
                 variant={
