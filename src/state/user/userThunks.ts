@@ -11,7 +11,10 @@ const formatSupaBaseOrders = (supabaseData: SupabaseOrders[]) => {
     items: order_items.map(({ menu_item, order_items_modifiers, ...item }) => ({
       ...item,
       item: menu_item,
-      modifiers: order_items_modifiers.map(({ modifiers }) => modifiers),
+      modifiers:
+        order_items_modifiers.length > 0
+          ? order_items_modifiers.map(({ modifiers }) => modifiers)
+          : null,
     })),
   }));
 };
