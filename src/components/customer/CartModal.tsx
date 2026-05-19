@@ -9,6 +9,7 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+import PlacedOrderModal from "./PlacedOrderModal";
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
 import MenuItemModal from "../MenuItemModal";
@@ -22,15 +23,16 @@ import { placeOrder } from "../../state/orders/ordersThunks";
 
 import {
   selectUser,
-  selectUserLoyaltyPoints,
   selectUserStatus,
+  selectUserLoyaltyPoints,
 } from "../../state/user/userSlice";
 
-import type { Cart, OrderItem } from "../../state/types";
-import PlacedOrderModal from "./PlacedOrderModal";
+import { calculateOrderItemPrice } from "../../helpers";
+
+import type { OrderItem, OrderType } from "../../state/types";
 
 interface CartModalProps {
-  order: Omit<Cart, "pickUpTime">;
+  items: OrderItem[];
   isOpen: boolean;
   onClose: () => void;
   onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
@@ -38,13 +40,7 @@ interface CartModalProps {
 }
 
 function CartModal(props: CartModalProps) {
-  const {
-    isOpen,
-    onClose,
-    onEditOrderItem,
-    onDeleteOrderItem,
-    order: { total, items },
-  } = props;
+  const { isOpen, onClose, onEditOrderItem, onDeleteOrderItem, items } = props;
   const dispatch = useAppDispatch();
   const userStatus = useAppSelector(selectUserStatus);
   const user = useAppSelector(selectUser);
@@ -64,6 +60,15 @@ function CartModal(props: CartModalProps) {
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [showPlacedOrder, setShowPlacedOrder] = useState(false);
+
+  const orderTotal = useMemo(() => {
+    return items
+      .map(
+        (item) =>
+          calculateOrderItemPrice(item.item, item.modifiers) * item.quantity,
+      )
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }, [items]);
 
   const additionalLoyaltyPoints = useMemo(() => {
     return items
@@ -93,6 +98,14 @@ function CartModal(props: CartModalProps) {
     { min: pickUpTimeFromNow },
   );
 
+  const order: OrderType = {
+    id: "1",
+    items: items,
+    total: orderTotal,
+    due_at: dayjs().add(pickUpTime, "minute").toISOString(),
+    is_complete: false,
+  };
+
   const onModalClose = () => {
     reset();
     setShowPlacedOrder(false);
@@ -114,10 +127,7 @@ function CartModal(props: CartModalProps) {
       placeOrder({
         name: name,
         userId: user?.id,
-        orderData: {
-          ...props.order,
-          due_at: dayjs().add(pickUpTime, "minute").toISOString(),
-        },
+        orderData: order,
       }),
     )
       .then(() => {
@@ -154,7 +164,7 @@ function CartModal(props: CartModalProps) {
 
       {showPlacedOrder ? (
         <PlacedOrderModal
-          order={{ ...props.order, pickUpTime: pickUpTime }}
+          order={order}
           isOpen={showPlacedOrder}
           onClose={onModalClose}
         />
@@ -251,7 +261,7 @@ function CartModal(props: CartModalProps) {
                 isLoading={isPlacingOrder}
                 onClick={onPlaceOrder}
                 label="Order Now"
-                price={total}
+                price={orderTotal}
               />
               <Text>Pay securely using Square</Text>
             </Stack>

@@ -32,7 +32,7 @@ import {
 
 import { calculateOrderItemPrice, filterItemFromOrder } from "../../helpers";
 
-import type { MenuItemType, Cart, OrderItem } from "../../state/types";
+import type { MenuItemType, OrderItem } from "../../state/types";
 
 function Menu() {
   const dispatch = useAppDispatch();
@@ -68,12 +68,12 @@ function Menu() {
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItemType | null>(
     null,
   );
-  const [order, setOrder] = useState<Omit<Cart, "pickUpTime"> | null>(null);
+  const [order, setOrder] = useState<OrderItem[] | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const pointsRemaining = useMemo(() => {
-    const additionalLoyaltyPoints = order?.items
-      .filter((item) => item.item.is_applicable_loyalty_item)
+    const additionalLoyaltyPoints = order
+      ?.filter((item) => item.item.is_applicable_loyalty_item)
       .map(({ quantity }) => quantity)
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
@@ -99,11 +99,20 @@ function Menu() {
 
   const totalItemsInOrder = useMemo(
     () =>
-      order?.items.reduce((accumulator, currentItem) => {
+      order?.reduce((accumulator, currentItem) => {
         return accumulator + currentItem.quantity;
       }, 0),
     [order],
   );
+
+  const orderTotal = useMemo(() => {
+    return order
+      ?.map(
+        (item) =>
+          calculateOrderItemPrice(item.item, item.modifiers) * item.quantity,
+      )
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }, [order]);
 
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
     setSelectedMenuItem(menuItem);
@@ -111,12 +120,9 @@ function Menu() {
   };
 
   const addItemToOrder = (item: OrderItem) => {
-    const orderItemPrice =
-      calculateOrderItemPrice(item.item, item.modifiers) * item.quantity;
-
-    setOrder((cart) => {
-      if (cart) {
-        const existingOrderItem = cart.items.find(
+    setOrder((items) => {
+      if (items) {
+        const existingOrderItem = items.find(
           (existingItem) =>
             existingItem.item.id === item.item.id &&
             JSON.stringify(existingItem.modifiers) ===
@@ -125,8 +131,7 @@ function Menu() {
         );
 
         const filteredOrderItems =
-          existingOrderItem &&
-          filterItemFromOrder(cart.items, existingOrderItem);
+          existingOrderItem && filterItemFromOrder(items, existingOrderItem);
 
         if (existingOrderItem && filteredOrderItems) {
           const newOrderItems = [
@@ -137,25 +142,15 @@ function Menu() {
             },
           ];
 
-          return {
-            items:
-              existingOrderItem && filteredOrderItems
-                ? newOrderItems
-                : [...cart.items, item],
-            total: cart.total + orderItemPrice,
-          };
+          return existingOrderItem && filteredOrderItems
+            ? newOrderItems
+            : [...items, item];
         }
 
-        return {
-          items: [...cart.items, item],
-          total: cart.total + orderItemPrice,
-        };
+        return [...items, item];
       }
 
-      return {
-        items: [item],
-        total: orderItemPrice,
-      };
+      return [item];
     });
 
     setIsMenuItemModalOpen(false);
@@ -165,25 +160,11 @@ function Menu() {
     oldOrderItem: OrderItem,
     newOrderItem: OrderItem,
   ) => {
-    const oldOrderItemPrice =
-      calculateOrderItemPrice(oldOrderItem.item, oldOrderItem.modifiers) *
-      oldOrderItem.quantity;
+    setOrder((items) => {
+      if (items) {
+        const filteredOrderItems = filterItemFromOrder(items, oldOrderItem);
 
-    const newOrderItemPrice =
-      calculateOrderItemPrice(newOrderItem.item, newOrderItem.modifiers) *
-      newOrderItem.quantity;
-
-    setOrder((prevOrder) => {
-      if (prevOrder) {
-        const filteredOrderItems = filterItemFromOrder(
-          prevOrder.items,
-          oldOrderItem,
-        );
-
-        return {
-          items: [...filteredOrderItems, newOrderItem],
-          total: prevOrder.total - oldOrderItemPrice + newOrderItemPrice,
-        };
+        return [...filteredOrderItems, newOrderItem];
       } else {
         return null;
       }
@@ -193,21 +174,11 @@ function Menu() {
   };
 
   const onDeleteOrderItem = (orderItem: OrderItem) => {
-    const orderItemPrice =
-      calculateOrderItemPrice(orderItem.item, orderItem.modifiers) *
-      orderItem.quantity;
-
-    setOrder((prevOrder) => {
-      if (prevOrder) {
-        const filteredOrderItems = filterItemFromOrder(
-          prevOrder.items,
-          orderItem,
-        );
+    setOrder((items) => {
+      if (items) {
+        const filteredOrderItems = filterItemFromOrder(items, orderItem);
         if (filteredOrderItems.length === 0) setIsCartModalOpen(false);
-        return {
-          items: filteredOrderItems,
-          total: prevOrder.total - orderItemPrice,
-        };
+        return filteredOrderItems;
       }
       return null;
     });
@@ -235,7 +206,8 @@ function Menu() {
   return (
     <PageLayout image={banner}>
       {order &&
-        order.items.length > 0 &&
+        order.length > 0 &&
+        orderTotal &&
         !isCartModalOpen &&
         !isMenuItemModalOpen && (
           <Box
@@ -247,8 +219,8 @@ function Menu() {
           >
             <ButtonWithPrice
               onClick={() => setIsCartModalOpen(true)}
-              label={`Review Order ${order.items && `( ${totalItemsInOrder} )`}`}
-              price={order.total}
+              label={`Review Order ${order && `( ${totalItemsInOrder} )`}`}
+              price={orderTotal}
             />
           </Box>
         )}
@@ -256,15 +228,9 @@ function Menu() {
       <Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
         {storeIsOpen ? (
           <>
-            <Stack gap="0" align="center">
-              <Text>
-                We're currently{" "}
-                {storeInfo.current_order_time.label.toLowerCase()}
-              </Text>
-              <Text>
-                Pick up time from {storeInfo.current_order_time.short} minutes
-              </Text>
-            </Stack>
+            <Text>
+              Pick up time from {storeInfo.current_order_time.short} minutes
+            </Text>
 
             {pointsRemaining && (
               <>
@@ -364,9 +330,9 @@ function Menu() {
         />
       )}
 
-      {order && order.items.length > 0 && (
+      {order && order.length > 0 && (
         <CartModal
-          order={order}
+          items={order}
           isOpen={isCartModalOpen}
           onClose={() => setIsCartModalOpen(false)}
           onEditOrderItem={onEditOrderItem}
