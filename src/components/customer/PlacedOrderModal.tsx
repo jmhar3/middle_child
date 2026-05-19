@@ -6,12 +6,12 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-import type { Cart } from "../../state/types";
+import type { OrderType } from "../../state/types";
 
 interface PlacedOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  order: Cart;
+  order: OrderType;
 }
 
 function PlacedOrderModal(props: PlacedOrderModalProps) {
@@ -42,7 +42,7 @@ function PlacedOrderModal(props: PlacedOrderModalProps) {
 
           <Text>
             Your order will be ready at{" "}
-            {dayjs(props.order.pickUpTime).format("h:mm")}
+            {dayjs(props.order.due_at).format("h:mma")}
           </Text>
         </Stack>
 
