@@ -14,7 +14,7 @@ const formatSupaBaseOrders = (supabaseData: SupabaseOrders[]) => {
       modifiers:
         order_items_modifiers.length > 0
           ? order_items_modifiers.map(({ modifiers }) => modifiers)
-          : null,
+          : undefined,
     })),
   }));
 };
