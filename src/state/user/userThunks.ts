@@ -2,9 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
-import { checkIsAuthenticated } from "../../helpers";
 
-import type { SupabaseOrders, User } from "../types";
+import type { OrderItem, SupabaseOrders, User } from "../types";
 
 const formatSupaBaseOrders = (supabaseData: SupabaseOrders[]) => {
   return supabaseData.map(({ order_items, ...order }) => ({
@@ -18,14 +17,9 @@ const formatSupaBaseOrders = (supabaseData: SupabaseOrders[]) => {
 };
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
-  const isAuthenticated = checkIsAuthenticated();
-  const accessToken = localStorage.getItem("access_token");
-
-  if (!isAuthenticated || !accessToken) return null;
-
   const {
     data: { user },
-  } = await supabase.auth.getUser(accessToken);
+  } = await supabase.auth.getUser();
 
   if (!user) return null;
 
@@ -73,11 +67,28 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
     throw Error(userOrders.error.message);
   }
 
+  const formattedItems = formatSupaBaseOrders(userOrders.data).flatMap(
+    ({ items }) => items,
+  );
+
+  const uniqueOrderItems: OrderItem[] = [];
+
+  formattedItems.forEach((item) => {
+    const findExistingItem = uniqueOrderItems.find(
+      (existingItem) =>
+        existingItem.item.id === item.item.id &&
+        JSON.stringify(existingItem.modifiers) ===
+          JSON.stringify(item.modifiers) &&
+        existingItem.note === item.note,
+    );
+    if (!findExistingItem) {
+      uniqueOrderItems.push(item);
+    }
+  });
+
   return {
     ...publicUser.data,
-    recent_items: formatSupaBaseOrders(userOrders.data).flatMap(
-      (order) => order.items,
-    ),
+    recent_items: uniqueOrderItems.length > 0 ? uniqueOrderItems : null,
   };
 });
 
@@ -143,7 +154,7 @@ export const signUpUser = createAsyncThunk(
 export const signInUser = createAsyncThunk(
   "user/signInUser",
   async ({ email, password }: { email: string; password: string }) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
@@ -159,14 +170,5 @@ export const signInUser = createAsyncThunk(
       console.error(error);
       throw Error(error.message);
     }
-
-    const futureDate = new Date();
-    localStorage.setItem("access_token", data.session.access_token);
-    localStorage.setItem(
-      "jwt_expiry",
-      futureDate
-        .setSeconds(futureDate.getSeconds() + data.session.expires_in)
-        .toString(),
-    );
   },
 );
