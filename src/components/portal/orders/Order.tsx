@@ -56,11 +56,19 @@ function Order(props: OrderProps) {
         justify="space-between"
         style={{ borderBottom: "solid 1px darkslategray" }}
       >
-        <Flex pl="sm" py="8px" gap="sm" align="center">
-          <OrderBadge order={order} />
+        <Flex
+          px="sm"
+          py="8px"
+          w="76%"
+          gap="sm"
+          align="center"
+          justify="space-between"
+        >
           <Text fw="700" size="1.2em">
             {user?.name || name}
           </Text>
+
+          <OrderBadge order={order} />
         </Flex>
 
         <StyledButton

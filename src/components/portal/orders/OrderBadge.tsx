@@ -21,7 +21,7 @@ function OrderBadge({ order }: { order: OrderType }) {
   }, [order]);
 
   return (
-    <Badge radius="sm" size="lg" color={badgeColour}>
+    <Badge radius="sm" size="xl" color={badgeColour}>
       {badgeLabel}
     </Badge>
   );
