@@ -37,7 +37,7 @@ function PlacedOrderModal(props: PlacedOrderModalProps) {
       <Stack>
         <Divider w="100%" />
 
-        <Stack gap="xs" align="center">
+        <Stack gap="0" align="center">
           <Text>Thanks for ordering with Middle Child</Text>
 
           <Text>
