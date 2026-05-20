@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 import {
   Accordion,
@@ -27,7 +28,6 @@ import {
   signOutUser,
   updateUser,
 } from "../../state/user/userThunks";
-import dayjs from "dayjs";
 
 function Account() {
   const navigate = useNavigate();
