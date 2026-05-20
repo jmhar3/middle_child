@@ -53,11 +53,14 @@ function PlacedOrderModal(props: PlacedOrderModalProps) {
             <>
               {index > 0 && <Divider w="100%" />}
 
-              <Stack key={item.id} gap="xs">
+              <Stack key={item.id} gap="0">
                 <Text>
                   {item.quantity} x {item.item.label}
                 </Text>
-                <Text>{item.modifiers?.join(", ")}</Text>
+                <Text size="sm">
+                  {item.modifiers?.map(({ label }) => label).join(", ")}
+                </Text>
+                <Text size="sm">{item.note}</Text>
               </Stack>
             </>
           ))}

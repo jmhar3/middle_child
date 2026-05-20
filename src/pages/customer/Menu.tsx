@@ -32,7 +32,8 @@ import {
 
 import { calculateOrderItemPrice, filterItemFromOrder } from "../../helpers";
 
-import type { MenuItemType, OrderItem } from "../../state/types";
+import type { MenuItemType, OrderItem, OrderType } from "../../state/types";
+import PlacedOrderModal from "../../components/customer/PlacedOrderModal";
 
 function Menu() {
   const dispatch = useAppDispatch();
@@ -70,6 +71,8 @@ function Menu() {
   );
   const [order, setOrder] = useState<OrderItem[] | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [showPlacedOrder, setShowPlacedOrder] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState<OrderType | null>(null);
 
   const pointsRemaining = useMemo(() => {
     const additionalLoyaltyPoints = order
@@ -347,6 +350,18 @@ function Menu() {
           onClose={() => setIsCartModalOpen(false)}
           onEditOrderItem={onEditOrderItem}
           onDeleteOrderItem={onDeleteOrderItem}
+          onSuccess={(order) => {
+            setShowPlacedOrder(true);
+            setPlacedOrder(order);
+          }}
+        />
+      )}
+
+      {placedOrder && (
+        <PlacedOrderModal
+          order={placedOrder}
+          isOpen={showPlacedOrder}
+          onClose={() => setShowPlacedOrder(false)}
         />
       )}
     </PageLayout>

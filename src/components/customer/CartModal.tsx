@@ -9,7 +9,6 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-import PlacedOrderModal from "./PlacedOrderModal";
 import ButtonWithPrice from "./ButtonWithPrice";
 import LoyaltyPoints from "./LoyaltyPoints";
 import MenuItemModal from "../MenuItemModal";
@@ -37,10 +36,19 @@ interface CartModalProps {
   onClose: () => void;
   onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
   onDeleteOrderItem: (orderItem: OrderItem) => void;
+  onSuccess: (order: OrderType) => void;
 }
 
 function CartModal(props: CartModalProps) {
-  const { isOpen, onClose, onEditOrderItem, onDeleteOrderItem, items } = props;
+  const {
+    items,
+    isOpen,
+    onClose,
+    onSuccess,
+    onEditOrderItem,
+    onDeleteOrderItem,
+  } = props;
+
   const dispatch = useAppDispatch();
   const userStatus = useAppSelector(selectUserStatus);
   const user = useAppSelector(selectUser);
@@ -59,7 +67,6 @@ function CartModal(props: CartModalProps) {
   const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  const [showPlacedOrder, setShowPlacedOrder] = useState(false);
 
   const orderTotal = useMemo(() => {
     return items
@@ -108,7 +115,6 @@ function CartModal(props: CartModalProps) {
 
   const onModalClose = () => {
     reset();
-    setShowPlacedOrder(false);
     setShowNameError(false);
     onClose();
   };
@@ -131,7 +137,7 @@ function CartModal(props: CartModalProps) {
       }),
     )
       .then(() => {
-        setShowPlacedOrder(true);
+        onSuccess(order);
         onClose();
       })
       .catch((error) =>
@@ -162,112 +168,104 @@ function CartModal(props: CartModalProps) {
         />
       )}
 
-      {showPlacedOrder ? (
-        <PlacedOrderModal
-          order={order}
-          isOpen={showPlacedOrder}
-          onClose={onModalClose}
-        />
-      ) : (
-        <Modal
-          fullScreen
-          radius={0}
-          title="CART"
-          opened={isOpen}
-          onClose={onModalClose}
-          transitionProps={{ transition: "fade", duration: 200 }}
-          styles={{
-            header: { background: "whitesmoke" },
-            content: { background: "whitesmoke" },
-          }}
-        >
-          <Stack mih="100%" align="center">
-            <LoyaltyPoints
-              existingPoints={loyaltyPoints}
-              additionalPoints={additionalLoyaltyPoints}
+      <Modal
+        fullScreen
+        radius={0}
+        title="CART"
+        opened={isOpen}
+        onClose={onModalClose}
+        transitionProps={{ transition: "fade", duration: 200 }}
+        styles={{
+          header: { background: "whitesmoke" },
+          content: { background: "whitesmoke" },
+        }}
+      >
+        <Stack mih="100%" align="center">
+          <LoyaltyPoints
+            existingPoints={loyaltyPoints}
+            additionalPoints={additionalLoyaltyPoints}
+          />
+
+          {!user && (
+            <TextInput
+              w="100%"
+              label="Name"
+              value={name}
+              withAsterisk
+              error={showNameError && "Name is required"}
+              onChange={(e) => {
+                if (e.target.value.length > 0) setShowNameError(false);
+                setName(e.target.value);
+              }}
+              styles={{
+                input: {
+                  borderRadius: "sm",
+                  border: showNameError
+                    ? "crimson solid 1px"
+                    : "darkslategray solid 1px",
+                },
+              }}
             />
+          )}
 
-            {!user && (
-              <TextInput
-                w="100%"
-                label="Name"
-                value={name}
-                withAsterisk
-                error={showNameError && "Name is required"}
-                onChange={(e) => {
-                  if (e.target.value.length > 0) setShowNameError(false);
-                  setName(e.target.value);
-                }}
-                styles={{
-                  input: {
-                    borderRadius: "sm",
-                    border: showNameError
-                      ? "crimson solid 1px"
-                      : "darkslategray solid 1px",
-                  },
-                }}
-              />
-            )}
-
-            <Stack w="100%">
-              {!items && <Text>Your cart is empty.</Text>}
-              {items?.map((orderItem, index) => (
-                <>
-                  {index === 0 && <Divider />}
-                  <CartItem
-                    orderItem={orderItem}
-                    onDeleteClick={() => onDeleteOrderItem(orderItem)}
-                    onEditClick={() => {
-                      setOldOrderItem(orderItem);
-                      setShowMenuItemModal(true);
-                    }}
-                  />
-                  <Divider />
-                </>
-              ))}
-            </Stack>
-
-            <NoteInput label="Notes" note={note} setNote={setNote} />
-
-            <Button.Group>
-              <Button
-                radius="md"
-                variant="filled"
-                color="darkslategray"
-                onClick={decrement}
-                disabled={pickUpTime === pickUpTimeFromNow}
-              >
-                -
-              </Button>
-              <Button.GroupSection
-                bg="white"
-                color="darkslategray"
-                variant="outline"
-              >
-                Pick Up in {pickUpTime} Minutes
-              </Button.GroupSection>
-              <Button
-                radius="md"
-                variant="filled"
-                color="darkslategray"
-                onClick={increment}
-              >
-                +
-              </Button>
-            </Button.Group>
-
-            <Stack gap="3" w="100%" align="center">
-              <ButtonWithPrice
-                isLoading={isPlacingOrder}
-                onClick={onPlaceOrder}
-                label="Order Now"
-                price={orderTotal}
-              />
-              <Text>Pay securely using Square</Text>
-            </Stack>
+          <Stack w="100%">
+            {!items && <Text>Your cart is empty.</Text>}
+            {items?.map((orderItem, index) => (
+              <>
+                {index === 0 && <Divider />}
+                <CartItem
+                  orderItem={orderItem}
+                  onDeleteClick={() => onDeleteOrderItem(orderItem)}
+                  onEditClick={() => {
+                    setOldOrderItem(orderItem);
+                    setShowMenuItemModal(true);
+                  }}
+                />
+                <Divider />
+              </>
+            ))}
           </Stack>
-        </Modal>
-      )}
+
+          <NoteInput label="Notes" note={note} setNote={setNote} />
+
+          <Button.Group>
+            <Button
+              radius="md"
+              variant="filled"
+              color="darkslategray"
+              onClick={decrement}
+              disabled={pickUpTime === pickUpTimeFromNow}
+            >
+              -
+            </Button>
+            <Button.GroupSection
+              bg="white"
+              color="darkslategray"
+              variant="outline"
+            >
+              Pick Up in {pickUpTime} Minutes
+            </Button.GroupSection>
+            <Button
+              radius="md"
+              variant="filled"
+              color="darkslategray"
+              onClick={increment}
+            >
+              +
+            </Button>
+          </Button.Group>
+
+          <Stack gap="3" w="100%" align="center">
+            <ButtonWithPrice
+              isLoading={isPlacingOrder}
+              onClick={onPlaceOrder}
+              label="Order Now"
+              price={orderTotal}
+            />
+            <Text>Pay securely using Square</Text>
+          </Stack>
+        </Stack>
+      </Modal>
     </>
   );
 }
