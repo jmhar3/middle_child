@@ -9,6 +9,7 @@ import AboutUs from "./pages/customer/AboutUs.js";
 import Partners from "./pages/customer/Partners.js";
 import Home from "./pages/customer/Home.js";
 import CustomerMenu from "./pages/customer/Menu.js";
+import Account from "./pages/customer/Account.js";
 
 import Orders from "./pages/portal/Orders.js";
 import EditMenu from "./pages/portal/Menu.js";
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="about-us/ai" element={<AboutUs />} />
             <Route path="partners" element={<Partners />} />
             <Route path="menu" element={<CustomerMenu />} />
+            <Route path="account" element={<Account />} />
 
             {/* Private Portal */}
             <Route path="portal">

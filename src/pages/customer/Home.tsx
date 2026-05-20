@@ -1,15 +1,31 @@
+import { useEffect } from "react";
 import { Flex, Stack, Text } from "@mantine/core";
 
+import PageLayout from "./PageLayout";
 import NavButton from "../../components/NavButton";
 import Link from "../../components/Link";
 
-import PageLayout from "./PageLayout";
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { selectUser, selectUserStatus } from "../../state/user/userSlice";
+import { fetchUser } from "../../state/user/userThunks";
 
 function Home() {
+  const dispatch = useAppDispatch();
+  const userStatus = useAppSelector(selectUserStatus);
+  const user = useAppSelector(selectUser);
+
+  useEffect(() => {
+    if (userStatus === "idle") {
+      dispatch(fetchUser());
+    }
+  }, [dispatch, userStatus]);
+
   return (
     <PageLayout>
       <Stack w="100%" gap="3" p="3">
         <NavButton label="Order Here for Pick Up" path="/menu" />
+
+        {user && <NavButton label="Manage Account" path="/account" />}
 
         <NavButton label="About Us" path="/about-us" />
         <NavButton label="Also About Us (AI)" path="/about-us/ai" />
