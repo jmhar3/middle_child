@@ -122,13 +122,23 @@ function Menu() {
   const addItemToOrder = (item: OrderItem) => {
     setOrder((items) => {
       if (items) {
-        const existingOrderItem = items.find(
-          (existingItem) =>
-            existingItem.item.id === item.item.id &&
-            JSON.stringify(existingItem.modifiers) ===
-              JSON.stringify(item.modifiers) &&
-            existingItem.note === item.note,
-        );
+        const existingOrderItem = items.find((existingItem) => {
+          const existingModifiersIds =
+            existingItem.modifiers?.map((m) => m.id) || [];
+          const itemModifiersIds = item.modifiers?.map((m) => m.id) || [];
+          const matchingModifiers =
+            existingModifiersIds.length === itemModifiersIds.length &&
+            existingModifiersIds.every(
+              (val, index) => val === itemModifiersIds[index],
+            );
+
+          const matchingItemId = existingItem.item.id === item.item.id;
+          const matchingNote =
+            (existingItem.note === null || existingItem.note === undefined) &&
+            (item.note === null || item.note === undefined);
+
+          return matchingItemId && matchingModifiers && matchingNote;
+        });
 
         const filteredOrderItems =
           existingOrderItem && filterItemFromOrder(items, existingOrderItem);
