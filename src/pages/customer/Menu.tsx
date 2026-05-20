@@ -222,6 +222,7 @@ function Menu() {
         order.length > 0 &&
         orderTotal &&
         !isCartModalOpen &&
+        !showPlacedOrder &&
         !isMenuItemModalOpen && (
           <Box
             w="100%"
