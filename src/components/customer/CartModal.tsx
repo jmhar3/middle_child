@@ -125,7 +125,7 @@ function CartModal(props: CartModalProps) {
 
     dispatch(
       placeOrder({
-        name: name,
+        name: user?.name || name,
         userId: user?.id,
         orderData: order,
       }),
