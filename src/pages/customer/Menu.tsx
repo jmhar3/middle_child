@@ -69,13 +69,13 @@ function Menu() {
   const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItemType | null>(
     null,
   );
-  const [order, setOrder] = useState<OrderItem[] | null>(null);
+  const [orderItems, setOrderItems] = useState<OrderItem[] | null>(null);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [showPlacedOrder, setShowPlacedOrder] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<OrderType | null>(null);
 
   const pointsRemaining = useMemo(() => {
-    const additionalLoyaltyPoints = order
+    const additionalLoyaltyPoints = orderItems
       ?.filter((item) => item.item.is_applicable_loyalty_item)
       .map(({ quantity }) => quantity)
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -98,24 +98,24 @@ function Menu() {
     }
 
     return 12 - loyaltyPoints - additionalLoyaltyPoints;
-  }, [order, loyaltyPoints]);
+  }, [orderItems, loyaltyPoints]);
 
   const totalItemsInOrder = useMemo(
     () =>
-      order?.reduce((accumulator, currentItem) => {
+      orderItems?.reduce((accumulator, currentItem) => {
         return accumulator + currentItem.quantity;
       }, 0),
-    [order],
+    [orderItems],
   );
 
   const orderTotal = useMemo(() => {
-    return order
+    return orderItems
       ?.map(
         (item) =>
           calculateOrderItemPrice(item.item, item.modifiers) * item.quantity,
       )
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  }, [order]);
+  }, [orderItems]);
 
   const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
     setSelectedMenuItem(menuItem);
@@ -123,7 +123,7 @@ function Menu() {
   };
 
   const addItemToOrder = (item: OrderItem) => {
-    setOrder((items) => {
+    setOrderItems((items) => {
       if (items) {
         const existingOrderItem = items.find((existingItem) => {
           const existingModifiersIds =
@@ -173,7 +173,7 @@ function Menu() {
     oldOrderItem: OrderItem,
     newOrderItem: OrderItem,
   ) => {
-    setOrder((items) => {
+    setOrderItems((items) => {
       if (items) {
         const filteredOrderItems = filterItemFromOrder(items, oldOrderItem);
 
@@ -187,7 +187,7 @@ function Menu() {
   };
 
   const onDeleteOrderItem = (orderItem: OrderItem) => {
-    setOrder((items) => {
+    setOrderItems((items) => {
       if (items) {
         const filteredOrderItems = filterItemFromOrder(items, orderItem);
         if (filteredOrderItems.length === 0) setIsCartModalOpen(false);
@@ -214,12 +214,18 @@ function Menu() {
     }
   };
 
+  const onOrderSuccess = (order: OrderType) => {
+    setShowPlacedOrder(true);
+    setPlacedOrder(order);
+    setOrderItems(null);
+  };
+
   if (isLoading) return <Loading message="Loading store data" />;
 
   return (
     <PageLayout image={banner}>
-      {order &&
-        order.length > 0 &&
+      {orderItems &&
+        orderItems.length > 0 &&
         orderTotal &&
         !isCartModalOpen &&
         !showPlacedOrder &&
@@ -233,7 +239,7 @@ function Menu() {
           >
             <ButtonWithPrice
               onClick={() => setIsCartModalOpen(true)}
-              label={`Review Order ${order && `( ${totalItemsInOrder} )`}`}
+              label={`Review Order ${orderItems && `( ${totalItemsInOrder} )`}`}
               price={orderTotal}
             />
           </Box>
@@ -344,17 +350,14 @@ function Menu() {
         />
       )}
 
-      {order && order.length > 0 && (
+      {orderItems && orderItems.length > 0 && (
         <CartModal
-          items={order}
+          items={orderItems}
           isOpen={isCartModalOpen}
           onClose={() => setIsCartModalOpen(false)}
           onEditOrderItem={onEditOrderItem}
           onDeleteOrderItem={onDeleteOrderItem}
-          onSuccess={(order) => {
-            setShowPlacedOrder(true);
-            setPlacedOrder(order);
-          }}
+          onSuccess={onOrderSuccess}
         />
       )}
 
