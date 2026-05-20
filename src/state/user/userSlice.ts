@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchUser, signInUser, signUpUser, updateUser } from "./userThunks";
+import {
+  fetchUser,
+  signInUser,
+  signOutUser,
+  signUpUser,
+  updateUser,
+} from "./userThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -63,6 +69,16 @@ const userSlice = createSlice({
       })
       .addCase(signInUser.rejected, (state) => {
         state.status = "failed";
+      })
+      .addCase(signOutUser.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(signOutUser.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.data = null;
+      })
+      .addCase(signOutUser.rejected, (state) => {
+        state.status = "failed";
       });
   },
 });
@@ -81,3 +97,5 @@ export const selectUserLoyaltyPoints = (state: RootState) =>
 
 export const selectRecentlyOrderedItems = (state: RootState) =>
   state.user.data?.recent_items;
+
+export const selectUserOrders = (state: RootState) => state.user.data?.orders;

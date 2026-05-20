@@ -70,9 +70,9 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
     throw Error(userOrders.error.message);
   }
 
-  const formattedItems = formatSupaBaseOrders(userOrders.data).flatMap(
-    ({ items }) => items,
-  );
+  const formattedOrders = formatSupaBaseOrders(userOrders.data);
+
+  const formattedItems = formattedOrders.flatMap(({ items }) => items);
 
   const uniqueOrderItems: OrderItem[] = [];
 
@@ -91,6 +91,7 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
 
   return {
     ...publicUser.data,
+    orders: formattedOrders,
     recent_items: uniqueOrderItems.length > 0 ? uniqueOrderItems : null,
   };
 });
@@ -175,3 +176,19 @@ export const signInUser = createAsyncThunk(
     }
   },
 );
+
+export const signOutUser = createAsyncThunk("user/signOutUser", async () => {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    notifications.show({
+      withCloseButton: false,
+      message: error.message,
+      title: error.name,
+      position: "bottom-right",
+      color: "red",
+    });
+    console.error(error);
+    throw Error(error.message);
+  }
+});
