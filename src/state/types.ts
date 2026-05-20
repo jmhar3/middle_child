@@ -70,6 +70,7 @@ export interface User {
   is_admin: boolean;
   loyalty_points?: number;
   recent_items?: OrderItem[];
+  orders?: OrderType[];
 }
 
 export interface OrderItem {
