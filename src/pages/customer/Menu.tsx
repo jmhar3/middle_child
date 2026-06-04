@@ -247,25 +247,9 @@ function Menu() {
 
       <Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
         {storeIsOpen ? (
-          <>
-            <Text>
-              Pick up time from {storeInfo.current_order_time.short} minutes
-            </Text>
-
-            {pointsRemaining && (
-              <>
-                <Divider w="100%" />
-
-                {pointsRemaining > 0 ? (
-                  <Text>
-                    You're {pointsRemaining} coffees away from a freebie!
-                  </Text>
-                ) : (
-                  <Text>You've unlocked a free coffee!</Text>
-                )}
-              </>
-            )}
-          </>
+          <Text>
+            Pick up time from {storeInfo.current_order_time.short} minutes
+          </Text>
         ) : (
           <>
             <Text>Sorry, we're closed.</Text>
@@ -273,6 +257,20 @@ function Menu() {
             <Text>Mon - Fri 7:30am - 1pm</Text>
             <Text>Sat - Sun 7:30am - 2pm</Text>
           </>
+        )}
+
+        {pointsRemaining !== null ? (
+          <>
+            <Divider w="100%" />
+
+            {pointsRemaining > 0 ? (
+              <Text>You're {pointsRemaining} coffees away from a freebie!</Text>
+            ) : (
+              <Text>You've unlocked a free coffee!</Text>
+            )}
+          </>
+        ) : (
+          <Text>Start drinking to earn points!</Text>
         )}
       </Stack>
 
