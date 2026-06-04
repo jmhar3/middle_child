@@ -8,13 +8,17 @@ import type { MenuItemType, Modifier } from "../../state/types";
 interface MenuItemButtonProps {
   onClick: () => void;
   item: MenuItemType;
+  note?: string;
   modifiers?: Modifier[];
+  isPrevOrder?: boolean;
 }
 
 function MenuItemButton(props: MenuItemButtonProps) {
-  const { onClick, item, modifiers } = props;
+  const { onClick, item, note, modifiers, isPrevOrder = false } = props;
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+
+  console.log(item);
 
   const totalPrice = modifiers
     ? calculateOrderItemPrice(item, modifiers)
@@ -34,16 +38,22 @@ function MenuItemButton(props: MenuItemButtonProps) {
       rightSection={<Text fw={700}>${totalPrice}</Text>}
       onClick={onClick}
     >
-      <Stack gap="0" w="100%" justify="center" align="flex-start" py="xs">
+      <Stack gap="0" w="100%" align="flex-start" py="xs">
         <Text fw={700}>{item.label}</Text>
-        <Text>{item.description}</Text>
+        {!isPrevOrder && <Text>{item.description}</Text>}
 
         {modifiers && modifiers.length > 0 && (
           <ScrollArea h="20px" w="100%">
-            <Text size="xs">
+            <Text size="xs" ta="left">
               {modifiers.map((ingredient) => ingredient.label).join(", ")}
             </Text>
           </ScrollArea>
+        )}
+
+        {note && (
+          <Text size="xs" fs="italic">
+            Note: {note}
+          </Text>
         )}
       </Stack>
     </Button>

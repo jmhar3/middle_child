@@ -302,6 +302,8 @@ function Menu() {
                       {index !== 0 && <Divider />}
                       <MenuItemButton
                         key={orderItem.item.label}
+                        isPrevOrder={true}
+                        note={orderItem.note}
                         onClick={() => addItemToOrder(orderItem)}
                         {...orderItem}
                       />
