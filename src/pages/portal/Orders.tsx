@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import { useEffect, useMemo, useState } from "react";
 import { Box, Flex, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -40,7 +42,8 @@ import {
 } from "../../state/orders/ordersSlice";
 
 import type { OrderTime } from "../../state/types";
-import dayjs from "dayjs";
+
+dayjs.extend(isoWeek);
 
 function Orders() {
   const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
@@ -99,6 +102,10 @@ function Orders() {
     ordersStatus,
   ]);
 
+  const todaysOrders = orders.filter((order) =>
+    dayjs(order.due_at).isSame(dayjs(), "day"),
+  );
+
   const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
     setIsUpdatingOrderTime(true);
     dispatch(
@@ -117,21 +124,14 @@ function Orders() {
       });
   };
 
-  const weeklyTotal = Object.values(storeInfo.weekly_record).reduce(
-    (acc, val) => acc + val,
-    0,
-  );
+  const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
 
-  const dayOfWeek = dayjs().format("dddd").toLowerCase() as
-    | "monday"
-    | "tuesday"
-    | "wednesday"
-    | "thursday"
-    | "friday"
-    | "saturday"
-    | "sunday";
-
-  const todaysTotal = storeInfo.weekly_record[dayOfWeek];
+  const weeklyTotal = useMemo(() => {
+    const weeksOrders = orders.filter((order) =>
+      dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
+    );
+    return weeksOrders.reduce((acc, order) => acc + order.total, 0);
+  }, [orders]);
 
   if (isLoading) return <Loading message="Loading store data" />;
 
@@ -142,11 +142,11 @@ function Orders() {
           <Stack gap="0">
             <Flex justify="space-between" gap="xs">
               <Text>Today:</Text>
-              <Text>${todaysTotal}</Text>
+              <Text>${todaysTotal.toFixed(2)}</Text>
             </Flex>
             <Flex justify="space-between" gap="xs">
               <Text>This Week:</Text>
-              <Text>${weeklyTotal}</Text>
+              <Text>${weeklyTotal.toFixed(2)}</Text>
             </Flex>
           </Stack>
           <StyledButton
@@ -205,7 +205,8 @@ function Orders() {
       )}
 
       {storeIsOpen ? (
-        orders && orders.length > 0 && <OrdersList orders={orders} />
+        todaysOrders &&
+        todaysOrders.length > 0 && <OrdersList orders={todaysOrders} />
       ) : (
         <Stack align="center" gap="sm" pt="3em">
           <Text ta="center" mb="sm" size="1.6em" fw="600">
