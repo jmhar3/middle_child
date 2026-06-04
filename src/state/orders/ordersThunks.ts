@@ -51,12 +51,18 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
 interface PlaceOrderProps {
   name?: string;
   userId?: string;
+  new_loyalty_points_total: number;
   orderData: Partial<OrderType>;
 }
 
 export const placeOrder = createAsyncThunk(
   "menu/placeOrder",
-  async ({ name, userId, orderData }: PlaceOrderProps) => {
+  async ({
+    name,
+    userId,
+    orderData,
+    new_loyalty_points_total,
+  }: PlaceOrderProps) => {
     // create order
     const order = await supabase
       .from("orders")
@@ -91,6 +97,24 @@ export const placeOrder = createAsyncThunk(
           console.log(orderItem.error);
           throw Error(orderItem.error.message);
         } else {
+          if (userId) {
+            const { error } = await supabase
+              .from("users")
+              .update({ loyalty_points: new_loyalty_points_total })
+              .eq("id", userId);
+
+            if (error) {
+              notifications.show({
+                withCloseButton: false,
+                message: error.message,
+                title: error.name,
+                position: "bottom-right",
+                color: "red",
+              });
+              console.error(error);
+              throw Error(error.message);
+            }
+          }
           if (item.modifiers) {
             item.modifiers.forEach(async (modifier) => {
               await supabase

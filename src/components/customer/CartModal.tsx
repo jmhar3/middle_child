@@ -160,6 +160,7 @@ function CartModal(props: CartModalProps) {
         name: user?.name || name,
         userId: user?.id,
         orderData: order,
+        new_loyalty_points_total: freeItem ? pointsTotal - 12 : pointsTotal,
       }),
     )
       .then(() => {
