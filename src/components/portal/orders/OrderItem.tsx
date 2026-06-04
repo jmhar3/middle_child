@@ -26,14 +26,14 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
   return (
     <Flex key={id} gap="sm" justify="space-between">
       <Stack gap="3">
-        <Flex gap="sm">
+        <Flex gap="sm" align="center">
           <Text>{quantity} x </Text>
           {menuItem.reference_code ? (
-            <Flex gap="sm">
+            <Flex gap="sm" align="center">
               <Badge
                 style={{ letterSpacing: "2px" }}
                 radius="sm"
-                size="lg"
+                size="xl"
                 color={
                   modifierCodes?.includes("Large") ? "darkgreen" : "purple"
                 }
@@ -51,26 +51,14 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
           )}
         </Flex>
 
-        <Text fs="italic">{note}</Text>
+        {note && <Text fs="italic">Note: {note}</Text>}
       </Stack>
 
-      <Flex gap="sm" align="center">
-        {modifiers && (
-          <Flex gap="sm">
-            {modifiers.map((modifier) => (
-              <Badge
-                radius="sm"
-                size="xl"
-                color="darkslategray"
-                key={modifier.id}
-              >
-                {modifier.label}
-              </Badge>
-            ))}
-          </Flex>
-        )}
-        <Text>{menuItem.label}</Text>
-      </Flex>
+      <Text>
+        {menuItem.label}
+        {modifiers && ", "}
+        {modifiers?.map(({ label }) => label).join(", ")}
+      </Text>
     </Flex>
   );
 }
