@@ -17,6 +17,14 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
     ? existingPoints + additionalPoints
     : additionalPoints;
 
+  const existingPointsPercentage = existingPoints
+    ? (existingPoints / 12) * 100
+    : 0;
+
+  const additionalPointsPercentage = additionalPoints
+    ? (additionalPoints / 12) * 100
+    : 0;
+
   if (existingPoints)
     return (
       <Stack
@@ -28,37 +36,29 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
         align="center"
         bd="darkslategray solid 1px"
       >
-        {newPointTotal <= 12 && (
-          <>
-            <Flex w="100%" gap="sm" align="center">
-              <OutlineStarIcon />
+        <Flex w="100%" gap="sm" align="center">
+          <OutlineStarIcon />
 
-              <Progress.Root size="xl" w="100%">
-                <Progress.Section
-                  value={(existingPoints / 12) * 100}
-                  color="yellow"
-                  animated
-                />
-                <Progress.Section
-                  value={(additionalPoints / 12) * 100}
-                  color="gold"
-                  animated
-                />
-              </Progress.Root>
-              <StarFilledIcon />
-            </Flex>
+          <Progress.Root size="xl" w="100%">
+            <Progress.Section
+              value={existingPointsPercentage}
+              color="yellow"
+              animated
+            />
+            <Progress.Section
+              value={additionalPointsPercentage}
+              color="gold"
+              animated
+            />
+          </Progress.Root>
+          <StarFilledIcon />
+        </Flex>
 
-            {newPointTotal < 12 && (
-              <Text>
-                You're {12 - newPointTotal} coffees away from a freebie!
-              </Text>
-            )}
-
-            {newPointTotal >= 12 && <Text>You've unlocked a free coffee!</Text>}
-          </>
+        {newPointTotal < 12 ? (
+          <Text>You're {12 - newPointTotal} coffees away from a freebie!</Text>
+        ) : (
+          <Text>You've unlocked a free coffee!</Text>
         )}
-
-        {existingPoints >= 12 && <Text>You've unlocked a free coffee!</Text>}
       </Stack>
     );
 
