@@ -18,8 +18,6 @@ function MenuItemButton(props: MenuItemButtonProps) {
 
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
-  console.log(item);
-
   const totalPrice = modifiers
     ? calculateOrderItemPrice(item, modifiers)
     : item.price;
