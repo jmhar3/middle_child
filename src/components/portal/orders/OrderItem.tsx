@@ -14,6 +14,9 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
   const { id, quantity, item: menuItem, modifiers, note } = orderItem;
 
   const modifierCodes = modifiers?.map(({ reference_code }) => reference_code);
+  const modifiersWithoutCodes = modifiers?.filter(
+    ({ reference_code }) => !reference_code,
+  );
 
   const code = modifierCodes
     ? modifierCodes.filter((code) => code !== "Large").join("") +
@@ -24,18 +27,25 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
     <Flex key={id} gap="sm" justify="space-between">
       <Stack gap="3">
         <Flex gap="sm">
-          <Badge radius="sm" size="lg" color="darkslategray">
-            {quantity}
-          </Badge>
+          <Text>{quantity} x </Text>
           {menuItem.reference_code ? (
-            <Badge
-              style={{ letterSpacing: "2px" }}
-              radius="sm"
-              size="lg"
-              color={modifierCodes?.includes("Large") ? "dark" : "purple"}
-            >
-              {code}
-            </Badge>
+            <Flex gap="sm">
+              <Badge
+                style={{ letterSpacing: "2px" }}
+                radius="sm"
+                size="lg"
+                color={
+                  modifierCodes?.includes("Large") ? "darkgreen" : "purple"
+                }
+              >
+                {code}
+              </Badge>
+              {modifiersWithoutCodes && (
+                <Text>
+                  {modifiersWithoutCodes.map(({ label }) => label).join(", ")}
+                </Text>
+              )}
+            </Flex>
           ) : (
             <Text>{menuItem.label}</Text>
           )}
