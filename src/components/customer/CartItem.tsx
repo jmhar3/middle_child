@@ -12,26 +12,40 @@ interface OrderListItem extends OrderItem {
 }
 
 interface CartItemProps {
+  isFreeItem: boolean;
   orderItem: OrderListItem;
   onEditClick: () => void;
   onDeleteClick: () => void;
 }
 
 function CartItem(props: CartItemProps) {
-  const { orderItem, onEditClick, onDeleteClick } = props;
+  const { isFreeItem, orderItem, onEditClick, onDeleteClick } = props;
   const { modifiers, item, quantity, note } = orderItem;
 
-  const orderItemPrice = calculateOrderItemPrice(item, modifiers);
+  const discountedItemPrice =
+    isFreeItem && calculateOrderItemPrice(item, modifiers) * (quantity - 1);
+
+  const orderItemPrice = calculateOrderItemPrice(item, modifiers) * quantity;
 
   return (
     <Stack gap="3">
+      {isFreeItem && (
+        <Text fs="italic" c="darkslategray">
+          Your 13th coffee is free!
+        </Text>
+      )}
       <Flex key={item.label} justify="space-between" align="center">
         <Text>
           {quantity} x {item.label}
         </Text>
 
         <Flex align="center" gap="sm">
-          <Text>${(orderItemPrice * quantity).toFixed(2)}</Text>
+          {discountedItemPrice && (
+            <Text>${discountedItemPrice.toFixed(2)}</Text>
+          )}
+          <Text td={discountedItemPrice ? "line-through" : undefined}>
+            ${orderItemPrice.toFixed(2)}
+          </Text>
 
           <Flex>
             <ActionIcon

@@ -68,21 +68,47 @@ function CartModal(props: CartModalProps) {
   const [showMenuItemModal, setShowMenuItemModal] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-  const orderTotal = useMemo(() => {
-    return items
-      .map(
-        (item) =>
-          calculateOrderItemPrice(item.item, item.modifiers) * item.quantity,
-      )
-      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const applicableLoyaltyItems = useMemo(() => {
+    return items.filter((item) => item.item.is_applicable_loyalty_item);
   }, [items]);
 
   const additionalLoyaltyPoints = useMemo(() => {
-    return items
-      .filter((item) => item.item.is_applicable_loyalty_item)
+    return applicableLoyaltyItems
       .map(({ quantity }) => quantity)
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  }, [items]);
+  }, [applicableLoyaltyItems]);
+
+  const pointsTotal = (loyaltyPoints || 0) + additionalLoyaltyPoints;
+
+  const freeItem = useMemo(() => {
+    if (pointsTotal >= 12) {
+      let quantity = loyaltyPoints || 0;
+      for (const item of applicableLoyaltyItems) {
+        if (quantity + item.quantity >= 12) {
+          return item;
+        }
+        quantity += item.quantity;
+      }
+    }
+    return null;
+  }, [pointsTotal, loyaltyPoints, applicableLoyaltyItems]);
+
+  const orderTotal = useMemo(() => {
+    return items
+      .map((item) => {
+        if (freeItem?.id === item.id) {
+          if (item.quantity === 1) return 0;
+          return (
+            calculateOrderItemPrice(item.item, item.modifiers) *
+            (item.quantity - 1)
+          );
+        }
+        return (
+          calculateOrderItemPrice(item.item, item.modifiers) * item.quantity
+        );
+      })
+      .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }, [items, freeItem]);
 
   const pickUpTimeFromNow = useMemo(() => {
     const hasLongPrepTime = items.find(
@@ -214,6 +240,7 @@ function CartModal(props: CartModalProps) {
               <>
                 {index === 0 && <Divider />}
                 <CartItem
+                  isFreeItem={orderItem.id === freeItem?.id}
                   orderItem={orderItem}
                   onDeleteClick={() => onDeleteOrderItem(orderItem)}
                   onEditClick={() => {
