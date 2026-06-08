@@ -15,88 +15,88 @@ import { useState } from "react";
 dayjs.extend(relativeTime);
 
 interface OrderProps {
-  order: OrderType;
+	order: OrderType;
 }
 
 function Order(props: OrderProps) {
-  const { order } = props;
+	const { order } = props;
 
-  const { user, name, items, note, is_complete } = order;
+	const { user, name, items, note, is_complete } = order;
 
-  const [isCompletingOrder, setIsCompletingOrder] = useState(false);
+	const [isCompletingOrder, setIsCompletingOrder] = useState(false);
 
-  const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 
-  const onCompleteOrder = () => {
-    setIsCompletingOrder(true);
-    dispatch(completeOrder(order.id))
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsCompletingOrder(true));
-  };
+	const onCompleteOrder = () => {
+		setIsCompletingOrder(true);
+		dispatch(completeOrder(order.id))
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			)
+			.finally(() => setIsCompletingOrder(true));
+	};
 
-  return (
-    <Stack
-      gap="0"
-      bg="white"
-      bdrs="sm"
-      bd="solid 1px darkslategray"
-      opacity={is_complete ? "50%" : "100%"}
-    >
-      <Flex
-        w="100%"
-        h="fit-content"
-        align="center"
-        justify="space-between"
-        style={{ borderBottom: "solid 1px darkslategray" }}
-      >
-        <Flex
-          px="sm"
-          py="8px"
-          w="76%"
-          gap="sm"
-          align="center"
-          justify="space-between"
-        >
-          <Text fw="700" size="1.2em">
-            {user?.name || name}
-          </Text>
+	return (
+		<Stack
+			gap="0"
+			bg="white"
+			bdrs="sm"
+			bd="solid 1px darkslategray"
+			opacity={is_complete ? "50%" : "100%"}
+		>
+			<Flex
+				w="100%"
+				h="fit-content"
+				align="center"
+				justify="space-between"
+				style={{ borderBottom: "solid 1px darkslategray" }}
+			>
+				<Flex
+					px="sm"
+					py="8px"
+					w="76%"
+					gap="sm"
+					align="center"
+					justify="space-between"
+				>
+					<Text fw="700" size="1.2em">
+						{user?.name || name}
+					</Text>
 
-          <OrderBadge order={order} />
-        </Flex>
+					<OrderBadge order={order} />
+				</Flex>
 
-        <StyledButton
-          radius="0"
-          label="Complete Order"
-          onClick={onCompleteOrder}
-          isLoading={isCompletingOrder}
-        />
-      </Flex>
+				<StyledButton
+					radius="0"
+					label="Complete Order"
+					onClick={onCompleteOrder}
+					isLoading={isCompletingOrder}
+				/>
+			</Flex>
 
-      <Stack p="sm" gap="xs">
-        {items?.map((item, index) => (
-          <>
-            {index > 0 && <Divider w="100%" />}
-            <OrderItem item={item} />
-          </>
-        ))}
+			<Stack p="sm" gap="xs">
+				{items?.map((item, index) => (
+					<>
+						{index > 0 && <Divider w="100%" />}
+						<OrderItem item={item} />
+					</>
+				))}
 
-        {note && (
-          <>
-            <Divider w="100%" />
+				{note && (
+					<>
+						<Divider w="100%" />
 
-            <Text fs="italic">{note}</Text>
-          </>
-        )}
-      </Stack>
-    </Stack>
-  );
+						<Text fs="italic">{note}</Text>
+					</>
+				)}
+			</Stack>
+		</Stack>
+	);
 }
 
 export default Order;

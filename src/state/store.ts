@@ -12,16 +12,16 @@ import userReducer from "./user/userSlice";
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 
 export const store = configureStore({
-  reducer: {
-    itemOptions: itemOptionsReducer,
-    menu: menuReducer,
-    menuItems: menuItemsReducer,
-    modifiers: modifiersReducer,
-    orderTimes: orderTimesReducer,
-    storeInfo: storeInfoReducer,
-    orders: ordersReducer,
-    user: userReducer,
-  },
+	reducer: {
+		itemOptions: itemOptionsReducer,
+		menu: menuReducer,
+		menuItems: menuItemsReducer,
+		modifiers: modifiersReducer,
+		orderTimes: orderTimesReducer,
+		storeInfo: storeInfoReducer,
+		orders: ordersReducer,
+		user: userReducer,
+	},
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -26,31 +26,31 @@ import "@mantine/notifications/styles.css";
 import "./global.css";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <MantineProvider>
-        <Notifications />
-        <BrowserRouter>
-          <Routes>
-            <Route path="*" element={<Navigate to="/" replace />} />
+	<StrictMode>
+		<Provider store={store}>
+			<MantineProvider>
+				<Notifications />
+				<BrowserRouter>
+					<Routes>
+						<Route path="*" element={<Navigate to="/" replace />} />
 
-            {/* Customer Routes */}
-            <Route index element={<Home />} />
-            <Route path="about-us" element={<AboutUs />} />
-            <Route path="about-us/ai" element={<AboutUs />} />
-            <Route path="partners" element={<Partners />} />
-            <Route path="menu" element={<CustomerMenu />} />
-            <Route path="account" element={<Account />} />
+						{/* Customer Routes */}
+						<Route index element={<Home />} />
+						<Route path="about-us" element={<AboutUs />} />
+						<Route path="about-us/ai" element={<AboutUs />} />
+						<Route path="partners" element={<Partners />} />
+						<Route path="menu" element={<CustomerMenu />} />
+						<Route path="account" element={<Account />} />
 
-            {/* Private Portal */}
-            <Route path="portal">
-              <Route index element={<Navigate to="/portal/orders" />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="menu" element={<EditMenu />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </MantineProvider>
-    </Provider>
-  </StrictMode>,
+						{/* Private Portal */}
+						<Route path="portal">
+							<Route index element={<Navigate to="/portal/orders" />} />
+							<Route path="orders" element={<Orders />} />
+							<Route path="menu" element={<EditMenu />} />
+						</Route>
+					</Routes>
+				</BrowserRouter>
+			</MantineProvider>
+		</Provider>
+	</StrictMode>,
 );

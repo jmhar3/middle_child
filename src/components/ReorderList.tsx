@@ -10,108 +10,108 @@ import BottomIcon from "../icons/BottomIcon";
 import type { MenuItemType, MenuSection } from "../state/types";
 
 interface ReorderListProps {
-  items: (MenuSection | MenuItemType)[];
-  setItems: Dispatch<SetStateAction<(MenuSection | MenuItemType)[]>>;
+	items: (MenuSection | MenuItemType)[];
+	setItems: Dispatch<SetStateAction<(MenuSection | MenuItemType)[]>>;
 }
 
 function ReorderList(props: ReorderListProps) {
-  const { items, setItems } = props;
+	const { items, setItems } = props;
 
-  const onUpClick = (itemToMove: MenuSection | MenuItemType) => {
-    setItems((prevItems) =>
-      prevItems.map((item) => {
-        if (item === itemToMove) {
-          return { ...item, order: item.order + 1 };
-        } else if (itemToMove.order + 1 === item.order) {
-          return { ...item, order: item.order - 1 };
-        }
-        return item;
-      }),
-    );
-  };
+	const onUpClick = (itemToMove: MenuSection | MenuItemType) => {
+		setItems((prevItems) =>
+			prevItems.map((item) => {
+				if (item === itemToMove) {
+					return { ...item, order: item.order + 1 };
+				} else if (itemToMove.order + 1 === item.order) {
+					return { ...item, order: item.order - 1 };
+				}
+				return item;
+			}),
+		);
+	};
 
-  const onDownClick = (itemToMove: MenuSection | MenuItemType) => {
-    setItems((prevItems) =>
-      prevItems.map((item) => {
-        if (item === itemToMove) {
-          return { ...item, order: item.order - 1 };
-        } else if (itemToMove.order - 1 === item.order) {
-          return { ...item, order: item.order + 1 };
-        }
-        return item;
-      }),
-    );
-  };
+	const onDownClick = (itemToMove: MenuSection | MenuItemType) => {
+		setItems((prevItems) =>
+			prevItems.map((item) => {
+				if (item === itemToMove) {
+					return { ...item, order: item.order - 1 };
+				} else if (itemToMove.order - 1 === item.order) {
+					return { ...item, order: item.order + 1 };
+				}
+				return item;
+			}),
+		);
+	};
 
-  const onTopClick = (itemToMove: MenuSection | MenuItemType) => {
-    setItems((prevItems) => {
-      const firstHalf = prevItems.slice(0, itemToMove.order - 2);
-      const secondHalf = prevItems.slice(itemToMove.order - 1);
-      return [
-        { ...itemToMove, order: 1 },
-        ...firstHalf.map((item) => ({ ...item, order: item.order + 1 })),
-        ...secondHalf,
-      ];
-    });
-  };
+	const onTopClick = (itemToMove: MenuSection | MenuItemType) => {
+		setItems((prevItems) => {
+			const firstHalf = prevItems.slice(0, itemToMove.order - 2);
+			const secondHalf = prevItems.slice(itemToMove.order - 1);
+			return [
+				{ ...itemToMove, order: 1 },
+				...firstHalf.map((item) => ({ ...item, order: item.order + 1 })),
+				...secondHalf,
+			];
+		});
+	};
 
-  const onBottomClick = (itemToMove: MenuSection | MenuItemType) => {
-    setItems((prevItems) => {
-      const firstHalf = prevItems.slice(0, itemToMove.order - 2);
-      const secondHalf = prevItems.slice(itemToMove.order - 1);
-      return [
-        ...firstHalf,
-        ...secondHalf.map((item) => ({ ...item, order: item.order - 1 })),
-        { ...itemToMove, order: 1 },
-      ];
-    });
-  };
+	const onBottomClick = (itemToMove: MenuSection | MenuItemType) => {
+		setItems((prevItems) => {
+			const firstHalf = prevItems.slice(0, itemToMove.order - 2);
+			const secondHalf = prevItems.slice(itemToMove.order - 1);
+			return [
+				...firstHalf,
+				...secondHalf.map((item) => ({ ...item, order: item.order - 1 })),
+				{ ...itemToMove, order: 1 },
+			];
+		});
+	};
 
-  return (
-    <Stack align="flex-end">
-      {items.map((item) => (
-        <Flex key={item.id}>
-          <ActionIcon.Group orientation="vertical">
-            <ActionIcon
-              size="lg"
-              aria-label="Move Up"
-              onClick={() => onUpClick(item)}
-            >
-              <UpIcon />
-            </ActionIcon>
+	return (
+		<Stack align="flex-end">
+			{items.map((item) => (
+				<Flex key={item.id}>
+					<ActionIcon.Group orientation="vertical">
+						<ActionIcon
+							size="lg"
+							aria-label="Move Up"
+							onClick={() => onUpClick(item)}
+						>
+							<UpIcon />
+						</ActionIcon>
 
-            <ActionIcon
-              size="lg"
-              aria-label="Move Down"
-              onClick={() => onDownClick(item)}
-            >
-              <DownIcon />
-            </ActionIcon>
-          </ActionIcon.Group>
+						<ActionIcon
+							size="lg"
+							aria-label="Move Down"
+							onClick={() => onDownClick(item)}
+						>
+							<DownIcon />
+						</ActionIcon>
+					</ActionIcon.Group>
 
-          <Text>{item.label}</Text>
+					<Text>{item.label}</Text>
 
-          <ActionIcon.Group orientation="vertical">
-            <ActionIcon
-              size="lg"
-              aria-label="Move To Top"
-              onClick={() => onTopClick(item)}
-            >
-              <TopIcon />
-            </ActionIcon>
+					<ActionIcon.Group orientation="vertical">
+						<ActionIcon
+							size="lg"
+							aria-label="Move To Top"
+							onClick={() => onTopClick(item)}
+						>
+							<TopIcon />
+						</ActionIcon>
 
-            <ActionIcon
-              size="lg"
-              aria-label="Move To Bottom"
-              onClick={() => onBottomClick(item)}
-            >
-              <BottomIcon />
-            </ActionIcon>
-          </ActionIcon.Group>
-        </Flex>
-      ))}
-    </Stack>
-  );
+						<ActionIcon
+							size="lg"
+							aria-label="Move To Bottom"
+							onClick={() => onBottomClick(item)}
+						>
+							<BottomIcon />
+						</ActionIcon>
+					</ActionIcon.Group>
+				</Flex>
+			))}
+		</Stack>
+	);
 }
 
 export default ReorderList;

@@ -12,101 +12,101 @@ import { notifications } from "@mantine/notifications";
 import type { MenuSection } from "../../../../state/types";
 
 interface UpsertSectionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  section?: MenuSection;
+	isOpen: boolean;
+	onClose: () => void;
+	section?: MenuSection;
 }
 
 function UpsertSectionModal(props: UpsertSectionModalProps) {
-  const { section, isOpen, onClose } = props;
+	const { section, isOpen, onClose } = props;
 
-  const dispatch = useAppDispatch();
-  const menuLength = useAppSelector(selectMenuLength);
+	const dispatch = useAppDispatch();
+	const menuLength = useAppSelector(selectMenuLength);
 
-  const [isUpdatingSection, setIsUpdatingSection] = useState(false);
-  const [sectionLabelInput, setSectionLabelInput] = useState(
-    section?.label.toUpperCase() || "",
-  );
+	const [isUpdatingSection, setIsUpdatingSection] = useState(false);
+	const [sectionLabelInput, setSectionLabelInput] = useState(
+		section?.label.toUpperCase() || "",
+	);
 
-  const onCloseModal = () => {
-    setSectionLabelInput(section?.label.toUpperCase() || "");
-    onClose();
-  };
+	const onCloseModal = () => {
+		setSectionLabelInput(section?.label.toUpperCase() || "");
+		onClose();
+	};
 
-  const onUpsertSection = () => {
-    setIsUpdatingSection(true);
+	const onUpsertSection = () => {
+		setIsUpdatingSection(true);
 
-    dispatch(
-      upsertSections([
-        {
-          id: section?.id || uuid(),
-          order: section?.order || menuLength + 1,
-          label: sectionLabelInput,
-        },
-      ]),
-    )
-      .then(() => {
-        notifications.show({
-          withCloseButton: false,
-          message: `${sectionLabelInput} successfully ${section ? "renamed" : "created"}`,
-          position: "bottom-right",
-          color: "green",
-        });
-      })
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => setIsUpdatingSection(false));
-  };
+		dispatch(
+			upsertSections([
+				{
+					id: section?.id || uuid(),
+					order: section?.order || menuLength + 1,
+					label: sectionLabelInput,
+				},
+			]),
+		)
+			.then(() => {
+				notifications.show({
+					withCloseButton: false,
+					message: `${sectionLabelInput} successfully ${section ? "renamed" : "created"}`,
+					position: "bottom-right",
+					color: "green",
+				});
+			})
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			)
+			.finally(() => setIsUpdatingSection(false));
+	};
 
-  return (
-    <Modal
-      centered
-      radius="sm"
-      opened={isOpen}
-      onClose={onCloseModal}
-      withCloseButton={false}
-      transitionProps={{ transition: "fade", duration: 200 }}
-      styles={{
-        content: { background: "whitesmoke" },
-      }}
-    >
-      <Stack gap="md" align="flex-start">
-        <Text fw="600" size="1.4em">
-          {section?.label ? "RENAME SECTION" : "CREATE SECTION"}
-        </Text>
+	return (
+		<Modal
+			centered
+			radius="sm"
+			opened={isOpen}
+			onClose={onCloseModal}
+			withCloseButton={false}
+			transitionProps={{ transition: "fade", duration: 200 }}
+			styles={{
+				content: { background: "whitesmoke" },
+			}}
+		>
+			<Stack gap="md" align="flex-start">
+				<Text fw="600" size="1.4em">
+					{section?.label ? "RENAME SECTION" : "CREATE SECTION"}
+				</Text>
 
-        <TextInput
-          w="100%"
-          size="md"
-          withAsterisk
-          label="Section Label"
-          value={sectionLabelInput}
-          onChange={(event) => setSectionLabelInput(event.target.value)}
-        />
+				<TextInput
+					w="100%"
+					size="md"
+					withAsterisk
+					label="Section Label"
+					value={sectionLabelInput}
+					onChange={(event) => setSectionLabelInput(event.target.value)}
+				/>
 
-        <Group grow gap="sm" w="100%">
-          <StyledButton
-            label="Cancel"
-            variant="outline"
-            onClick={onCloseModal}
-            isLoading={isUpdatingSection}
-          />
+				<Group grow gap="sm" w="100%">
+					<StyledButton
+						label="Cancel"
+						variant="outline"
+						onClick={onCloseModal}
+						isLoading={isUpdatingSection}
+					/>
 
-          <StyledButton
-            label="Save"
-            onClick={onUpsertSection}
-            isLoading={isUpdatingSection}
-          />
-        </Group>
-      </Stack>
-    </Modal>
-  );
+					<StyledButton
+						label="Save"
+						onClick={onUpsertSection}
+						isLoading={isUpdatingSection}
+					/>
+				</Group>
+			</Stack>
+		</Modal>
+	);
 }
 
 export default UpsertSectionModal;

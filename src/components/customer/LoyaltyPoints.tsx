@@ -6,76 +6,76 @@ import OutlineStarIcon from "../../icons/StarOutlineIcon";
 import StarFilledIcon from "../../icons/StarFilledIcon";
 
 interface LoyaltyPointsProps {
-  existingPoints?: number;
-  additionalPoints: number;
+	existingPoints?: number;
+	additionalPoints: number;
 }
 
 function LoyaltyPoints(props: LoyaltyPointsProps) {
-  const { existingPoints, additionalPoints } = props;
+	const { existingPoints, additionalPoints } = props;
 
-  const newPointTotal = existingPoints
-    ? existingPoints + additionalPoints
-    : additionalPoints;
+	const newPointTotal = existingPoints
+		? existingPoints + additionalPoints
+		: additionalPoints;
 
-  const existingPointsPercentage = existingPoints
-    ? (existingPoints / 12) * 100
-    : 0;
+	const existingPointsPercentage = existingPoints
+		? (existingPoints / 12) * 100
+		: 0;
 
-  const additionalPointsPercentage = additionalPoints
-    ? (additionalPoints / 12) * 100
-    : 0;
+	const additionalPointsPercentage = additionalPoints
+		? (additionalPoints / 12) * 100
+		: 0;
 
-  if (existingPoints)
-    return (
-      <Stack
-        p="sm"
-        gap="sm"
-        w="100%"
-        bdrs="sm"
-        bg="white"
-        align="center"
-        bd="darkslategray solid 1px"
-      >
-        <Flex w="100%" gap="sm" align="center">
-          <OutlineStarIcon />
+	if (existingPoints)
+		return (
+			<Stack
+				p="sm"
+				gap="sm"
+				w="100%"
+				bdrs="sm"
+				bg="white"
+				align="center"
+				bd="darkslategray solid 1px"
+			>
+				<Flex w="100%" gap="sm" align="center">
+					<OutlineStarIcon />
 
-          <Progress.Root size="xl" w="100%">
-            <Progress.Section
-              value={existingPointsPercentage}
-              color="yellow"
-              animated
-            />
-            <Progress.Section
-              value={additionalPointsPercentage}
-              color="gold"
-              animated
-            />
-          </Progress.Root>
-          <StarFilledIcon />
-        </Flex>
+					<Progress.Root size="xl" w="100%">
+						<Progress.Section
+							value={existingPointsPercentage}
+							color="yellow"
+							animated
+						/>
+						<Progress.Section
+							value={additionalPointsPercentage}
+							color="gold"
+							animated
+						/>
+					</Progress.Root>
+					<StarFilledIcon />
+				</Flex>
 
-        {newPointTotal < 12 ? (
-          <Text>You're {12 - newPointTotal} coffees away from a freebie!</Text>
-        ) : (
-          <Text>You've unlocked a free coffee!</Text>
-        )}
-      </Stack>
-    );
+				{newPointTotal < 12 ? (
+					<Text>You're {12 - newPointTotal} coffees away from a freebie!</Text>
+				) : (
+					<Text>You've unlocked a free coffee!</Text>
+				)}
+			</Stack>
+		);
 
-  return (
-    <Stack
-      p="sm"
-      gap="xs"
-      w="100%"
-      bdrs="md"
-      bg="white"
-      align="center"
-      bd="darkslategray solid 1px"
-    >
-      <Text>You're {12 - newPointTotal} coffees away from a freebie!</Text>
-      <LoginButton />
-    </Stack>
-  );
+	return (
+		<Stack
+			p="sm"
+			gap="xs"
+			w="100%"
+			bdrs="md"
+			bg="white"
+			align="center"
+			bd="darkslategray solid 1px"
+		>
+			<Text>You're {12 - newPointTotal} coffees away from a freebie!</Text>
+			<LoginButton />
+		</Stack>
+	);
 }
 
 export default LoyaltyPoints;

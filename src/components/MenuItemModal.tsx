@@ -3,14 +3,14 @@ import { useCounter, useMediaQuery } from "@mantine/hooks";
 import { v4 as uuid } from "uuid";
 
 import {
-  em,
-  Box,
-  Text,
-  Image,
-  Modal,
-  Stack,
-  Button,
-  Divider,
+	em,
+	Box,
+	Text,
+	Image,
+	Modal,
+	Stack,
+	Button,
+	Divider,
 } from "@mantine/core";
 
 import ModifierCheckbox from "./customer/ModifierCheckbox";
@@ -23,172 +23,172 @@ import { calculateOrderItemPrice } from "../helpers";
 import type { Modifier, OrderItem, MenuItemType } from "../state/types";
 
 interface MenuItemModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  menuItem: MenuItemType;
-  onAddToOrder: (item: OrderItem) => void;
-  orderItem?: OrderItem;
+	isOpen: boolean;
+	onClose: () => void;
+	menuItem: MenuItemType;
+	onAddToOrder: (item: OrderItem) => void;
+	orderItem?: OrderItem;
 }
 
 function MenuItemModal(props: MenuItemModalProps) {
-  const {
-    isOpen,
-    onClose,
-    menuItem,
-    onAddToOrder,
-    orderItem = {
-      id: uuid(),
-      quantity: 1,
-      item: menuItem,
-    },
-  } = props;
+	const {
+		isOpen,
+		onClose,
+		menuItem,
+		onAddToOrder,
+		orderItem = {
+			id: uuid(),
+			quantity: 1,
+			item: menuItem,
+		},
+	} = props;
 
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
-  const [quantity, { increment, decrement, reset }] = useCounter(
-    orderItem.quantity,
-    { min: 1 },
-  );
+	const [quantity, { increment, decrement, reset }] = useCounter(
+		orderItem.quantity,
+		{ min: 1 },
+	);
 
-  const [note, setNote] = useState<string | undefined>(orderItem.note);
-  const [selection, setSelection] = useState<OrderItem>(orderItem);
+	const [note, setNote] = useState<string | undefined>(orderItem.note);
+	const [selection, setSelection] = useState<OrderItem>(orderItem);
 
-  const onModalClose = () => {
-    reset();
-    onClose();
-  };
+	const onModalClose = () => {
+		reset();
+		onClose();
+	};
 
-  const onModifierSelect = (modifier: Modifier, isSelected: boolean) => {
-    if (isSelected) {
-      setSelection((prevSelection) => ({
-        ...prevSelection,
-        modifiers: [...(prevSelection.modifiers || []), modifier],
-      }));
-    } else {
-      setSelection((prevSelection) => ({
-        ...prevSelection,
-        modifiers: prevSelection.modifiers?.filter((m) => m.id !== modifier.id),
-      }));
-    }
-  };
+	const onModifierSelect = (modifier: Modifier, isSelected: boolean) => {
+		if (isSelected) {
+			setSelection((prevSelection) => ({
+				...prevSelection,
+				modifiers: [...(prevSelection.modifiers || []), modifier],
+			}));
+		} else {
+			setSelection((prevSelection) => ({
+				...prevSelection,
+				modifiers: prevSelection.modifiers?.filter((m) => m.id !== modifier.id),
+			}));
+		}
+	};
 
-  const filterSelectedModifiers = (modifierOptions: Modifier[]) =>
-    selection.modifiers?.filter((selectedModifier) =>
-      modifierOptions.includes(selectedModifier),
-    );
+	const filterSelectedModifiers = (modifierOptions: Modifier[]) =>
+		selection.modifiers?.filter((selectedModifier) =>
+			modifierOptions.includes(selectedModifier),
+		);
 
-  const menuItemPrice = useMemo(
-    () => calculateOrderItemPrice(selection.item, selection.modifiers),
-    [selection],
-  );
+	const menuItemPrice = useMemo(
+		() => calculateOrderItemPrice(selection.item, selection.modifiers),
+		[selection],
+	);
 
-  return (
-    <Modal
-      fullScreen
-      radius="sm"
-      opened={isOpen}
-      onClose={onModalClose}
-      title={menuItem.label.toUpperCase()}
-      transitionProps={{ transition: "fade", duration: 200 }}
-      styles={{
-        header: { background: "whitesmoke" },
-        content: { background: "whitesmoke" },
-      }}
-    >
-      <Stack pb={60} align="center">
-        <Divider w="100%" />
-        {menuItem.description && (
-          <>
-            <Text fs="italic">{menuItem.description}</Text>
-            <Divider w="100%" />
-          </>
-        )}
-        {menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
+	return (
+		<Modal
+			fullScreen
+			radius="sm"
+			opened={isOpen}
+			onClose={onModalClose}
+			title={menuItem.label.toUpperCase()}
+			transitionProps={{ transition: "fade", duration: 200 }}
+			styles={{
+				header: { background: "whitesmoke" },
+				content: { background: "whitesmoke" },
+			}}
+		>
+			<Stack pb={60} align="center">
+				<Divider w="100%" />
+				{menuItem.description && (
+					<>
+						<Text fs="italic">{menuItem.description}</Text>
+						<Divider w="100%" />
+					</>
+				)}
+				{menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
 
-        {menuItem.modifiers && menuItem.modifiers.length > 0 && (
-          <ModifierCheckbox
-            isRequired={false}
-            modifiers={menuItem.modifiers}
-            selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
-            onModifierSelect={onModifierSelect}
-          />
-        )}
+				{menuItem.modifiers && menuItem.modifiers.length > 0 && (
+					<ModifierCheckbox
+						isRequired={false}
+						modifiers={menuItem.modifiers}
+						selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
+						onModifierSelect={onModifierSelect}
+					/>
+				)}
 
-        {menuItem.modifierCategories?.map((modifierCategory) =>
-          modifierCategory.allow_multiple_selections ? (
-            <ModifierCheckbox
-              key={modifierCategory.label}
-              isRequired={modifierCategory.is_required}
-              selectedModifiers={filterSelectedModifiers(
-                modifierCategory.modifiers,
-              )}
-              onModifierSelect={onModifierSelect}
-              {...modifierCategory}
-            />
-          ) : (
-            <ModifierRadio
-              key={modifierCategory.label}
-              isRequired={modifierCategory.is_required}
-              selectedModifiers={filterSelectedModifiers(
-                modifierCategory.modifiers,
-              )}
-              onModifierSelect={onModifierSelect}
-              {...modifierCategory}
-            />
-          ),
-        )}
+				{menuItem.modifierCategories?.map((modifierCategory) =>
+					modifierCategory.allow_multiple_selections ? (
+						<ModifierCheckbox
+							key={modifierCategory.label}
+							isRequired={modifierCategory.is_required}
+							selectedModifiers={filterSelectedModifiers(
+								modifierCategory.modifiers,
+							)}
+							onModifierSelect={onModifierSelect}
+							{...modifierCategory}
+						/>
+					) : (
+						<ModifierRadio
+							key={modifierCategory.label}
+							isRequired={modifierCategory.is_required}
+							selectedModifiers={filterSelectedModifiers(
+								modifierCategory.modifiers,
+							)}
+							onModifierSelect={onModifierSelect}
+							{...modifierCategory}
+						/>
+					),
+				)}
 
-        <NoteInput label="Notes" note={note} setNote={setNote} />
+				<NoteInput label="Notes" note={note} setNote={setNote} />
 
-        <Button.Group w="100%" pt="3">
-          <Button
-            fullWidth
-            radius="sm"
-            variant="filled"
-            color="darkslategray"
-            onClick={decrement}
-          >
-            -
-          </Button>
-          <Button.GroupSection
-            w="100%"
-            bg="white"
-            color="darkslategray"
-            variant="outline"
-          >
-            {quantity}
-          </Button.GroupSection>
-          <Button
-            fullWidth
-            radius="sm"
-            variant="filled"
-            color="darkslategray"
-            onClick={increment}
-          >
-            +
-          </Button>
-        </Button.Group>
+				<Button.Group w="100%" pt="3">
+					<Button
+						fullWidth
+						radius="sm"
+						variant="filled"
+						color="darkslategray"
+						onClick={decrement}
+					>
+						-
+					</Button>
+					<Button.GroupSection
+						w="100%"
+						bg="white"
+						color="darkslategray"
+						variant="outline"
+					>
+						{quantity}
+					</Button.GroupSection>
+					<Button
+						fullWidth
+						radius="sm"
+						variant="filled"
+						color="darkslategray"
+						onClick={increment}
+					>
+						+
+					</Button>
+				</Button.Group>
 
-        <Box
-          w="100%"
-          pos="fixed"
-          bottom="0"
-          px={isMobile ? "md" : "lg"}
-          pb={isMobile ? "md" : "lg"}
-        >
-          <ButtonWithPrice
-            isDisabled={!menuItem.is_in_stock}
-            price={menuItemPrice * quantity}
-            label={menuItem.is_in_stock ? "Add to order" : "Out of stock"}
-            onClick={() => {
-              onAddToOrder({ ...selection, note: note, quantity: quantity });
-              onModalClose();
-            }}
-          />
-        </Box>
-      </Stack>
-    </Modal>
-  );
+				<Box
+					w="100%"
+					pos="fixed"
+					bottom="0"
+					px={isMobile ? "md" : "lg"}
+					pb={isMobile ? "md" : "lg"}
+				>
+					<ButtonWithPrice
+						isDisabled={!menuItem.is_in_stock}
+						price={menuItemPrice * quantity}
+						label={menuItem.is_in_stock ? "Add to order" : "Out of stock"}
+						onClick={() => {
+							onAddToOrder({ ...selection, note: note, quantity: quantity });
+							onModalClose();
+						}}
+					/>
+				</Box>
+			</Stack>
+		</Modal>
+	);
 }
 
 export default MenuItemModal;

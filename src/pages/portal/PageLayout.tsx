@@ -6,21 +6,21 @@ import Nav from "../../components/portal/Nav";
 import type { PropsWithChildren, ReactNode } from "react";
 
 interface PageLayoutProps extends PropsWithChildren {
-  navComponents?: ReactNode;
+	navComponents?: ReactNode;
 }
 
 function PageLayout({ children, navComponents }: PageLayoutProps) {
-  const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
+	const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 
-  return (
-    <Box mih="100vh">
-      <Nav>{navComponents}</Nav>
+	return (
+		<Box mih="100vh">
+			<Nav>{navComponents}</Nav>
 
-      <Stack pt={isMobile ? "4em" : "5.2em"} pb="lg" w="100vw">
-        {children}
-      </Stack>
-    </Box>
-  );
+			<Stack pt={isMobile ? "4em" : "5.2em"} pb="lg" w="100vw">
+				{children}
+			</Stack>
+		</Box>
+	);
 }
 
 export default PageLayout;

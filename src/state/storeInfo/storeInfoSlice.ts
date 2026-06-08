@@ -7,65 +7,65 @@ import type { RootState } from "../store";
 import type { StoreInfo } from "../types";
 
 export interface StoreInfoState {
-  data: StoreInfo;
-  status: "idle" | "pending" | "succeeded" | "failed";
+	data: StoreInfo;
+	status: "idle" | "pending" | "succeeded" | "failed";
 }
 
 const initialState: StoreInfoState = {
-  data: {
-    id: "",
-    is_open: false,
-    current_order_time: {
-      id: "",
-      label: "Not Busy",
-      short: 10,
-      long: 15,
-      order: 0,
-    },
-    weekly_record: {
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-  },
-  status: "idle",
+	data: {
+		id: "",
+		is_open: false,
+		current_order_time: {
+			id: "",
+			label: "Not Busy",
+			short: 10,
+			long: 15,
+			order: 0,
+		},
+		weekly_record: {
+			monday: 0,
+			tuesday: 0,
+			wednesday: 0,
+			thursday: 0,
+			friday: 0,
+			saturday: 0,
+			sunday: 0,
+		},
+	},
+	status: "idle",
 };
 
 const storeInfoSlice = createSlice({
-  name: "storeInfo",
-  initialState,
-  reducers: {
-    storeInfoUpdated(state, action: PayloadAction<StoreInfo>) {
-      state = { ...state, ...action.payload };
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchStoreInfo.pending, (state) => {
-        state.status = "pending";
-      })
-      .addCase(fetchStoreInfo.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.data = action.payload;
-      })
-      .addCase(fetchStoreInfo.rejected, (state) => {
-        state.status = "failed";
-      })
-      .addCase(updateStoreInfo.pending, (state) => {
-        state.status = "pending";
-      })
-      .addCase(updateStoreInfo.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.data = action.payload;
-      })
-      .addCase(updateStoreInfo.rejected, (state) => {
-        state.status = "failed";
-      });
-  },
+	name: "storeInfo",
+	initialState,
+	reducers: {
+		storeInfoUpdated(state, action: PayloadAction<StoreInfo>) {
+			state = { ...state, ...action.payload };
+		},
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(fetchStoreInfo.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(fetchStoreInfo.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.data = action.payload;
+			})
+			.addCase(fetchStoreInfo.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(updateStoreInfo.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(updateStoreInfo.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.data = action.payload;
+			})
+			.addCase(updateStoreInfo.rejected, (state) => {
+				state.status = "failed";
+			});
+	},
 });
 
 export const { storeInfoUpdated } = storeInfoSlice.actions;
@@ -74,10 +74,10 @@ export default storeInfoSlice.reducer;
 export const selectStoreInfo = (state: RootState) => state.storeInfo.data;
 
 export const selectStoreInfoStatus = (state: RootState) =>
-  state.storeInfo.status;
+	state.storeInfo.status;
 
 export const selectStoreIsOpen = (state: RootState) =>
-  state.storeInfo.data?.is_open;
+	state.storeInfo.data?.is_open;
 
 export const selectStoreInfoCurrentOrderTime = (state: RootState) =>
-  state.storeInfo.data?.current_order_time;
+	state.storeInfo.data?.current_order_time;

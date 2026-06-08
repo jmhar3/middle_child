@@ -8,23 +8,23 @@ import type { OrderType } from "../../../state/types";
 dayjs.extend(relativeTime);
 
 function OrderBadge({ order }: { order: OrderType }) {
-  const badgeColour = useMemo(() => {
-    if (order.is_complete) return "gray";
-    if (dayjs().isAfter(dayjs(order.due_at))) return "red";
-    if (dayjs().isBefore(dayjs(order.due_at))) return "green";
-    return "gray";
-  }, [order]);
+	const badgeColour = useMemo(() => {
+		if (order.is_complete) return "gray";
+		if (dayjs().isAfter(dayjs(order.due_at))) return "red";
+		if (dayjs().isBefore(dayjs(order.due_at))) return "green";
+		return "gray";
+	}, [order]);
 
-  const badgeLabel = useMemo(() => {
-    if (order.is_complete) return "COMPLETE";
-    return dayjs(order.due_at).fromNow();
-  }, [order]);
+	const badgeLabel = useMemo(() => {
+		if (order.is_complete) return "COMPLETE";
+		return dayjs(order.due_at).fromNow();
+	}, [order]);
 
-  return (
-    <Badge radius="sm" size="xl" color={badgeColour}>
-      {badgeLabel}
-    </Badge>
-  );
+	return (
+		<Badge radius="sm" size="xl" color={badgeColour}>
+			{badgeLabel}
+		</Badge>
+	);
 }
 
 export default OrderBadge;
