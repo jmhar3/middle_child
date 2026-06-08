@@ -5,6 +5,9 @@ import { Box, Flex, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 // import { withAuthenticationRequired } from "@auth0/auth0-react";
+import useSound from "use-sound";
+
+import boopSfx from "../../sounds/boop.mp3";
 
 import PageLayout from "./PageLayout";
 import Loading from "../../components/Loading";
@@ -22,204 +25,236 @@ import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
 import { selectMenuStatus } from "../../state/menu/menuSlice";
 
 import {
-  fetchStoreInfo,
-  updateStoreInfo,
+	fetchStoreInfo,
+	updateStoreInfo,
 } from "../../state/storeInfo/storeInfoThunks";
 
 import {
-  selectStoreInfo,
-  selectStoreIsOpen,
+	selectStoreInfo,
+	selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
 
 import {
-  selectAllOrderTimes,
-  selectOrderTimesStatus,
+	selectAllOrderTimes,
+	selectOrderTimesStatus,
 } from "../../state/orderTimes/orderTimesSlice";
 
 import {
-  selectOrders,
-  selectOrdersStatus,
+	selectOrders,
+	selectOrdersStatus,
 } from "../../state/orders/ordersSlice";
 
 import type { OrderTime } from "../../state/types";
+import { supabase } from "../../supabase";
 
 dayjs.extend(isoWeek);
 
 function Orders() {
-  const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
+	const [play] = useSound(boopSfx);
 
-  const [
-    showUpdateStockDrawer,
-    { open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
-  ] = useDisclosure(false);
-  const [
-    showToggleStoreOpenModal,
-    { open: openToggleStoreOpenModal, close: closeToggleStoreOpenModal },
-  ] = useDisclosure(false);
+	const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
 
-  const dispatch = useAppDispatch();
+	const [
+		showUpdateStockDrawer,
+		{ open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
+	] = useDisclosure(false);
+	const [
+		showToggleStoreOpenModal,
+		{ open: openToggleStoreOpenModal, close: closeToggleStoreOpenModal },
+	] = useDisclosure(false);
 
-  const menuStatus = useAppSelector(selectMenuStatus);
-  const modifiersStatus = useAppSelector(selectModifiersStatus);
-  const orderTimesStatus = useAppSelector(selectOrderTimesStatus);
-  const storeInfoStatus = useAppSelector(selectModifiersStatus);
-  const ordersStatus = useAppSelector(selectOrdersStatus);
+	const dispatch = useAppDispatch();
 
-  const orderTimes = useAppSelector(selectAllOrderTimes);
-  const storeInfo = useAppSelector(selectStoreInfo);
-  const storeIsOpen = useAppSelector(selectStoreIsOpen);
-  const orders = useAppSelector(selectOrders);
+	const menuStatus = useAppSelector(selectMenuStatus);
+	const modifiersStatus = useAppSelector(selectModifiersStatus);
+	const orderTimesStatus = useAppSelector(selectOrderTimesStatus);
+	const storeInfoStatus = useAppSelector(selectModifiersStatus);
+	const ordersStatus = useAppSelector(selectOrdersStatus);
 
-  const isLoading =
-    modifiersStatus === "pending" ||
-    storeInfoStatus === "pending" ||
-    orderTimesStatus === "pending" ||
-    menuStatus === "pending" ||
-    ordersStatus === "pending";
+	const orderTimes = useAppSelector(selectAllOrderTimes);
+	const storeInfo = useAppSelector(selectStoreInfo);
+	const storeIsOpen = useAppSelector(selectStoreIsOpen);
+	const orders = useAppSelector(selectOrders);
 
-  useEffect(() => {
-    if (menuStatus === "idle") {
-      dispatch(fetchMenu());
-    }
-    if (modifiersStatus === "idle") {
-      dispatch(fetchModifiers());
-    }
-    if (orderTimesStatus === "idle") {
-      dispatch(fetchOrderTimes());
-    }
-    if (storeInfoStatus === "idle") {
-      dispatch(fetchStoreInfo());
-    }
-    if (ordersStatus === "idle") {
-      dispatch(fetchOrders());
-    }
-  }, [
-    dispatch,
-    menuStatus,
-    modifiersStatus,
-    orderTimesStatus,
-    storeInfoStatus,
-    ordersStatus,
-  ]);
+	const isLoading =
+		modifiersStatus === "pending" ||
+		storeInfoStatus === "pending" ||
+		orderTimesStatus === "pending" ||
+		menuStatus === "pending" ||
+		ordersStatus === "pending";
 
-  const todaysOrders = orders.filter((order) =>
-    dayjs(order.due_at).isSame(dayjs(), "day"),
-  );
+	useEffect(() => {
+		if (menuStatus === "idle") {
+			dispatch(fetchMenu());
+		}
+		if (modifiersStatus === "idle") {
+			dispatch(fetchModifiers());
+		}
+		if (orderTimesStatus === "idle") {
+			dispatch(fetchOrderTimes());
+		}
+		if (storeInfoStatus === "idle") {
+			dispatch(fetchStoreInfo());
+		}
+		if (ordersStatus === "idle") {
+			dispatch(fetchOrders());
+		}
 
-  const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
-    setIsUpdatingOrderTime(true);
-    dispatch(
-      updateStoreInfo({ ...storeInfo, current_order_time: selectedOrderTime }),
-    )
-      .catch((error) =>
-        notifications.show({
-          message: error,
-          withCloseButton: false,
-          position: "bottom-right",
-          color: "red",
-        }),
-      )
-      .finally(() => {
-        setIsUpdatingOrderTime(false);
-      });
-  };
+		const setAuth = async () => {
+			try {
+				await supabase.realtime.setAuth();
+			} catch (error) {
+				console.error("Failed to set realtime auth", error);
+			}
+		};
 
-  const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
+		setAuth();
+	}, [
+		dispatch,
+		menuStatus,
+		modifiersStatus,
+		orderTimesStatus,
+		storeInfoStatus,
+		ordersStatus,
+	]);
 
-  const weeklyTotal = useMemo(() => {
-    const weeksOrders = orders.filter((order) =>
-      dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
-    );
-    return weeksOrders.reduce((acc, order) => acc + order.total, 0);
-  }, [orders]);
+	supabase
+		.channel("orders:created", {
+			config: {
+				private: true,
+			},
+		})
+		.on(
+			"broadcast",
+			{
+				event: "INSERT",
+			},
+			(payload) => {
+				console.log("New order:", payload);
+				play();
+				dispatch(fetchOrders());
+			},
+		)
+		.subscribe();
 
-  if (isLoading) return <Loading message="Loading store data" />;
+	const todaysOrders = orders.filter((order) =>
+		dayjs(order.due_at).isSame(dayjs(), "day"),
+	);
 
-  return (
-    <PageLayout
-      navComponents={
-        <>
-          <Stack gap="0">
-            <Flex justify="space-between" gap="xs">
-              <Text>Today:</Text>
-              <Text>${todaysTotal.toFixed(2)}</Text>
-            </Flex>
-            <Flex justify="space-between" gap="xs">
-              <Text>This Week:</Text>
-              <Text>${weeklyTotal.toFixed(2)}</Text>
-            </Flex>
-          </Stack>
-          <StyledButton
-            variant="outline"
-            label="Update Stock"
-            onClick={openUpdateStockDrawer}
-          />
+	const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
+		setIsUpdatingOrderTime(true);
+		dispatch(
+			updateStoreInfo({ ...storeInfo, current_order_time: selectedOrderTime }),
+		)
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			)
+			.finally(() => {
+				setIsUpdatingOrderTime(false);
+			});
+	};
 
-          {storeIsOpen && (
-            <StyledButton
-              variant="outline"
-              label="Close Store"
-              onClick={openToggleStoreOpenModal}
-            />
-          )}
-        </>
-      }
-    >
-      <UpdateStockDrawer
-        isOpen={showUpdateStockDrawer}
-        onClose={closeUpdateStockDrawer}
-      />
+	const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
 
-      {storeInfo && (
-        <ToggleStoreOpenModal
-          isOpen={showToggleStoreOpenModal}
-          onClose={closeToggleStoreOpenModal}
-        />
-      )}
+	const weeklyTotal = useMemo(() => {
+		const weeksOrders = orders.filter((order) =>
+			dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
+		);
+		return weeksOrders.reduce((acc, order) => acc + order.total, 0);
+	}, [orders]);
 
-      {storeInfo && orderTimes && (
-        <Box px="sm">
-          <Group
-            grow
-            p="sm"
-            w="100%"
-            bdrs="sm"
-            bg="white"
-            style={{ zIndex: 0 }}
-          >
-            {orderTimes.map((orderTime) => (
-              <StyledButton
-                key={orderTime.label}
-                label={`${orderTime.label}: ${orderTime.short}+ mins`}
-                onClick={() => onUpdateCurrentOrderTime(orderTime)}
-                isLoading={isUpdatingOrderTime}
-                variant={
-                  orderTime.id === storeInfo.current_order_time.id
-                    ? "filled"
-                    : "outline"
-                }
-              />
-            ))}
-          </Group>
-        </Box>
-      )}
+	if (isLoading) return <Loading message="Loading store data" />;
 
-      {storeIsOpen ? (
-        todaysOrders &&
-        todaysOrders.length > 0 && <OrdersList orders={todaysOrders} />
-      ) : (
-        <Stack align="center" gap="sm" pt="3em">
-          <Text ta="center" mb="sm" size="1.6em" fw="600">
-            Middle Child is currently closed
-          </Text>
-          <StyledButton
-            label="Start Accepting Orders"
-            onClick={openToggleStoreOpenModal}
-          />
-        </Stack>
-      )}
-    </PageLayout>
-  );
+	return (
+		<PageLayout
+			navComponents={
+				<>
+					<Stack gap="0">
+						<Flex justify="space-between" gap="xs">
+							<Text>Today:</Text>
+							<Text>${todaysTotal.toFixed(2)}</Text>
+						</Flex>
+						<Flex justify="space-between" gap="xs">
+							<Text>This Week:</Text>
+							<Text>${weeklyTotal.toFixed(2)}</Text>
+						</Flex>
+					</Stack>
+					<StyledButton
+						variant="outline"
+						label="Update Stock"
+						onClick={openUpdateStockDrawer}
+					/>
+
+					{storeIsOpen && (
+						<StyledButton
+							variant="outline"
+							label="Close Store"
+							onClick={openToggleStoreOpenModal}
+						/>
+					)}
+				</>
+			}
+		>
+			<UpdateStockDrawer
+				isOpen={showUpdateStockDrawer}
+				onClose={closeUpdateStockDrawer}
+			/>
+
+			{storeInfo && (
+				<ToggleStoreOpenModal
+					isOpen={showToggleStoreOpenModal}
+					onClose={closeToggleStoreOpenModal}
+				/>
+			)}
+
+			{storeInfo && orderTimes && (
+				<Box px="sm">
+					<Group
+						grow
+						p="sm"
+						w="100%"
+						bdrs="sm"
+						bg="white"
+						style={{ zIndex: 0 }}
+					>
+						{orderTimes.map((orderTime) => (
+							<StyledButton
+								key={orderTime.label}
+								label={`${orderTime.label}: ${orderTime.short}+ mins`}
+								onClick={() => onUpdateCurrentOrderTime(orderTime)}
+								isLoading={isUpdatingOrderTime}
+								variant={
+									orderTime.id === storeInfo.current_order_time.id
+										? "filled"
+										: "outline"
+								}
+							/>
+						))}
+					</Group>
+				</Box>
+			)}
+
+			{storeIsOpen ? (
+				todaysOrders &&
+				todaysOrders.length > 0 && <OrdersList orders={todaysOrders} />
+			) : (
+				<Stack align="center" gap="sm" pt="3em">
+					<Text ta="center" mb="sm" size="1.6em" fw="600">
+						Middle Child is currently closed
+					</Text>
+					<StyledButton
+						label="Start Accepting Orders"
+						onClick={openToggleStoreOpenModal}
+					/>
+				</Stack>
+			)}
+		</PageLayout>
+	);
 }
 
 export default Orders;
