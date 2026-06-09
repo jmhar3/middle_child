@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import {
 	fetchUser,
+	setUser,
 	signInUser,
 	signOutUser,
 	signUpUser,
@@ -78,6 +79,15 @@ const userSlice = createSlice({
 				state.data = null;
 			})
 			.addCase(signOutUser.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(setUser.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(setUser.fulfilled, (state) => {
+				state.status = "succeeded";
+			})
+			.addCase(setUser.rejected, (state) => {
 				state.status = "failed";
 			});
 	},

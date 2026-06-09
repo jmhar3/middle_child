@@ -192,3 +192,30 @@ export const signOutUser = createAsyncThunk("user/signOutUser", async () => {
 		throw Error(error.message);
 	}
 });
+
+interface SetUserParams {
+	access_token: string;
+	refresh_token: string;
+}
+
+export const setUser = createAsyncThunk(
+	"user/setUser",
+	async ({ access_token, refresh_token }: SetUserParams) => {
+		const { error } = await supabase.auth.setSession({
+			access_token: access_token,
+			refresh_token: refresh_token,
+		});
+
+		if (error) {
+			notifications.show({
+				withCloseButton: false,
+				message: error.message,
+				title: error.name,
+				position: "bottom-right",
+				color: "red",
+			});
+			console.error(error);
+			throw Error(error.message);
+		}
+	},
+);
