@@ -71,14 +71,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 				}),
 			)
 				.then(() => {
-					notifications.show({
-						withCloseButton: false,
-						message: "Order times successfully updated",
-						position: "bottom-right",
-						color: "green",
-					});
 					setSignUpSuccess(true);
-					onClose();
 				})
 				.catch((error) =>
 					notifications.show({
@@ -127,6 +120,19 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 					<Text ta="center">
 						Please check your email to verify your account.
 					</Text>
+					<Button
+						fullWidth
+						radius="md"
+						variant="filled"
+						color="darkslategray"
+						onClick={() => {
+							toggle();
+							setSignUpSuccess(false);
+						}}
+						disabled={isSubmitting}
+					>
+						Already verified your email? Sign In
+					</Button>
 				</Stack>
 			) : (
 				<Stack gap="lg">
