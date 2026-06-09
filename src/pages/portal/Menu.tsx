@@ -41,10 +41,10 @@ function Menu() {
 		}
 	}, [dispatch, menuStatus, modifiersStatus, itemOptionsStatus]);
 
-	if (isLoading) return <Loading message="Loading store data" />;
-
 	return (
 		<PageLayout navComponents={<ManageMenu />}>
+			{isLoading && <Loading message="Loading menu" />}
+
 			<Box m="sm" bg="white" bdrs="sm">
 				<Accordion
 					radius="sm"
