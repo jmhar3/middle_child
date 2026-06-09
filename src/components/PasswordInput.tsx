@@ -29,6 +29,7 @@ const requirements = [
 	{ re: /[a-z]/, label: "Includes lowercase letter" },
 	{ re: /[A-Z]/, label: "Includes uppercase letter" },
 	{ re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: "Includes special symbol" },
+	{ re: /^.{8,}$/, label: "At least 8 characters long" },
 ];
 
 function getStrength(password: string) {
