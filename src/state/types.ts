@@ -31,6 +31,7 @@ export interface Modifier {
 	is_ingredient?: boolean;
 	reference_code?: string;
 	description?: string;
+	order?: number;
 }
 
 export interface ItemOptions {
@@ -39,6 +40,7 @@ export interface ItemOptions {
 	allow_multiple_selections: boolean;
 	is_required: boolean;
 	modifiers: Modifier[];
+	order?: number;
 }
 
 export interface MenuItemType {
