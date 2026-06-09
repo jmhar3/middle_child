@@ -11,6 +11,7 @@ import CartModal from "../../components/customer/CartModal";
 import MenuItemModal from "../../components/MenuItemModal";
 import MenuItemButton from "../../components/customer/MenuItemButton";
 import ButtonWithPrice from "../../components/customer/ButtonWithPrice";
+import PlacedOrderModal from "../../components/customer/PlacedOrderModal";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchMenu } from "../../state/menu/menuThunks";
@@ -33,7 +34,6 @@ import {
 import { calculateOrderItemPrice, filterItemFromOrder } from "../../helpers";
 
 import type { MenuItemType, OrderItem, OrderType } from "../../state/types";
-import PlacedOrderModal from "../../components/customer/PlacedOrderModal";
 
 function Menu() {
 	const dispatch = useAppDispatch();
