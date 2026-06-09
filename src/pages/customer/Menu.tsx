@@ -64,15 +64,24 @@ function Menu() {
 	}, [dispatch, menuStatus, storeInfoStatus, userStatus]);
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+	const localStorageCart = localStorage.getItem("cart");
 
 	const [isMenuItemModalOpen, setIsMenuItemModalOpen] = useState(false);
 	const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItemType | null>(
 		null,
 	);
-	const [orderItems, setOrderItems] = useState<OrderItem[] | null>(null);
+	const [orderItems, setOrderItems] = useState<OrderItem[] | null>(
+		localStorageCart ? JSON.parse(localStorageCart) : null,
+	);
 	const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 	const [showPlacedOrder, setShowPlacedOrder] = useState(false);
 	const [placedOrder, setPlacedOrder] = useState<OrderType | null>(null);
+
+	useEffect(() => {
+		const stringifyCart = JSON.stringify(orderItems);
+		if (localStorageCart !== stringifyCart)
+			localStorage.setItem("cart", stringifyCart);
+	}, [localStorageCart, orderItems]);
 
 	const pointsRemaining = useMemo(() => {
 		const additionalLoyaltyPoints = orderItems
