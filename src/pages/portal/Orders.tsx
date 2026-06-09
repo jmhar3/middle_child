@@ -92,19 +92,19 @@ function Orders() {
 		if (userStatus === "idle") {
 			dispatch(fetchUser());
 		}
-		if (user && menuStatus === "idle") {
+		if (user?.is_admin && menuStatus === "idle") {
 			dispatch(fetchMenu());
 		}
-		if (user && modifiersStatus === "idle") {
+		if (user?.is_admin && modifiersStatus === "idle") {
 			dispatch(fetchModifiers());
 		}
-		if (user && orderTimesStatus === "idle") {
+		if (user?.is_admin && orderTimesStatus === "idle") {
 			dispatch(fetchOrderTimes());
 		}
-		if (user && storeInfoStatus === "idle") {
+		if (user?.is_admin && storeInfoStatus === "idle") {
 			dispatch(fetchStoreInfo());
 		}
-		if (user && ordersStatus === "idle") {
+		if (user?.is_admin && ordersStatus === "idle") {
 			dispatch(fetchOrders());
 		}
 
