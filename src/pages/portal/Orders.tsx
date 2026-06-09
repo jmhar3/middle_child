@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useSound from "use-sound";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
-import { Box, Flex, Group, Stack, Text, Title } from "@mantine/core";
+import { Box, Flex, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 
@@ -15,7 +14,6 @@ import StyledButton from "../../components/StyledButton";
 import OrdersList from "../../components/portal/orders/OrdersList";
 import UpdateStockDrawer from "../../components/portal/UpdateStockDrawer";
 import ToggleStoreOpenModal from "../../components/portal/orders/ToggleStoreOpenModal";
-import LoginModal from "../../components/LoginModal";
 
 import { supabase } from "../../supabase";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
@@ -26,7 +24,7 @@ import { fetchOrderTimes } from "../../state/orderTimes/orderTimesThunks";
 import { selectModifiersStatus } from "../../state/modifiers/modifiersSlice";
 import { selectMenuStatus } from "../../state/menu/menuSlice";
 import { selectUser, selectUserStatus } from "../../state/user/userSlice";
-import { fetchUser, signOutUser } from "../../state/user/userThunks";
+import { fetchUser } from "../../state/user/userThunks";
 
 import {
 	fetchStoreInfo,
@@ -54,7 +52,6 @@ dayjs.extend(isoWeek);
 
 function Orders() {
 	const [play] = useSound(fartSound);
-	const navigate = useNavigate();
 
 	const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
 
@@ -86,7 +83,8 @@ function Orders() {
 		storeInfoStatus === "pending" ||
 		orderTimesStatus === "pending" ||
 		menuStatus === "pending" ||
-		ordersStatus === "pending";
+		ordersStatus === "pending" ||
+		userStatus === "pending";
 
 	useEffect(() => {
 		if (userStatus === "idle") {
@@ -178,111 +176,92 @@ function Orders() {
 		return weeksOrders.reduce((acc, order) => acc + order.total, 0);
 	}, [orders]);
 
-	if (!user) return <LoginModal isModalOpen={true} onModalClose={() => {}} />;
+	return (
+		<PageLayout
+			navComponents={
+				<>
+					<Stack gap="0">
+						<Flex justify="space-between" gap="xs">
+							<Text>Today:</Text>
+							<Text>${todaysTotal.toFixed(2)}</Text>
+						</Flex>
+						<Flex justify="space-between" gap="xs">
+							<Text>This Week:</Text>
+							<Text>${weeklyTotal.toFixed(2)}</Text>
+						</Flex>
+					</Stack>
+					<StyledButton
+						variant="outline"
+						label="Update Stock"
+						onClick={openUpdateStockDrawer}
+					/>
 
-	if (user.is_admin)
-		return (
-			<PageLayout
-				navComponents={
-					<>
-						<Stack gap="0">
-							<Flex justify="space-between" gap="xs">
-								<Text>Today:</Text>
-								<Text>${todaysTotal.toFixed(2)}</Text>
-							</Flex>
-							<Flex justify="space-between" gap="xs">
-								<Text>This Week:</Text>
-								<Text>${weeklyTotal.toFixed(2)}</Text>
-							</Flex>
-						</Stack>
+					{storeIsOpen && (
 						<StyledButton
 							variant="outline"
-							label="Update Stock"
-							onClick={openUpdateStockDrawer}
-						/>
-
-						{storeIsOpen && (
-							<StyledButton
-								variant="outline"
-								label="Close Store"
-								onClick={openToggleStoreOpenModal}
-							/>
-						)}
-					</>
-				}
-			>
-				{isLoading && <Loading message="Loading orders" />}
-
-				<UpdateStockDrawer
-					isOpen={showUpdateStockDrawer}
-					onClose={closeUpdateStockDrawer}
-				/>
-
-				{storeInfo && (
-					<ToggleStoreOpenModal
-						isOpen={showToggleStoreOpenModal}
-						onClose={closeToggleStoreOpenModal}
-					/>
-				)}
-
-				{storeInfo && orderTimes && (
-					<Box px="sm">
-						<Group
-							grow
-							p="sm"
-							w="100%"
-							bdrs="sm"
-							bg="white"
-							style={{ zIndex: 0 }}
-						>
-							{orderTimes.map((orderTime) => (
-								<StyledButton
-									key={orderTime.label}
-									label={`${orderTime.label}: ${orderTime.short}+ mins`}
-									onClick={() => onUpdateCurrentOrderTime(orderTime)}
-									isLoading={isUpdatingOrderTime}
-									variant={
-										orderTime.id === storeInfo.current_order_time.id
-											? "filled"
-											: "outline"
-									}
-								/>
-							))}
-						</Group>
-					</Box>
-				)}
-
-				{storeIsOpen ? (
-					todaysOrders &&
-					todaysOrders.length > 0 && <OrdersList orders={todaysOrders} />
-				) : (
-					<Stack align="center" gap="sm" pt="3em">
-						<Text ta="center" mb="sm" size="1.6em" fw="600">
-							Middle Child is currently closed
-						</Text>
-						<StyledButton
-							label="Start Accepting Orders"
+							label="Close Store"
 							onClick={openToggleStoreOpenModal}
 						/>
-					</Stack>
-				)}
-			</PageLayout>
-		);
+					)}
+				</>
+			}
+		>
+			{isLoading && <Loading message="Loading orders" />}
 
-	return (
-		<Stack align="center" py="9em">
-			<Stack gap="xs" align="center">
-				<Title size="1.8em">This route requires admin permissions.</Title>
-				<Text size="1.2em">
-					Try logging in to a different account or return to the menu.
-				</Text>
-			</Stack>
+			<UpdateStockDrawer
+				isOpen={showUpdateStockDrawer}
+				onClose={closeUpdateStockDrawer}
+			/>
 
-			<Flex gap="md">
-				<StyledButton label="Logout" onClick={() => dispatch(signOutUser())} />
-				<StyledButton label="Menu" onClick={() => navigate("/")} />
-			</Flex>
-		</Stack>
+			{storeInfo && (
+				<ToggleStoreOpenModal
+					isOpen={showToggleStoreOpenModal}
+					onClose={closeToggleStoreOpenModal}
+				/>
+			)}
+
+			{storeInfo && orderTimes && (
+				<Box px="sm">
+					<Group
+						grow
+						p="sm"
+						w="100%"
+						bdrs="sm"
+						bg="white"
+						style={{ zIndex: 0 }}
+					>
+						{orderTimes.map((orderTime) => (
+							<StyledButton
+								key={orderTime.label}
+								label={`${orderTime.label}: ${orderTime.short}+ mins`}
+								onClick={() => onUpdateCurrentOrderTime(orderTime)}
+								isLoading={isUpdatingOrderTime}
+								variant={
+									orderTime.id === storeInfo.current_order_time.id
+										? "filled"
+										: "outline"
+								}
+							/>
+						))}
+					</Group>
+				</Box>
+			)}
+
+			{storeIsOpen ? (
+				todaysOrders &&
+				todaysOrders.length > 0 && <OrdersList orders={todaysOrders} />
+			) : (
+				<Stack align="center" gap="sm" pt="3em">
+					<Text ta="center" mb="sm" size="1.6em" fw="600">
+						Middle Child is currently closed
+					</Text>
+					<StyledButton
+						label="Start Accepting Orders"
+						onClick={openToggleStoreOpenModal}
+					/>
+				</Stack>
+			)}
+		</PageLayout>
 	);
 }
 
