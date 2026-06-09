@@ -53,6 +53,12 @@ function MenuItemModal(props: MenuItemModalProps) {
 	const [note, setNote] = useState<string | undefined>(orderItem.note);
 	const [selection, setSelection] = useState<OrderItem>(orderItem);
 
+	const sortedOptions =
+		menuItem.modifierCategories &&
+		[...menuItem.modifierCategories].sort((a, b) => {
+			return (a.order || 1) - (b.order || 1);
+		});
+
 	const onModalClose = () => {
 		reset();
 		onClose();
@@ -114,7 +120,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 					/>
 				)}
 
-				{menuItem.modifierCategories?.map((modifierCategory) =>
+				{sortedOptions?.map((modifierCategory) =>
 					modifierCategory.allow_multiple_selections ? (
 						<ModifierCheckbox
 							key={modifierCategory.label}
