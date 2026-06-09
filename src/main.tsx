@@ -24,6 +24,7 @@ import "@fontsource/poppins";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "./global.css";
+import Auth from "./pages/Auth.js";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -32,7 +33,7 @@ createRoot(document.getElementById("root")!).render(
 				<Notifications />
 				<BrowserRouter>
 					<Routes>
-						<Route path="*" element={<Navigate to="/" replace />} />
+						<Route path="*" element={<Auth />} />
 
 						{/* Customer Routes */}
 						<Route index element={<Home />} />
