@@ -220,10 +220,10 @@ function Menu() {
 		setOrderItems(null);
 	};
 
-	if (isLoading) return <Loading message="Loading store data" />;
-
 	return (
 		<PageLayout image={banner}>
+			{isLoading && <Loading message="Loading menu" />}
+
 			{orderItems &&
 				orderItems.length > 0 &&
 				orderTotal &&
