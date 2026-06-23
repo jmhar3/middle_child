@@ -6,13 +6,20 @@ interface ModifierRadioProps {
 	label?: string;
 	isRequired: boolean;
 	modifiers: Modifier[];
-	onModifierSelect: (selectedModifier: Modifier, isSelected: boolean) => void;
+	isErroneous?: boolean;
 	selectedModifiers?: Modifier[];
+	onModifierSelect: (selectedModifier: Modifier, isSelected: boolean) => void;
 }
 
 function ModifierRadio(props: ModifierRadioProps) {
-	const { label, isRequired, modifiers, selectedModifiers, onModifierSelect } =
-		props;
+	const {
+		label,
+		isRequired,
+		modifiers,
+		isErroneous,
+		onModifierSelect,
+		selectedModifiers,
+	} = props;
 
 	const onSelection = (newSelection: Modifier) => {
 		const previousSelection = selectedModifiers?.[0];
@@ -24,18 +31,30 @@ function ModifierRadio(props: ModifierRadioProps) {
 
 	return (
 		<Stack w="100%" gap="6">
-			{label && (
-				<Flex>
-					<Text pl="3">{label}</Text>
-					{isRequired && (
-						<Text c="red" pl="3">
-							*
-						</Text>
-					)}
-				</Flex>
-			)}
+			<Stack>
+				{label && (
+					<Flex>
+						<Text pl="3">{label}</Text>
+						{isRequired && (
+							<Text c="crimson" pl="3">
+								*
+							</Text>
+						)}
+						{isErroneous && (
+							<Text c="crimson" pl="3">
+								Must select option
+							</Text>
+						)}
+					</Flex>
+				)}
+			</Stack>
 
-			<Box bdrs="sm" w="100%" bd="darkslategray solid 1px" bg="white">
+			<Box
+				w="100%"
+				bg="white"
+				bd={`${isErroneous ? "crimson" : "darkslategray"} solid 1px`}
+				bdrs="sm"
+			>
 				<Button.Group w="100%" orientation="vertical">
 					{modifiers.map((modifier, index) => {
 						const selectedModifier = selectedModifiers?.[0];

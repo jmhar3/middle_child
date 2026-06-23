@@ -52,6 +52,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 
 	const [note, setNote] = useState<string | undefined>(orderItem.note);
 	const [selection, setSelection] = useState<OrderItem>(orderItem);
+	const [showErrors, setShowErrors] = useState(false);
 
 	const sortedOptions =
 		menuItem.modifierCategories &&
@@ -87,6 +88,41 @@ function MenuItemModal(props: MenuItemModalProps) {
 		() => calculateOrderItemPrice(selection.item, selection.modifiers),
 		[selection],
 	);
+
+	const missingSections = useMemo(() => {
+		const optionsRequired = sortedOptions?.filter(
+			(option) => option.is_required,
+		);
+
+		const missingRequiredOptions = optionsRequired?.map((option) => {
+			console.log("Selection: ", selection);
+			const findSelection = selection.modifiers?.some((modifier) =>
+				option.modifiers.some(
+					(optionModifier) => optionModifier.id === modifier.id,
+				),
+			);
+
+			console.log("Required Option: ", option);
+			console.log("Required Options Found Selection: ", findSelection);
+
+			if (!findSelection) {
+				return option;
+			}
+			return undefined;
+		});
+
+		return missingRequiredOptions?.filter((item) => item !== undefined);
+	}, [selection, sortedOptions]);
+
+	const onAddToCart = () => {
+		setShowErrors(false);
+		if (missingSections) {
+			setShowErrors(true);
+		} else {
+			onAddToOrder({ ...selection, note: note, quantity: quantity });
+			onModalClose();
+		}
+	};
 
 	return (
 		<Modal
@@ -124,21 +160,29 @@ function MenuItemModal(props: MenuItemModalProps) {
 					modifierCategory.allow_multiple_selections ? (
 						<ModifierCheckbox
 							key={modifierCategory.label}
+							onModifierSelect={onModifierSelect}
 							isRequired={modifierCategory.is_required}
 							selectedModifiers={filterSelectedModifiers(
 								modifierCategory.modifiers,
 							)}
-							onModifierSelect={onModifierSelect}
+							isErroneous={
+								showErrors &&
+								missingSections?.some(({ id }) => id === modifierCategory.id)
+							}
 							{...modifierCategory}
 						/>
 					) : (
 						<ModifierRadio
 							key={modifierCategory.label}
+							onModifierSelect={onModifierSelect}
 							isRequired={modifierCategory.is_required}
 							selectedModifiers={filterSelectedModifiers(
 								modifierCategory.modifiers,
 							)}
-							onModifierSelect={onModifierSelect}
+							isErroneous={
+								showErrors &&
+								missingSections?.some(({ id }) => id === modifierCategory.id)
+							}
 							{...modifierCategory}
 						/>
 					),
@@ -186,10 +230,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 						isDisabled={!menuItem.is_in_stock}
 						price={menuItemPrice * quantity}
 						label={menuItem.is_in_stock ? "Add to order" : "Out of stock"}
-						onClick={() => {
-							onAddToOrder({ ...selection, note: note, quantity: quantity });
-							onModalClose();
-						}}
+						onClick={onAddToCart}
 					/>
 				</Box>
 			</Stack>
