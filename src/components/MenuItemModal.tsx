@@ -95,15 +95,11 @@ function MenuItemModal(props: MenuItemModalProps) {
 		);
 
 		const missingRequiredOptions = optionsRequired?.map((option) => {
-			console.log("Selection: ", selection);
 			const findSelection = selection.modifiers?.some((modifier) =>
 				option.modifiers.some(
 					(optionModifier) => optionModifier.id === modifier.id,
 				),
 			);
-
-			console.log("Required Option: ", option);
-			console.log("Required Options Found Selection: ", findSelection);
 
 			if (!findSelection) {
 				return option;
@@ -116,7 +112,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 
 	const onAddToCart = () => {
 		setShowErrors(false);
-		if (missingSections) {
+		if (missingSections?.length && missingSections?.length > 0) {
 			setShowErrors(true);
 		} else {
 			onAddToOrder({ ...selection, note: note, quantity: quantity });
