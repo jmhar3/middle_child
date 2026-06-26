@@ -29,6 +29,7 @@ import {
 import { calculateOrderItemPrice } from "../../helpers";
 
 import type { OrderItem, OrderType } from "../../state/types";
+import PaymentHandler from "./PaymentHandler";
 
 interface CartModalProps {
 	items: OrderItem[];
@@ -67,6 +68,7 @@ function CartModal(props: CartModalProps) {
 	const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
 	const [showMenuItemModal, setShowMenuItemModal] = useState(false);
 	const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+	const [showPaymentHandler, setShowPaymentHandler] = useState(false);
 
 	const applicableLoyaltyItems = useMemo(() => {
 		return items.filter((item) => item.item.is_applicable_loyalty_item);
@@ -155,27 +157,31 @@ function CartModal(props: CartModalProps) {
 			return;
 		}
 
-		dispatch(
-			placeOrder({
-				name: user?.name || name,
-				userId: user?.id,
-				orderData: order,
-				new_loyalty_points_total: freeItem ? pointsTotal - 12 : pointsTotal,
-			}),
-		)
-			.then(() => {
-				onSuccess(order);
-				onClose();
-			})
-			.catch((error) =>
-				notifications.show({
-					message: error,
-					withCloseButton: false,
-					position: "bottom-right",
-					color: "red",
+		if (order.total === 0) {
+			dispatch(
+				placeOrder({
+					name: user?.name || name,
+					userId: user?.id,
+					orderData: order,
+					new_loyalty_points_total: freeItem ? pointsTotal - 12 : pointsTotal,
 				}),
 			)
-			.finally(() => setIsPlacingOrder(false));
+				.then(() => {
+					onSuccess(order);
+					onClose();
+				})
+				.catch((error) =>
+					notifications.show({
+						message: error,
+						withCloseButton: false,
+						position: "bottom-right",
+						color: "red",
+					}),
+				)
+				.finally(() => setIsPlacingOrder(false));
+		} else {
+			setShowPaymentHandler(true);
+		}
 	};
 
 	return (
@@ -192,6 +198,34 @@ function CartModal(props: CartModalProps) {
 					onAddToOrder={(newOrderItem: OrderItem) =>
 						onEditOrderItem(oldOrderItem, newOrderItem)
 					}
+				/>
+			)}
+
+			{showPaymentHandler && (
+				<PaymentHandler
+					order={order}
+					isOpen={showPaymentHandler}
+					onClose={() => {
+						setShowPaymentHandler(false);
+						setIsPlacingOrder(false);
+					}}
+					onSuccess={() => {
+						setShowPaymentHandler(false);
+						setIsPlacingOrder(false);
+						onSuccess(order);
+						onClose();
+					}}
+					onFailure={(error?: string) => {
+						notifications.show({
+							message:
+								error || "An error occured. Please try again or come in store.",
+							withCloseButton: false,
+							position: "bottom-right",
+							color: "red",
+						});
+						setShowPaymentHandler(false);
+						setIsPlacingOrder(false);
+					}}
 				/>
 			)}
 
@@ -283,12 +317,12 @@ function CartModal(props: CartModalProps) {
 						</Button>
 					</Button.Group>
 
-					<Stack gap="3" w="100%" align="center">
+					<Stack gap="xs" w="100%" align="center">
 						<ButtonWithPrice
 							isLoading={isPlacingOrder}
 							onClick={onPlaceOrder}
 							label="Order Now"
-							price={orderTotal}
+							price={order.total}
 						/>
 						<Text>Pay securely using Square</Text>
 					</Stack>
