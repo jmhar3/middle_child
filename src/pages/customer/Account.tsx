@@ -28,6 +28,7 @@ import {
 	signOutUser,
 	updateUser,
 } from "../../state/user/userThunks";
+import OrderSummary from "../../components/customer/OrderSummary";
 
 function Account() {
 	const navigate = useNavigate();
@@ -125,27 +126,7 @@ function Account() {
 									</Stack>
 								</Accordion.Control>
 								<Accordion.Panel>
-									<Stack gap="0">
-										{order.items.map((item, index) => (
-											<>
-												{index > 0 && <Divider />}
-												<Stack gap="0" key={item.id} p="sm">
-													<Text>
-														{item.quantity} x {item.item.label}
-													</Text>
-													{item.modifiers && (
-														<Text size="sm">
-															{item.modifiers
-																.map(({ label }) => label)
-																.join(", ")}
-														</Text>
-													)}
-
-													{item.note && <Text>{item.note}</Text>}
-												</Stack>
-											</>
-										))}
-									</Stack>
+									<OrderSummary order={order} />
 								</Accordion.Panel>
 							</Accordion.Item>
 						))}
