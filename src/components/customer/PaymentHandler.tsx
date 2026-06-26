@@ -44,7 +44,7 @@ function PaymentHandler(props: PaymentHandlerProps) {
 								sourceId: token,
 							},
 						})
-						.then(() => onSuccess())
+						.then((data) => (data.error ? onFailure(data.error) : onSuccess()))
 						.catch((error: string) => onFailure(error));
 				}}
 				createPaymentRequest={() => ({
