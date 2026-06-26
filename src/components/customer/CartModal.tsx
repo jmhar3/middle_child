@@ -215,10 +215,10 @@ function CartModal(props: CartModalProps) {
 						onSuccess(order);
 						onClose();
 					}}
-					onFailure={(error?: string) => {
+					onFailure={(error) => {
+						console.error(error);
 						notifications.show({
-							message:
-								error || "An error occured. Please try again or come in store.",
+							message: "An error occured. Please try again or come in store.",
 							withCloseButton: false,
 							position: "bottom-right",
 							color: "red",
