@@ -36,16 +36,20 @@ function PaymentHandler(props: PaymentHandlerProps) {
 				applicationId={squareAppId}
 				cardTokenizeResponseReceived={(token, buyer) => {
 					console.info({ token, buyer });
-					supabase.functions
-						.invoke("square-api", {
-							body: {
-								name: "Functions",
-								amount: order.total,
-								sourceId: token,
-							},
-						})
-						.then((data) => (data.error ? onFailure(data.error) : onSuccess()))
-						.catch((error: string) => onFailure(error));
+					if (token.status === "OK") {
+						supabase.functions
+							.invoke("square-api", {
+								body: {
+									name: "Functions",
+									amount: order.total * 100,
+									sourceId: token.token,
+								},
+							})
+							.then((data) =>
+								data.error ? onFailure(data.error) : onSuccess(),
+							)
+							.catch((error: string) => onFailure(error));
+					}
 				}}
 				createPaymentRequest={() => ({
 					countryCode: "AU",
