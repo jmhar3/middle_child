@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button, Divider, Modal, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Divider, Modal, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCounter } from "@mantine/hooks";
+
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -10,13 +11,14 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 import ButtonWithPrice from "./ButtonWithPrice";
+import PaymentHandler from "./PaymentHandler";
 import LoyaltyPoints from "./LoyaltyPoints";
 import MenuItemModal from "../MenuItemModal";
 import NoteInput from "./NoteInput";
 import CartItem from "./CartItem";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { fetchUser } from "../../state/user/userThunks";
+import { fetchUser, updateUser } from "../../state/user/userThunks";
 import { selectStoreInfo } from "../../state/storeInfo/storeInfoSlice";
 import { placeOrder } from "../../state/orders/ordersThunks";
 
@@ -28,8 +30,11 @@ import {
 
 import { calculateOrderItemPrice } from "../../helpers";
 
-import type { OrderItem, OrderType } from "../../state/types";
-import PaymentHandler from "./PaymentHandler";
+import type {
+	OrderItem,
+	PlacedOrderType,
+	PendingOrderType,
+} from "../../state/types";
 
 interface CartModalProps {
 	items: OrderItem[];
@@ -37,7 +42,7 @@ interface CartModalProps {
 	onClose: () => void;
 	onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
 	onDeleteOrderItem: (orderItem: OrderItem) => void;
-	onSuccess: (order: OrderType) => void;
+	onSuccess: (order: PlacedOrderType) => void;
 }
 
 function CartModal(props: CartModalProps) {
@@ -62,13 +67,14 @@ function CartModal(props: CartModalProps) {
 		}
 	}, [dispatch, userStatus]);
 
-	const [name, setName] = useState<string | undefined>();
 	const [note, setNote] = useState<string | undefined>();
-	const [showNameError, setShowNameError] = useState(false);
 	const [oldOrderItem, setOldOrderItem] = useState<OrderItem | undefined>();
 	const [showMenuItemModal, setShowMenuItemModal] = useState(false);
 	const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 	const [showPaymentHandler, setShowPaymentHandler] = useState(false);
+	const [placedOrder, setPlacedOrder] = useState<PlacedOrderType | undefined>(
+		undefined,
+	);
 
 	const applicableLoyaltyItems = useMemo(() => {
 		return items.filter((item) => item.item.is_applicable_loyalty_item);
@@ -133,8 +139,7 @@ function CartModal(props: CartModalProps) {
 		{ min: pickUpTimeFromNow },
 	);
 
-	const order: OrderType = {
-		id: "1",
+	const order: PendingOrderType = {
 		items: items,
 		total: orderTotal,
 		due_at: dayjs().add(pickUpTime, "minute").toISOString(),
@@ -143,31 +148,19 @@ function CartModal(props: CartModalProps) {
 
 	const onModalClose = () => {
 		reset();
-		setShowNameError(false);
 		onClose();
 	};
 
-	const onPlaceOrder = async () => {
-		setIsPlacingOrder(true);
-		setShowNameError(false);
-
-		if (!user && !name) {
-			setShowNameError(true);
-			setIsPlacingOrder(false);
-			return;
-		}
-
-		if (order.total === 0) {
+	const finaliseOrder = () => {
+		if (user)
 			dispatch(
-				placeOrder({
-					name: user?.name || name,
-					userId: user?.id,
-					orderData: order,
-					new_loyalty_points_total: freeItem ? pointsTotal - 12 : pointsTotal,
+				updateUser({
+					id: user.id,
+					loyalty_points: freeItem ? pointsTotal - 12 : pointsTotal,
 				}),
 			)
 				.then(() => {
-					onSuccess(order);
+					if (placedOrder) onSuccess(placedOrder);
 					onClose();
 				})
 				.catch((error) =>
@@ -178,10 +171,44 @@ function CartModal(props: CartModalProps) {
 						color: "red",
 					}),
 				)
-				.finally(() => setIsPlacingOrder(false));
-		} else {
-			setShowPaymentHandler(true);
+				.finally(() => {
+					setShowPaymentHandler(false);
+					setIsPlacingOrder(false);
+				});
+	};
+
+	const onPlaceOrder = async () => {
+		setIsPlacingOrder(true);
+
+		if (!user) {
+			setIsPlacingOrder(false);
+			return;
 		}
+
+		const isFreeOrder = order.total === 0;
+
+		dispatch(
+			placeOrder({
+				userId: user.id,
+				orderData: order,
+			}),
+		)
+			.then((data) => {
+				setPlacedOrder({ ...order, id: data.payload, user: user });
+				if (isFreeOrder) {
+					finaliseOrder();
+				} else {
+					setShowPaymentHandler(true);
+				}
+			})
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			);
 	};
 
 	return (
@@ -201,20 +228,15 @@ function CartModal(props: CartModalProps) {
 				/>
 			)}
 
-			{showPaymentHandler && (
+			{placedOrder && showPaymentHandler && (
 				<PaymentHandler
-					order={order}
+					order={placedOrder}
 					isOpen={showPaymentHandler}
 					onClose={() => {
 						setShowPaymentHandler(false);
 						setIsPlacingOrder(false);
 					}}
-					onSuccess={() => {
-						setShowPaymentHandler(false);
-						setIsPlacingOrder(false);
-						onSuccess(order);
-						onClose();
-					}}
+					onSuccess={finaliseOrder}
 					onFailure={(error) => {
 						console.error(error);
 						notifications.show({
@@ -246,28 +268,6 @@ function CartModal(props: CartModalProps) {
 						existingPoints={loyaltyPoints}
 						additionalPoints={additionalLoyaltyPoints}
 					/>
-
-					{!user && (
-						<TextInput
-							w="100%"
-							label="Name"
-							value={name}
-							withAsterisk
-							error={showNameError && "Name is required"}
-							onChange={(e) => {
-								if (e.target.value.length > 0) setShowNameError(false);
-								setName(e.target.value);
-							}}
-							styles={{
-								input: {
-									borderRadius: "sm",
-									border: showNameError
-										? "crimson solid 1px"
-										: "darkslategray solid 1px",
-								},
-							}}
-						/>
-					)}
 
 					<Stack w="100%">
 						{!items && <Text>Your cart is empty.</Text>}
@@ -321,7 +321,8 @@ function CartModal(props: CartModalProps) {
 						<ButtonWithPrice
 							isLoading={isPlacingOrder}
 							onClick={onPlaceOrder}
-							label="Order Now"
+							isDisabled={!user}
+							label={user ? "Order Now" : "Login to Place Order"}
 							price={order.total}
 						/>
 						<Text>Pay securely using Square</Text>
