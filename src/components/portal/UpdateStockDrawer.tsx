@@ -22,6 +22,7 @@ import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
 import { upsertMenuItems } from "../../state/menuItems/menuItemsThunks";
 import { upsertModifiers } from "../../state/modifiers/modifierThunks";
 import { updateSection } from "../../state/menu/menuThunks";
+import type { MenuSection } from "../../state/types";
 
 interface UpdateStockDrawerProps {
 	isOpen: boolean;
@@ -33,7 +34,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 
 	// store data
 	const dispatch = useAppDispatch();
-	const menu = useAppSelector(selectMenu);
+	const menu: MenuSection[] = useAppSelector(selectMenu);
 	const ingredients = useAppSelector(selectAllIngredients);
 	const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
