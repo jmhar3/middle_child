@@ -72,6 +72,18 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 			align="center"
 			bd="darkslategray solid 1px"
 		>
+			<Flex w="100%" gap="sm" align="center">
+				<OutlineStarIcon />
+
+				<Progress.Root size="xl" w="100%">
+					<Progress.Section
+						value={additionalPointsPercentage}
+						color="gold"
+						animated
+					/>
+				</Progress.Root>
+				<StarFilledIcon />
+			</Flex>
 			<Text>You're {12 - newPointTotal} coffees away from a freebie!</Text>
 			<LoginButton />
 		</Stack>
