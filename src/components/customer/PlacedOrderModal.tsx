@@ -6,12 +6,12 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-import type { OrderType } from "../../state/types";
+import type { PlacedOrderType } from "../../state/types";
 
 interface PlacedOrderModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	order: OrderType;
+	order: PlacedOrderType;
 }
 
 function PlacedOrderModal(props: PlacedOrderModalProps) {

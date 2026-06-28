@@ -3,11 +3,11 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Badge } from "@mantine/core";
 import { useMemo } from "react";
 
-import type { OrderType } from "../../../state/types";
+import type { PlacedOrderType } from "../../../state/types";
 
 dayjs.extend(relativeTime);
 
-function OrderBadge({ order }: { order: OrderType }) {
+function OrderBadge({ order }: { order: PlacedOrderType }) {
 	const badgeColour = useMemo(() => {
 		if (order.is_complete) return "gray";
 		if (dayjs().isAfter(dayjs(order.due_at))) return "red";

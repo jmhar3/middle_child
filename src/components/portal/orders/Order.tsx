@@ -7,7 +7,7 @@ import StyledButton from "../../StyledButton";
 import OrderBadge from "./OrderBadge";
 import OrderItem from "./OrderItem";
 
-import type { OrderType } from "../../../state/types";
+import type { PlacedOrderType } from "../../../state/types";
 import { useAppDispatch } from "../../../state/hooks";
 import { completeOrder } from "../../../state/orders/ordersThunks";
 import { useState } from "react";
@@ -15,13 +15,13 @@ import { useState } from "react";
 dayjs.extend(relativeTime);
 
 interface OrderProps {
-	order: OrderType;
+	order: PlacedOrderType;
 }
 
 function Order(props: OrderProps) {
 	const { order } = props;
 
-	const { user, name, items, note, is_complete } = order;
+	const { user, items, note, is_complete } = order;
 
 	const [isCompletingOrder, setIsCompletingOrder] = useState(false);
 
@@ -65,7 +65,7 @@ function Order(props: OrderProps) {
 					justify="space-between"
 				>
 					<Text fw="700" size="1.2em">
-						{user?.name || name}
+						{user?.name}
 					</Text>
 
 					<OrderBadge order={order} />

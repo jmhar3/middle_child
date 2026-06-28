@@ -3,7 +3,11 @@ import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
 
-import type { OrderType, SupabaseOrders } from "../types";
+import type {
+	PendingOrderType,
+	PlacedOrderType,
+	SupabaseOrders,
+} from "../types";
 
 const formatSupaBaseOrders = (supabaseData: SupabaseOrders[]) => {
 	return supabaseData.map(({ order_items, ...order }) => ({
@@ -31,6 +35,7 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
         )
       )`,
 		)
+		.eq("paid", true)
 		.order("due_at");
 
 	if (error) {
@@ -48,33 +53,67 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
 	return formatSupaBaseOrders(data);
 });
 
+export const findOrder = createAsyncThunk(
+	"menu/findOrder",
+	async (id: string) => {
+		const { data, error } = await supabase
+			.from("orders")
+			.select(
+				`*, user (*),
+      order_items (
+        *, menu_item (*),
+        order_items_modifiers(
+          modifiers (*)
+        )
+      )`,
+			)
+			.eq("id", id);
+
+		if (error) {
+			console.error(error);
+			notifications.show({
+				withCloseButton: false,
+				message: error.message,
+				title: error.name,
+				position: "bottom-right",
+				color: "red",
+			});
+			throw Error(error.message);
+		}
+
+		return formatSupaBaseOrders(data)[0];
+	},
+);
+
 interface PlaceOrderProps {
-	name?: string;
-	userId?: string;
-	new_loyalty_points_total: number;
-	orderData: Partial<OrderType>;
+	userId: string;
+	orderData: Partial<PendingOrderType>;
 }
 
 export const placeOrder = createAsyncThunk(
 	"menu/placeOrder",
-	async ({
-		name,
-		userId,
-		orderData,
-		new_loyalty_points_total,
-	}: PlaceOrderProps) => {
+	async ({ userId, orderData }: PlaceOrderProps) => {
 		// create order
 		const order = await supabase
 			.from("orders")
 			.insert({
-				name: name || null,
-				user: userId || null,
+				user: userId,
 				due_at: orderData.due_at,
 				total: orderData.total,
 				note: orderData.note,
 			})
-			.select("id")
+			.select(
+				`*, user (*),
+        order_items (
+          *, menu_item (*),
+          order_items_modifiers(
+            modifiers (*)
+          )
+        )`,
+			)
 			.single();
+
+		console.log(order.data);
 
 		if (order.error) {
 			console.log(order.error);
@@ -97,24 +136,6 @@ export const placeOrder = createAsyncThunk(
 					console.log(orderItem.error);
 					throw Error(orderItem.error.message);
 				} else {
-					if (userId) {
-						const { error } = await supabase
-							.from("users")
-							.update({ loyalty_points: new_loyalty_points_total })
-							.eq("id", userId);
-
-						if (error) {
-							notifications.show({
-								withCloseButton: false,
-								message: error.message,
-								title: error.name,
-								position: "bottom-right",
-								color: "red",
-							});
-							console.error(error);
-							throw Error(error.message);
-						}
-					}
 					if (item.modifiers) {
 						item.modifiers.forEach(async (modifier) => {
 							await supabase
@@ -128,7 +149,24 @@ export const placeOrder = createAsyncThunk(
 					}
 				}
 			});
+
+			return order.data.id;
 		}
+	},
+);
+
+export const updateOrder = createAsyncThunk(
+	"menu/updateOrder",
+	async ({ id, ...order }: Partial<PlacedOrderType>) => {
+		console.log("update order: ", order);
+		const { error } = await supabase.from("orders").update(order).eq("id", id);
+
+		if (error) {
+			console.log(error);
+			throw Error(error.message);
+		}
+
+		return id;
 	},
 );
 

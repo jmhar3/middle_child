@@ -1,13 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { completeOrder, fetchOrders, placeOrder } from "./ordersThunks";
+import {
+	completeOrder,
+	fetchOrders,
+	placeOrder,
+	updateOrder,
+} from "./ordersThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import type { OrderType } from "../types";
+import type { PlacedOrderType } from "../types";
 
 export interface OrdersState {
-	data: OrderType[];
+	data: PlacedOrderType[];
 	status: "idle" | "pending" | "succeeded" | "failed";
 }
 
@@ -20,13 +25,13 @@ const ordersSlice = createSlice({
 	name: "orders",
 	initialState,
 	reducers: {
-		sectionAdded(state, action: PayloadAction<OrderType>) {
+		sectionAdded(state, action: PayloadAction<PlacedOrderType>) {
 			const filteredOrders = state.data.filter(
 				(section) => section.id === action.payload.id,
 			);
 			state.data = [...filteredOrders, action.payload];
 		},
-		sectionRemoved(state, action: PayloadAction<OrderType>) {
+		sectionRemoved(state, action: PayloadAction<PlacedOrderType>) {
 			state.data = state.data.filter(
 				(section) => section.id === action.payload.id,
 			);
@@ -51,6 +56,20 @@ const ordersSlice = createSlice({
 				state.status = "succeeded";
 			})
 			.addCase(placeOrder.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(updateOrder.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(updateOrder.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.data = state.data.map((order) => {
+					if (order.id === action.payload)
+						return { ...order, is_complete: true };
+					return order;
+				});
+			})
+			.addCase(updateOrder.rejected, (state) => {
 				state.status = "failed";
 			})
 			.addCase(completeOrder.pending, (state) => {

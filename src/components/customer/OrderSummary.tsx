@@ -1,8 +1,8 @@
 import { Divider, Flex, Stack, Text } from "@mantine/core";
-import type { OrderType } from "../../state/types";
+import type { PendingOrderType } from "../../state/types";
 import { calculateOrderItemPrice } from "../../helpers";
 
-function OrderSummary({ order }: { order: OrderType }) {
+function OrderSummary({ order }: { order: PendingOrderType }) {
 	return (
 		<Stack gap="0">
 			{order.items.map((item, index) => (

@@ -3,10 +3,10 @@ import { Stack } from "@mantine/core";
 
 import Order from "./Order";
 
-import type { OrderType } from "../../../state/types";
+import type { PlacedOrderType } from "../../../state/types";
 
 interface OrdersProps {
-	orders: OrderType[];
+	orders: PlacedOrderType[];
 }
 
 function OrdersList({ orders }: OrdersProps) {

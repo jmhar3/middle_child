@@ -72,7 +72,7 @@ export interface User {
 	is_admin: boolean;
 	loyalty_points?: number;
 	recent_items?: OrderItem[];
-	orders?: OrderType[];
+	orders?: PlacedOrderType[];
 }
 
 export interface OrderItem {
@@ -90,13 +90,22 @@ export interface Cart {
 	notes?: string;
 }
 
-export interface OrderType {
-	id: string;
-	user?: User;
-	name?: string;
+export interface PendingOrderType {
 	due_at: string;
 	total: number;
 	note?: string;
+	paid?: boolean;
+	items: OrderItem[];
+	is_complete: boolean;
+}
+
+export interface PlacedOrderType {
+	id: string;
+	user: User;
+	due_at: string;
+	total: number;
+	note?: string;
+	paid?: boolean;
 	items: OrderItem[];
 	is_complete: boolean;
 }

@@ -33,7 +33,11 @@ import {
 
 import { calculateOrderItemPrice, filterItemFromOrder } from "../../helpers";
 
-import type { MenuItemType, OrderItem, OrderType } from "../../state/types";
+import type {
+	MenuItemType,
+	OrderItem,
+	PlacedOrderType,
+} from "../../state/types";
 
 function Menu() {
 	const dispatch = useAppDispatch();
@@ -75,7 +79,7 @@ function Menu() {
 	);
 	const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 	const [showPlacedOrder, setShowPlacedOrder] = useState(false);
-	const [placedOrder, setPlacedOrder] = useState<OrderType | null>(null);
+	const [placedOrder, setPlacedOrder] = useState<PlacedOrderType | null>(null);
 
 	useEffect(() => {
 		const stringifyCart = JSON.stringify(orderItems);
@@ -223,7 +227,7 @@ function Menu() {
 		}
 	};
 
-	const onOrderSuccess = (order: OrderType) => {
+	const onOrderSuccess = (order: PlacedOrderType) => {
 		setShowPlacedOrder(true);
 		setPlacedOrder(order);
 		setOrderItems(null);
@@ -233,7 +237,9 @@ function Menu() {
 		<PageLayout image={banner}>
 			{isLoading && <Loading message="Loading menu" />}
 
-			{orderItems &&
+			{menu &&
+				menu.length > 0 &&
+				orderItems &&
 				orderItems.length > 0 &&
 				orderTotal &&
 				!isCartModalOpen &&
@@ -253,7 +259,6 @@ function Menu() {
 						/>
 					</Box>
 				)}
-
 			<Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
 				{storeIsOpen ? (
 					<Text>
@@ -282,9 +287,7 @@ function Menu() {
 					<Text>Start drinking to earn points!</Text>
 				)}
 			</Stack>
-
 			<Divider w="100%" />
-
 			<Stack w="100%" pb="60">
 				<Accordion
 					styles={{
@@ -346,7 +349,6 @@ function Menu() {
 					))}
 				</Accordion>
 			</Stack>
-
 			{selectedMenuItem && (
 				<MenuItemModal
 					isOpen={isMenuItemModalOpen}
@@ -358,7 +360,6 @@ function Menu() {
 					onAddToOrder={addItemToOrder}
 				/>
 			)}
-
 			{orderItems && orderItems.length > 0 && (
 				<CartModal
 					items={orderItems}
@@ -369,7 +370,6 @@ function Menu() {
 					onSuccess={onOrderSuccess}
 				/>
 			)}
-
 			{placedOrder && (
 				<PlacedOrderModal
 					order={placedOrder}
