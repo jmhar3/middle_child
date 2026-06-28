@@ -17,7 +17,7 @@ const Login = () => {
 				size={isMobile ? "md" : "xl"}
 				onClick={open}
 			>
-				Log In to Earn Loyalty Points
+				Log In or Sign Up
 			</Button>
 
 			<LoginModal isModalOpen={opened} onModalClose={close} />
