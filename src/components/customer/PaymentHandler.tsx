@@ -1,4 +1,14 @@
-import { Accordion, Divider, Flex, Modal, Stack, Text } from "@mantine/core";
+import { useState } from "react";
+
+import {
+	Accordion,
+	Divider,
+	Flex,
+	Loader,
+	Modal,
+	Stack,
+	Text,
+} from "@mantine/core";
 
 import {
 	GooglePay,
@@ -9,10 +19,10 @@ import {
 import { supabase } from "../../supabase";
 import OrderSummary from "./OrderSummary";
 
-import type { OrderType } from "../../state/types";
+import type { PlacedOrderType } from "../../state/types";
 
 interface PaymentHandlerProps {
-	order: OrderType;
+	order: PlacedOrderType;
 	isOpen: boolean;
 	onClose: () => void;
 	onSuccess: () => void;
@@ -24,6 +34,8 @@ function PaymentHandler(props: PaymentHandlerProps) {
 	const squareAppId = import.meta.env.VITE_SQUARE_APP_ID;
 	const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID;
 
+	const [tokenSuccess, setTokenSuccess] = useState(false);
+
 	return (
 		<Modal
 			fullScreen
@@ -31,59 +43,70 @@ function PaymentHandler(props: PaymentHandlerProps) {
 			onClose={onClose}
 			title="Pay securely with Square"
 		>
-			<PaymentForm
-				locationId={locationId}
-				applicationId={squareAppId}
-				cardTokenizeResponseReceived={(token, buyer) => {
-					console.info({ token, buyer });
-					if (token.status === "OK") {
-						supabase.functions
-							.invoke("square-api", {
-								body: {
-									name: "Functions",
-									amount: order.total * 100,
-									sourceId: token.token,
-								},
-							})
-							.then((data) =>
-								data.error ? onFailure(data.error) : onSuccess(),
-							)
-							.catch((error: string) => onFailure(error));
-					}
-				}}
-				createPaymentRequest={() => ({
-					countryCode: "AU",
-					currencyCode: "AUD",
-					total: {
-						amount: order.total.toString(),
-						label: "Total",
-					},
-				})}
-			>
-				<Stack gap="md">
-					<Accordion chevronPosition="left" variant="separated">
-						<Accordion.Item value={"order_summary"}>
-							<Accordion.Control>
-								<Flex justify="space-between">
-									<Text>Show Order Summary</Text>
-									<Text>Total: ${order.total.toFixed(2)}</Text>
-								</Flex>
-							</Accordion.Control>
-							<Accordion.Panel>
-								<OrderSummary order={order} />
-							</Accordion.Panel>
-						</Accordion.Item>
-					</Accordion>
+			<Stack>
+				<Accordion chevronPosition="left" variant="separated">
+					<Accordion.Item value={"order_summary"}>
+						<Accordion.Control>
+							<Flex justify="space-between">
+								<Text>Show Order Summary</Text>
+								<Text>Total: ${order.total.toFixed(2)}</Text>
+							</Flex>
+						</Accordion.Control>
+						<Accordion.Panel>
+							<OrderSummary order={order} />
+						</Accordion.Panel>
+					</Accordion.Item>
+				</Accordion>
 
-					<Text ta="center">Express Checkout</Text>
+				{tokenSuccess ? (
+					<Stack align="center">
+						<Text size="lg">Please wait while we process your order</Text>
+						<Loader color="darkslategray" type="dots" />
+					</Stack>
+				) : (
+					<PaymentForm
+						locationId={locationId}
+						applicationId={squareAppId}
+						cardTokenizeResponseReceived={(token, buyer) => {
+							console.info({ token, buyer });
+							if (token.status === "OK") {
+								setTokenSuccess(true);
+								supabase.functions
+									.invoke("square-api", {
+										body: {
+											name: "Functions",
+											amount: order.total * 100,
+											sourceId: token.token,
+											orderId: order.id,
+										},
+									})
+									.then((data) =>
+										data.error ? onFailure(data.error) : onSuccess(),
+									)
+									.catch((error: string) => onFailure(error));
+							}
+						}}
+						createPaymentRequest={() => ({
+							countryCode: "AU",
+							currencyCode: "AUD",
+							total: {
+								amount: order.total.toString(),
+								label: "Total",
+							},
+						})}
+					>
+						<Stack gap="md">
+							<Text ta="center">Express Checkout</Text>
 
-					<GooglePay />
+							<GooglePay />
 
-					<Divider label="OR" labelPosition="center" />
+							<Divider label="OR" labelPosition="center" />
 
-					<CreditCard includeInputLabels />
-				</Stack>
-			</PaymentForm>
+							<CreditCard includeInputLabels />
+						</Stack>
+					</PaymentForm>
+				)}
+			</Stack>
 		</Modal>
 	);
 }
