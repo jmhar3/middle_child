@@ -264,10 +264,7 @@ function CartModal(props: CartModalProps) {
 				}}
 			>
 				<Stack mih="100%" align="center">
-					<LoyaltyPoints
-						existingPoints={loyaltyPoints}
-						additionalPoints={additionalLoyaltyPoints}
-					/>
+					<LoyaltyPoints additionalPoints={additionalLoyaltyPoints} />
 
 					<Stack w="100%">
 						{!items && <Text>Your cart is empty.</Text>}
