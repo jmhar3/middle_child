@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import useSound from "use-sound";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { Box, Flex, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 
-import fartSound from "/assets/fart1.mp3";
+// import fartSound from "/assets/fart1.mp3";
 
 import PageLayout from "./PageLayout";
 import Loading from "../../components/Loading";
@@ -51,7 +50,7 @@ import type { OrderTime } from "../../state/types";
 dayjs.extend(isoWeek);
 
 function Orders() {
-	const [play] = useSound(fartSound);
+	// const audioNotification = new Audio(fartSound);
 
 	const [isUpdatingOrderTime, setIsUpdatingOrderTime] = useState(false);
 
@@ -138,9 +137,17 @@ function Orders() {
 				event: "INSERT",
 			},
 			(payload) => {
-				console.log("New order:", payload);
-				play();
+				const order = payload.payload.record;
+				console.log(order);
 				dispatch(fetchOrders());
+				// if (order.paid && !order.is_complete) {
+				// 	audioNotification.play().catch((error) => {
+				// 		console.error(
+				// 			"Audio playback failed, likely due to browser autoplay policies:",
+				// 			error,
+				// 		);
+				// 	});
+				// }
 			},
 		)
 		.subscribe();
