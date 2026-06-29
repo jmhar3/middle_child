@@ -40,10 +40,16 @@ function CartItem(props: CartItemProps) {
 				</Text>
 
 				<Flex align="center" gap="sm">
-					{discountedItemPrice && (
+					{typeof discountedItemPrice === "number" && (
 						<Text>${discountedItemPrice.toFixed(2)}</Text>
 					)}
-					<Text td={discountedItemPrice ? "line-through" : undefined}>
+					<Text
+						td={
+							typeof discountedItemPrice === "number"
+								? "line-through"
+								: undefined
+						}
+					>
 						${orderItemPrice.toFixed(2)}
 					</Text>
 
