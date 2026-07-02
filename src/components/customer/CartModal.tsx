@@ -152,7 +152,7 @@ function CartModal(props: CartModalProps) {
 	};
 
 	const finaliseOrder = () => {
-		if (user)
+		if (user && placedOrder) {
 			dispatch(
 				updateUser({
 					id: user.id,
@@ -160,7 +160,7 @@ function CartModal(props: CartModalProps) {
 				}),
 			)
 				.then(() => {
-					if (placedOrder) onSuccess(placedOrder);
+					onSuccess(placedOrder);
 					onClose();
 				})
 				.catch((error) =>
@@ -175,6 +175,7 @@ function CartModal(props: CartModalProps) {
 					setShowPaymentHandler(false);
 					setIsPlacingOrder(false);
 				});
+		}
 	};
 
 	const onPlaceOrder = async () => {
@@ -187,28 +188,28 @@ function CartModal(props: CartModalProps) {
 
 		const isFreeOrder = order.total === 0;
 
-		dispatch(
-			placeOrder({
-				userId: user.id,
-				orderData: order,
-			}),
-		)
-			.then((data) => {
-				setPlacedOrder({ ...order, id: data.payload, user: user });
-				if (isFreeOrder) {
-					finaliseOrder();
-				} else {
-					setShowPaymentHandler(true);
-				}
-			})
-			.catch((error) =>
-				notifications.show({
-					message: error,
-					withCloseButton: false,
-					position: "bottom-right",
-					color: "red",
+		if (isFreeOrder) {
+			dispatch(
+				placeOrder({
+					userId: user.id,
+					orderData: order,
 				}),
-			);
+			)
+				.then((data) => {
+					setPlacedOrder({ ...order, id: data.payload, user: user });
+					finaliseOrder();
+				})
+				.catch((error) =>
+					notifications.show({
+						message: error,
+						withCloseButton: false,
+						position: "bottom-right",
+						color: "red",
+					}),
+				);
+		} else {
+			setShowPaymentHandler(true);
+		}
 	};
 
 	return (
@@ -228,15 +229,20 @@ function CartModal(props: CartModalProps) {
 				/>
 			)}
 
-			{placedOrder && showPaymentHandler && (
+			{user && showPaymentHandler && (
 				<PaymentHandler
-					order={placedOrder}
+					userId={user.id}
+					order={order}
 					isOpen={showPaymentHandler}
 					onClose={() => {
 						setShowPaymentHandler(false);
 						setIsPlacingOrder(false);
 					}}
-					onSuccess={finaliseOrder}
+					onSuccess={() => {
+						setShowPaymentHandler(false);
+						setPlacedOrder({ ...order, id: "temp-order-id", user: user });
+						finaliseOrder();
+					}}
 					onFailure={(error) => {
 						console.error(error);
 						notifications.show({
