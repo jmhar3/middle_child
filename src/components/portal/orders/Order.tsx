@@ -38,7 +38,7 @@ function Order(props: OrderProps) {
 					color: "red",
 				}),
 			)
-			.finally(() => setIsCompletingOrder(true));
+			.finally(() => setIsCompletingOrder(false));
 	};
 
 	return (
@@ -59,24 +59,26 @@ function Order(props: OrderProps) {
 				<Flex
 					px="sm"
 					py="8px"
-					w="76%"
 					gap="sm"
 					align="center"
 					justify="space-between"
+					w={is_complete ? "100%" : "76%"}
 				>
 					<Text fw="700" size="1.2em">
 						{user?.name}
 					</Text>
 
-					<OrderBadge order={order} />
+					<OrderBadge {...order} />
 				</Flex>
 
-				<StyledButton
-					radius="0"
-					label="Complete Order"
-					onClick={onCompleteOrder}
-					isLoading={isCompletingOrder}
-				/>
+				{!is_complete && (
+					<StyledButton
+						radius="0"
+						label="Complete Order"
+						onClick={onCompleteOrder}
+						isLoading={isCompletingOrder}
+					/>
+				)}
 			</Flex>
 
 			<Stack p="sm" gap="xs">
