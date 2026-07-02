@@ -92,6 +92,12 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 			}),
 		)
 			.then(() => {
+				notifications.show({
+					message: "Successfully signed in",
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "green",
+				});
 				dispatch(fetchUser());
 				onClose();
 			})
