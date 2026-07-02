@@ -1,13 +1,14 @@
+import { useMemo, useState } from "react";
+import { Badge } from "@mantine/core";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Badge } from "@mantine/core";
-import { useMemo } from "react";
 
 import type { PlacedOrderType } from "../../../state/types";
 
 dayjs.extend(relativeTime);
 
-function OrderBadge({ order }: { order: PlacedOrderType }) {
+function OrderBadge(order: PlacedOrderType) {
 	const badgeColour = useMemo(() => {
 		if (order.is_complete) return "gray";
 		if (dayjs().isAfter(dayjs(order.due_at))) return "red";
@@ -15,14 +16,15 @@ function OrderBadge({ order }: { order: PlacedOrderType }) {
 		return "gray";
 	}, [order]);
 
-	const badgeLabel = useMemo(() => {
-		if (order.is_complete) return "COMPLETE";
-		return dayjs(order.due_at).fromNow();
-	}, [order]);
+	const [dueAt, setDueAt] = useState(dayjs(order.due_at).fromNow());
+
+	const updateDueAt = () => setDueAt(dayjs(order.due_at).fromNow());
+
+	setInterval(updateDueAt, 10000);
 
 	return (
 		<Badge radius="sm" size="xl" color={badgeColour}>
-			{badgeLabel}
+			{order.is_complete ? "COMPLETE" : dueAt}
 		</Badge>
 	);
 }
