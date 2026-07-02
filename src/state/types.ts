@@ -6,21 +6,10 @@ export interface OrderTime {
 	order: number;
 }
 
-export interface WeeklyRecord {
-	monday: number;
-	tuesday: number;
-	wednesday: number;
-	thursday: number;
-	friday: number;
-	saturday: number;
-	sunday: number;
-}
-
 export interface StoreInfo {
 	id: string;
 	is_open: boolean;
 	current_order_time: OrderTime;
-	weekly_record: WeeklyRecord;
 }
 
 export interface Modifier {
@@ -94,7 +83,6 @@ export interface PendingOrderType {
 	due_at: string;
 	total: number;
 	note?: string;
-	paid?: boolean;
 	items: OrderItem[];
 	is_complete: boolean;
 }
@@ -105,7 +93,6 @@ export interface PlacedOrderType {
 	due_at: string;
 	total: number;
 	note?: string;
-	paid?: boolean;
 	items: OrderItem[];
 	is_complete: boolean;
 }
