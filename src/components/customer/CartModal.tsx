@@ -34,6 +34,7 @@ import type {
 	OrderItem,
 	PlacedOrderType,
 	PendingOrderType,
+	User,
 } from "../../state/types";
 
 interface CartModalProps {
@@ -72,9 +73,6 @@ function CartModal(props: CartModalProps) {
 	const [showMenuItemModal, setShowMenuItemModal] = useState(false);
 	const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 	const [showPaymentHandler, setShowPaymentHandler] = useState(false);
-	const [placedOrder, setPlacedOrder] = useState<PlacedOrderType | undefined>(
-		undefined,
-	);
 
 	const applicableLoyaltyItems = useMemo(() => {
 		return items.filter((item) => item.item.is_applicable_loyalty_item);
@@ -151,31 +149,29 @@ function CartModal(props: CartModalProps) {
 		onClose();
 	};
 
-	const finaliseOrder = () => {
-		if (user && placedOrder) {
-			dispatch(
-				updateUser({
-					id: user.id,
-					loyalty_points: freeItem ? pointsTotal - 12 : pointsTotal,
+	const finaliseOrder = (user: User) => {
+		dispatch(
+			updateUser({
+				id: user.id,
+				loyalty_points: freeItem ? pointsTotal - 12 : pointsTotal,
+			}),
+		)
+			.then(() => {
+				onSuccess({ ...order, id: "temp-order-id", user: user });
+				onClose();
+			})
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
 				}),
 			)
-				.then(() => {
-					onSuccess(placedOrder);
-					onClose();
-				})
-				.catch((error) =>
-					notifications.show({
-						message: error,
-						withCloseButton: false,
-						position: "bottom-right",
-						color: "red",
-					}),
-				)
-				.finally(() => {
-					setShowPaymentHandler(false);
-					setIsPlacingOrder(false);
-				});
-		}
+			.finally(() => {
+				setShowPaymentHandler(false);
+				setIsPlacingOrder(false);
+			});
 	};
 
 	const onPlaceOrder = async () => {
@@ -195,9 +191,8 @@ function CartModal(props: CartModalProps) {
 					orderData: order,
 				}),
 			)
-				.then((data) => {
-					setPlacedOrder({ ...order, id: data.payload, user: user });
-					finaliseOrder();
+				.then(() => {
+					finaliseOrder(user);
 				})
 				.catch((error) =>
 					notifications.show({
@@ -239,9 +234,7 @@ function CartModal(props: CartModalProps) {
 						setIsPlacingOrder(false);
 					}}
 					onSuccess={() => {
-						setShowPaymentHandler(false);
-						setPlacedOrder({ ...order, id: "temp-order-id", user: user });
-						finaliseOrder();
+						finaliseOrder(user);
 					}}
 					onFailure={(error) => {
 						console.error(error);
