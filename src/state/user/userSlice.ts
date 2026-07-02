@@ -108,5 +108,4 @@ export const selectUserLoyaltyPoints = (state: RootState) =>
 export const selectRecentlyOrderedItems = (state: RootState) =>
 	state.user.data?.recent_items;
 
-export const selectUserOrders = (state: RootState) =>
-	state.user.data?.orders?.filter(({ paid }) => paid);
+export const selectUserOrders = (state: RootState) => state.user.data?.orders;
