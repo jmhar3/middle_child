@@ -81,7 +81,7 @@ export const deleteModifier = createAsyncThunk(
 		const { error } = await supabase.from("modifiers").delete().eq("id", id);
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			notifications.show({
 				withCloseButton: false,
 				message: error.message,

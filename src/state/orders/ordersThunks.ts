@@ -112,10 +112,8 @@ export const placeOrder = createAsyncThunk(
 			)
 			.single();
 
-		console.log(order.data);
-
 		if (order.error) {
-			console.log(order.error);
+			console.error(order.error);
 			throw Error(order.error.message);
 		} else {
 			// for each order item, create order item and modifiers
@@ -132,7 +130,7 @@ export const placeOrder = createAsyncThunk(
 					.single();
 
 				if (orderItem.error) {
-					console.log(orderItem.error);
+					console.error(orderItem.error);
 					throw Error(orderItem.error.message);
 				} else {
 					if (item.modifiers) {
@@ -158,11 +156,10 @@ export const placeOrder = createAsyncThunk(
 export const updateOrder = createAsyncThunk(
 	"menu/updateOrder",
 	async ({ id, ...order }: Partial<PlacedOrderType>) => {
-		console.log("update order: ", order);
 		const { error } = await supabase.from("orders").update(order).eq("id", id);
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			throw Error(error.message);
 		}
 
@@ -179,7 +176,7 @@ export const completeOrder = createAsyncThunk(
 			.eq("id", orderId);
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			throw Error(error.message);
 		}
 

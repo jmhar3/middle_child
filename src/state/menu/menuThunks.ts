@@ -108,7 +108,7 @@ export const upsertSections = createAsyncThunk(
 			);
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			throw Error(error.message);
 		}
 
@@ -143,7 +143,7 @@ export const updateSection = createAsyncThunk(
 			);
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			throw Error(error.message);
 		}
 
@@ -160,7 +160,7 @@ export const deleteSection = createAsyncThunk(
 			.eq("id", id);
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			notifications.show({
 				withCloseButton: false,
 				message: error.message,
