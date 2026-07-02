@@ -57,7 +57,7 @@ export const upsertOptions = createAsyncThunk(
 			.select();
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			throw Error(error.message);
 		}
 
