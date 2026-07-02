@@ -121,13 +121,22 @@ function Menu() {
 		[orderItems],
 	);
 
+	const menuMinusOther = useMemo(() => {
+		return menu.filter((section) => section.label !== "Other");
+	}, [menu]);
+
+	const otherSection = useMemo(() => {
+		return menu.find((section) => section.label === "Other");
+	}, [menu]);
+
 	const orderTotal = useMemo(() => {
-		return orderItems
+		const total = orderItems
 			?.map(
 				(item) =>
 					calculateOrderItemPrice(item.item, item.modifiers) * item.quantity,
 			)
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+		return total || 0;
 	}, [orderItems]);
 
 	const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
@@ -241,7 +250,6 @@ function Menu() {
 				menu.length > 0 &&
 				orderItems &&
 				orderItems.length > 0 &&
-				orderTotal &&
 				!isLoading &&
 				!isCartModalOpen &&
 				!showPlacedOrder &&
@@ -327,7 +335,7 @@ function Menu() {
 						</Accordion.Item>
 					)}
 
-					{menu.map((section) => (
+					{menuMinusOther.map((section) => (
 						<Accordion.Item key={section.label} value={section.label}>
 							<Accordion.Control disabled={!section.is_in_stock}>
 								<Text component="span">{section.label.toUpperCase()}</Text>
@@ -348,6 +356,21 @@ function Menu() {
 							</Accordion.Panel>
 						</Accordion.Item>
 					))}
+
+					{otherSection && (
+						<Stack gap="0" bg="white">
+							{otherSection.items.map((menuItem, index) => (
+								<>
+									{index !== 0 && <Divider />}
+									<MenuItemButton
+										key={menuItem.label}
+										item={menuItem}
+										onClick={() => onMenuItemClick(menuItem)}
+									/>
+								</>
+							))}
+						</Stack>
+					)}
 				</Accordion>
 			</Stack>
 			{selectedMenuItem && (
