@@ -19,10 +19,11 @@ import {
 import { supabase } from "../../supabase";
 import OrderSummary from "./OrderSummary";
 
-import type { PlacedOrderType } from "../../state/types";
+import type { PendingOrderType } from "../../state/types";
 
 interface PaymentHandlerProps {
-	order: PlacedOrderType;
+	userId: string;
+	order: PendingOrderType;
 	isOpen: boolean;
 	onClose: () => void;
 	onSuccess: () => void;
@@ -30,11 +31,44 @@ interface PaymentHandlerProps {
 }
 
 function PaymentHandler(props: PaymentHandlerProps) {
-	const { order, isOpen, onClose, onSuccess, onFailure } = props;
+	const { userId, order, isOpen, onClose, onSuccess, onFailure } = props;
+
 	const squareAppId = import.meta.env.VITE_SQUARE_APP_ID;
 	const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID;
 
 	const [tokenSuccess, setTokenSuccess] = useState(false);
+
+	const placeOrder = (token: string) => {
+		supabase.functions
+			.invoke("square-api", {
+				body: {
+					name: "Functions",
+					sourceId: token,
+					userId: userId,
+					dueAt: order.due_at,
+					total: order.total,
+					note: order.note,
+					orderItems: order.items.map((item) => ({
+						menuItemId: item.item.id,
+						quantity: item.quantity,
+						note: item.note,
+						modifiers: item.modifiers?.map((modifier) => modifier.id),
+					})),
+				},
+			})
+			.then((data) => {
+				console.log(data);
+				console.log("DATA IS OK: ", data.data === "ok");
+				if (data.data === "ok") {
+					console.log("SUCCESS");
+					onSuccess();
+				} else {
+					console.error(data.error);
+					onFailure(data.error);
+				}
+			})
+			.catch((error: string) => onFailure(error));
+	};
 
 	return (
 		<Modal
@@ -71,19 +105,7 @@ function PaymentHandler(props: PaymentHandlerProps) {
 							console.info({ token, buyer });
 							if (token.status === "OK") {
 								setTokenSuccess(true);
-								supabase.functions
-									.invoke("square-api", {
-										body: {
-											name: "Functions",
-											amount: order.total * 100,
-											sourceId: token.token,
-											orderId: order.id,
-										},
-									})
-									.then((data) =>
-										data.error ? onFailure(data.error) : onSuccess(),
-									)
-									.catch((error: string) => onFailure(error));
+								placeOrder(token.token);
 							}
 						}}
 						createPaymentRequest={() => ({
