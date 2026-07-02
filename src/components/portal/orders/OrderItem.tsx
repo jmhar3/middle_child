@@ -88,19 +88,19 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
 						</Flex>
 					)}
 
-					{menuItem.reference_code && !showCode && (
-						<Text fw="bold" size="lg">
-							{menuItem.label}
-							{modifiers && ", "}
-							{modifiers?.map(({ label }) => label).join(", ")}
-						</Text>
-					)}
-
-					{!menuItem.reference_code && (
-						<Text fw="bold" size="lg">
-							{menuItem.label}
-						</Text>
-					)}
+					{(menuItem.reference_code && !showCode) ||
+						(!menuItem.reference_code && (
+							<Text fw="bold" size="lg">
+								{menuItem.label}
+								{modifiers && " - "}
+								{modifiers
+									?.map(({ label }) =>
+										label === "Full Cream" ? undefined : label,
+									)
+									.filter((label) => label)
+									.join(", ")}
+							</Text>
+						))}
 				</Flex>
 
 				{note && <Text fs="italic">Note: {note}</Text>}
