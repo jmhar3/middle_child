@@ -35,7 +35,6 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
         )
       )`,
 		)
-		.eq("paid", true)
 		.order("due_at");
 
 	if (error) {
@@ -93,7 +92,7 @@ interface PlaceOrderProps {
 export const placeOrder = createAsyncThunk(
 	"menu/placeOrder",
 	async ({ userId, orderData }: PlaceOrderProps) => {
-		// create order
+		// create user order
 		const order = await supabase
 			.from("orders")
 			.insert({
@@ -137,6 +136,7 @@ export const placeOrder = createAsyncThunk(
 					throw Error(orderItem.error.message);
 				} else {
 					if (item.modifiers) {
+						// for each order item, create modifiers
 						item.modifiers.forEach(async (modifier) => {
 							await supabase
 								.from("order_items_modifiers")
