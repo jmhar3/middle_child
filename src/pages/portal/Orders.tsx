@@ -78,12 +78,14 @@ function Orders() {
 	const user = useAppSelector(selectUser);
 
 	const isLoading =
-		modifiersStatus === "pending" ||
-		storeInfoStatus === "pending" ||
-		orderTimesStatus === "pending" ||
-		menuStatus === "pending" ||
-		ordersStatus === "pending" ||
-		userStatus === "pending";
+		!orders &&
+		!storeInfo &&
+		(modifiersStatus === "pending" ||
+			storeInfoStatus === "pending" ||
+			orderTimesStatus === "pending" ||
+			menuStatus === "pending" ||
+			ordersStatus === "pending" ||
+			userStatus === "pending");
 
 	useEffect(() => {
 		if (userStatus === "idle") {
