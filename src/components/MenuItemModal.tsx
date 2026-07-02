@@ -143,15 +143,6 @@ function MenuItemModal(props: MenuItemModalProps) {
 				)}
 				{menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
 
-				{menuItem.modifiers && menuItem.modifiers.length > 0 && (
-					<ModifierCheckbox
-						isRequired={false}
-						modifiers={menuItem.modifiers}
-						selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
-						onModifierSelect={onModifierSelect}
-					/>
-				)}
-
 				{sortedOptions?.map((modifierCategory) =>
 					modifierCategory.allow_multiple_selections ? (
 						<ModifierCheckbox
@@ -182,6 +173,15 @@ function MenuItemModal(props: MenuItemModalProps) {
 							{...modifierCategory}
 						/>
 					),
+				)}
+
+				{menuItem.modifiers && menuItem.modifiers.length > 0 && (
+					<ModifierCheckbox
+						isRequired={false}
+						modifiers={menuItem.modifiers}
+						selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
+						onModifierSelect={onModifierSelect}
+					/>
 				)}
 
 				<NoteInput label="Notes" note={note} setNote={setNote} />
