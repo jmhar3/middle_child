@@ -242,6 +242,7 @@ function Menu() {
 				orderItems &&
 				orderItems.length > 0 &&
 				orderTotal &&
+				!isLoading &&
 				!isCartModalOpen &&
 				!showPlacedOrder &&
 				!isMenuItemModalOpen && (
@@ -284,7 +285,7 @@ function Menu() {
 						)}
 					</>
 				) : (
-					<Text>Start drinking to earn points!</Text>
+					<Text>Start drinking to earn free coffee!</Text>
 				)}
 			</Stack>
 			<Divider w="100%" />
