@@ -57,10 +57,7 @@ function PaymentHandler(props: PaymentHandlerProps) {
 				},
 			})
 			.then((data) => {
-				console.log(data);
-				console.log("DATA IS OK: ", data.data === "ok");
 				if (data.data === "ok") {
-					console.log("SUCCESS");
 					onSuccess();
 				} else {
 					console.error(data.error);

@@ -183,8 +183,6 @@ function Orders() {
 		return weeksOrders.reduce((acc, order) => acc + order.total, 0);
 	}, [orders]);
 
-	console.log(orders);
-
 	return (
 		<PageLayout
 			navComponents={
