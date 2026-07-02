@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Box, Button, Divider, Flex, Stack, Text } from "@mantine/core";
 
 import CheckIcon from "../../icons/CheckIcon";
@@ -22,6 +23,10 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
 		onModifierSelect,
 		selectedModifiers,
 	} = props;
+
+	const sortedModifiers = useMemo(() => {
+		return [...modifiers].sort((a, b) => (a.order || 1) - (b.order || 1));
+	}, [modifiers]);
 
 	return (
 		<Stack w="100%" gap="6">
@@ -50,7 +55,7 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
 				bdrs="sm"
 			>
 				<Button.Group w="100%" orientation="vertical">
-					{modifiers.map((modifier, index) => {
+					{sortedModifiers.map((modifier, index) => {
 						const isSelected = selectedModifiers?.includes(modifier);
 
 						return (

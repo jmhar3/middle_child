@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Box, Button, Divider, Flex, Stack, Text } from "@mantine/core";
 
 import type { Modifier } from "../../state/types";
@@ -20,6 +21,10 @@ function ModifierRadio(props: ModifierRadioProps) {
 		onModifierSelect,
 		selectedModifiers,
 	} = props;
+
+	const sortedModifiers = useMemo(() => {
+		return [...modifiers].sort((a, b) => (a.order || 1) - (b.order || 1));
+	}, [modifiers]);
 
 	const onSelection = (newSelection: Modifier) => {
 		const previousSelection = selectedModifiers?.[0];
@@ -56,7 +61,7 @@ function ModifierRadio(props: ModifierRadioProps) {
 				bdrs="sm"
 			>
 				<Button.Group w="100%" orientation="vertical">
-					{modifiers.map((modifier, index) => {
+					{sortedModifiers.map((modifier, index) => {
 						const selectedModifier = selectedModifiers?.[0];
 						const isSelected = selectedModifier === modifier;
 						return (
