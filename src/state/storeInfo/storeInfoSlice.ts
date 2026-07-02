@@ -22,15 +22,6 @@ const initialState: StoreInfoState = {
 			long: 15,
 			order: 0,
 		},
-		weekly_record: {
-			monday: 0,
-			tuesday: 0,
-			wednesday: 0,
-			thursday: 0,
-			friday: 0,
-			saturday: 0,
-			sunday: 0,
-		},
 	},
 	status: "idle",
 };
