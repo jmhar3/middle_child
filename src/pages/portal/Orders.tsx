@@ -138,9 +138,7 @@ function Orders() {
 			{
 				event: "INSERT",
 			},
-			(payload) => {
-				const order = payload.payload.record;
-				console.log(order);
+			() => {
 				dispatch(fetchOrders());
 				audioNotification.play().catch((error) => {
 					console.error(
@@ -155,6 +153,15 @@ function Orders() {
 	const todaysOrders = orders.filter((order) =>
 		dayjs(order.due_at).isSame(dayjs(), "day"),
 	);
+
+	const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
+
+	const weeklyTotal = useMemo(() => {
+		const weeksOrders = orders.filter((order) =>
+			dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
+		);
+		return weeksOrders.reduce((acc, order) => acc + order.total, 0);
+	}, [orders]);
 
 	const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
 		setIsUpdatingOrderTime(true);
@@ -173,15 +180,6 @@ function Orders() {
 				setIsUpdatingOrderTime(false);
 			});
 	};
-
-	const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
-
-	const weeklyTotal = useMemo(() => {
-		const weeksOrders = orders.filter((order) =>
-			dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
-		);
-		return weeksOrders.reduce((acc, order) => acc + order.total, 0);
-	}, [orders]);
 
 	return (
 		<PageLayout
