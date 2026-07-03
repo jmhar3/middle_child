@@ -22,7 +22,8 @@ import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
 import { upsertMenuItems } from "../../state/menuItems/menuItemsThunks";
 import { upsertModifiers } from "../../state/modifiers/modifierThunks";
 import { updateSection } from "../../state/menu/menuThunks";
-import type { MenuSection } from "../../state/types";
+
+import type { MenuItemType, MenuSection, Modifier } from "../../state/types";
 
 interface UpdateStockDrawerProps {
 	isOpen: boolean;
@@ -38,6 +39,28 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 	const ingredients = useAppSelector(selectAllIngredients);
 	const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
+	// menu view state toggled between Checkbox List / Multiselect
+	const [menuView, setMenuView] = useState<"Checkbox List" | "Multiselect">(
+		"Multiselect",
+	);
+
+	// loading state
+	const [isUpdatingStock, setIsUpdatingStock] = useState(false);
+
+	// edited stock state
+	const [outOfStockSections, setOutOfStockSections] = useState<
+		MenuSection[] | null
+	>(null);
+	const [outOfStockIngredients, setOutOfStockIngredients] = useState<
+		Modifier[] | null
+	>(null);
+	const [outOfStockMenuItems, setOutOfStockMenuItems] = useState<
+		MenuItemType[] | null
+	>(null);
+	const [inStockMenuItems, setInStockMenuItems] = useState<
+		MenuItemType[] | null
+	>(null);
+
 	// existing stock
 	const existingOutOfStockSections = menu.filter(
 		(section) => !section.is_in_stock,
@@ -50,27 +73,26 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 	);
 	const existingInStockMenuItems = menuItems.filter((item) => item.is_in_stock);
 
-	// menu view state toggled between Checkbox List / Multiselect
-	const [menuView, setMenuView] = useState<"Checkbox List" | "Multiselect">(
-		"Multiselect",
-	);
+	if (menu.length > 0) {
+		if (outOfStockSections === null) {
+			setOutOfStockSections(existingOutOfStockSections);
+		}
+	}
 
-	// loading state
-	const [isUpdatingStock, setIsUpdatingStock] = useState(false);
+	if (ingredients.length > 0) {
+		if (outOfStockIngredients === null) {
+			setOutOfStockIngredients(existingOutOfStockIngredients);
+		}
+	}
 
-	// edited stock state
-	const [outOfStockSections, setOutOfStockSections] = useState(
-		existingOutOfStockSections,
-	);
-	const [outOfStockIngredients, setOutOfStockIngredients] = useState(
-		existingOutOfStockIngredients,
-	);
-	const [outOfStockMenuItems, setOutOfStockMenuItems] = useState(
-		existingOutOfStockMenuItems,
-	);
-	const [inStockMenuItems, setInStockMenuItems] = useState(
-		existingInStockMenuItems,
-	);
+	if (menuItems.length > 0) {
+		if (outOfStockMenuItems === null) {
+			setOutOfStockMenuItems(existingOutOfStockMenuItems);
+		}
+		if (inStockMenuItems === null) {
+			setInStockMenuItems(existingInStockMenuItems);
+		}
+	}
 
 	const onSelectOutOfStockSections = (values: string[]) => {
 		setOutOfStockSections(
@@ -113,8 +135,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 		setIsUpdatingStock(true);
 
 		if (
+			outOfStockSections &&
 			JSON.stringify(outOfStockSections) !==
-			JSON.stringify(existingOutOfStockSections)
+				JSON.stringify(existingOutOfStockSections)
 		) {
 			const newlyOutOfStockSections = outOfStockSections
 				.filter((section) => !existingOutOfStockSections.includes(section))
@@ -153,8 +176,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 		}
 
 		if (
+			outOfStockIngredients &&
 			JSON.stringify(outOfStockIngredients) !==
-			JSON.stringify(existingOutOfStockIngredients)
+				JSON.stringify(existingOutOfStockIngredients)
 		) {
 			const newlyOutOfStockIngredients = outOfStockIngredients
 				.filter(
@@ -192,8 +216,9 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 		}
 
 		if (
+			outOfStockMenuItems &&
 			JSON.stringify(outOfStockMenuItems) !==
-			JSON.stringify(existingOutOfStockMenuItems)
+				JSON.stringify(existingOutOfStockMenuItems)
 		) {
 			const newlyOutOfStockMenuItems = outOfStockMenuItems
 				.filter((item) => !existingOutOfStockMenuItems.includes(item))
@@ -296,31 +321,32 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 						<>
 							<Text>Toggle off out of stock menu items</Text>
 
-							{menu.map((section, index) => (
-								<>
-									{index > 0 && <Divider />}
-									<Checkbox.Group
-										key={section.id}
-										label={section.label}
-										value={inStockMenuItems.map(({ id }) => id)}
-										onChange={onSelectInStockMenuItems}
-									>
-										<Group mt="xs">
-											{section.items.map((item) => (
-												<Checkbox
-													key={item.id}
-													value={item.id}
-													label={item.label}
-												/>
-											))}
-										</Group>
-									</Checkbox.Group>
-								</>
-							))}
+							{inStockMenuItems &&
+								menu.map((section, index) => (
+									<>
+										{index > 0 && <Divider />}
+										<Checkbox.Group
+											key={section.id}
+											label={section.label}
+											value={inStockMenuItems.map(({ id }) => id)}
+											onChange={onSelectInStockMenuItems}
+										>
+											<Group mt="xs">
+												{section.items.map((item) => (
+													<Checkbox
+														key={item.id}
+														value={item.id}
+														label={item.label}
+													/>
+												))}
+											</Group>
+										</Checkbox.Group>
+									</>
+								))}
 						</>
 					)}
 
-					{menuView === "Multiselect" && (
+					{outOfStockMenuItems && menuView === "Multiselect" && (
 						<>
 							<Text>Select out of stock menu items</Text>
 
