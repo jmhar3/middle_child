@@ -22,7 +22,7 @@ function OrderSummary({ order }: { order: PendingOrderType }) {
 							{item.note && <Text>{item.note}</Text>}
 						</Stack>
 
-						<Text>
+						<Text pr="sm">
 							$
 							{(
 								calculateOrderItemPrice(item.item, item.modifiers) *
