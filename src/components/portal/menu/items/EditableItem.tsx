@@ -2,15 +2,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 
 import {
-	Text,
 	Flex,
 	Group,
-	Image,
 	Stack,
 	Switch,
 	Textarea,
 	TextInput,
-	FileButton,
 	MultiSelect,
 	NumberInput,
 } from "@mantine/core";
@@ -37,14 +34,11 @@ function EditableItem(props: EditableItemProps) {
 	const modifiers = useAppSelector(selectAllModifiers);
 	const itemOptions = useAppSelector(selectAllItemOptions);
 
-	const [file, setFile] = useState<File | null>(null);
 	const [editedMenuItem, setEditedMenuItem] = useState<MenuItemType>(menuItem);
 	const [isUpdatingMenuItems, setIsUpdatingMenuItems] = useState(false);
 
 	const [showItemPreview, { open: openItemPreview, close: closeItemPreview }] =
 		useDisclosure(false);
-
-	const imageUrl = file && URL.createObjectURL(file);
 
 	const onUpsertMenuItem = () => {
 		setIsUpdatingMenuItems(true);
@@ -64,8 +58,6 @@ function EditableItem(props: EditableItemProps) {
 			/>
 
 			<Stack p="sm">
-				{file && <Image src={imageUrl} />}
-
 				<Group gap="sm" grow align="flex-end">
 					<TextInput
 						withAsterisk
@@ -146,18 +138,6 @@ function EditableItem(props: EditableItemProps) {
 							}))
 						}
 					/>
-
-					<Stack gap="3">
-						<Text>Image: {file?.name}</Text>
-						<FileButton onChange={setFile} accept="image/png,image/jpeg">
-							{(props) => (
-								<StyledButton
-									{...props}
-									label={file ? "Replace image" : "Upload image"}
-								/>
-							)}
-						</FileButton>
-					</Stack>
 				</Group>
 
 				<Flex justify="space-between">

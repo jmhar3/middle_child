@@ -137,6 +137,8 @@ function CartModal(props: CartModalProps) {
 		{ min: pickUpTimeFromNow },
 	);
 
+	if (pickUpTimeFromNow > pickUpTime) increment();
+
 	const order: PendingOrderType = {
 		items: items,
 		total: orderTotal,

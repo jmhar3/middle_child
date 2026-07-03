@@ -2,16 +2,7 @@ import { useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
 import { v4 as uuid } from "uuid";
 
-import {
-	em,
-	Box,
-	Text,
-	Image,
-	Modal,
-	Stack,
-	Button,
-	Divider,
-} from "@mantine/core";
+import { em, Box, Text, Modal, Stack, Button, Divider } from "@mantine/core";
 
 import ModifierCheckbox from "./customer/ModifierCheckbox";
 import ButtonWithPrice from "./customer/ButtonWithPrice";
@@ -141,7 +132,6 @@ function MenuItemModal(props: MenuItemModalProps) {
 						<Divider w="100%" />
 					</>
 				)}
-				{menuItem.image && <Image w="100%" radius="sm" src={menuItem.image} />}
 
 				{sortedOptions?.map((modifierCategory) =>
 					modifierCategory.allow_multiple_selections ? (

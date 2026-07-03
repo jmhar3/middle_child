@@ -37,7 +37,6 @@ export interface MenuItemType {
 	label: string;
 	description?: string;
 	price: number;
-	image?: string;
 	is_in_stock: boolean;
 	has_long_prep_time: boolean;
 	is_applicable_loyalty_item: boolean;
@@ -128,7 +127,6 @@ export interface SupabaseMenuItem {
 	id: string;
 	label: string;
 	price: number;
-	image?: string;
 	order: number;
 	description?: string;
 	is_in_stock: boolean;
