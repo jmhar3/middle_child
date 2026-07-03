@@ -37,6 +37,9 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
 		}
 	}, [dispatch, orderTimesStatus]);
 
+	if (orderTimes.length > 0 && editedOrderTimes.length === 0)
+		setEditedOrderTimes(orderTimes);
+
 	const updateOrderTime = (time: number) => {
 		setEditedOrderTimes((prevOrderTimes) =>
 			prevOrderTimes.map((orderTime) => {
