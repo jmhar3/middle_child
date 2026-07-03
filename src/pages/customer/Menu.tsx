@@ -222,7 +222,6 @@ function Menu() {
 	const onMenuItemClick = (menuItem: MenuItemType) => {
 		if (
 			menuItem.description ||
-			menuItem.image ||
 			menuItem.modifiers ||
 			menuItem.modifierCategories
 		) {
