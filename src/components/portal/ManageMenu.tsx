@@ -56,7 +56,7 @@ function ManageMenu() {
 						color="darkslategray"
 						size={isMobile ? "md" : "lg"}
 					>
-						Manage Store
+						Edit Menu
 					</Button>
 				</Menu.Target>
 

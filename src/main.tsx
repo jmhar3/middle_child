@@ -5,14 +5,13 @@ import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
 
+import Auth from "./pages/Auth.js";
+import Portal from "./pages/portal/Portal.js";
 import AboutUs from "./pages/customer/AboutUs.js";
 import Partners from "./pages/customer/Partners.js";
 import Home from "./pages/customer/Home.js";
 import CustomerMenu from "./pages/customer/Menu.js";
 import Account from "./pages/customer/Account.js";
-
-import Orders from "./pages/portal/Orders.js";
-import EditMenu from "./pages/portal/Menu.js";
 
 import { store } from "./state/store.js";
 
@@ -24,7 +23,6 @@ import "@fontsource/poppins";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "./global.css";
-import Auth from "./pages/Auth.js";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -46,8 +44,8 @@ createRoot(document.getElementById("root")!).render(
 						{/* Private Portal */}
 						<Route path="portal">
 							<Route index element={<Navigate to="/portal/orders" />} />
-							<Route path="orders" element={<Orders />} />
-							<Route path="menu" element={<EditMenu />} />
+							<Route path="orders" element={<Portal />} />
+							<Route path="menu" element={<Portal />} />
 						</Route>
 					</Routes>
 				</BrowserRouter>
