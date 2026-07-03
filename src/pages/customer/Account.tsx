@@ -49,27 +49,34 @@ function Account() {
 		setName(user.name);
 	}
 
+	const isLoading = userStatus === "pending";
+
 	const onUpdateUserName = () => {
-		dispatch(updateUser({ ...user, name: name }));
+		if (user) {
+			dispatch(updateUser({ id: user.id, name: name }));
+			dispatch(fetchUser());
+		}
 	};
 
 	const onSignOut = () => {
 		dispatch(signOutUser());
 	};
 
-	if (!user)
-		return (
-			<LoginModal
-				isModalOpen={true}
-				onModalClose={() => (user ? navigate("/account") : navigate("/"))}
-			/>
-		);
-
 	return (
 		<PageLayout title="Account">
+			{!user && !isLoading && (
+				<LoginModal
+					isModalOpen={true}
+					onModalClose={() => (user ? navigate("/account") : navigate("/"))}
+				/>
+			)}
 			<Stack w="100%" p="sm">
 				<Stack w="100%">
-					<StyledButton label="Sign Out" onClick={onSignOut} />
+					<StyledButton
+						label="Sign Out"
+						onClick={onSignOut}
+						isDisabled={isLoading}
+					/>
 
 					<Divider />
 
@@ -81,7 +88,11 @@ function Account() {
 							label="Update Name"
 							onChange={(e) => setName(e.target.value)}
 						/>
-						<StyledButton label="Update Name" onClick={onUpdateUserName} />
+						<StyledButton
+							label="Update Name"
+							onClick={onUpdateUserName}
+							isDisabled={isLoading}
+						/>
 					</Stack>
 				</Stack>
 

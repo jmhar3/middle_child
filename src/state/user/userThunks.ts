@@ -98,13 +98,8 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
 
 export const updateUser = createAsyncThunk(
 	"user/updateUser",
-	async ({ id, ...user }: Partial<User>) => {
-		const { data, error } = await supabase
-			.from("users")
-			.update(user)
-			.eq("id", id)
-			.select()
-			.single();
+	async ({ id, ...user }: Partial<Omit<User, "orders">>) => {
+		const { error } = await supabase.from("users").update(user).eq("id", id);
 
 		if (error) {
 			notifications.show({
@@ -117,8 +112,6 @@ export const updateUser = createAsyncThunk(
 			console.error(error);
 			throw Error(error.message);
 		}
-
-		return data;
 	},
 );
 

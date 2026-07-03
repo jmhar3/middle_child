@@ -46,9 +46,8 @@ const userSlice = createSlice({
 			.addCase(updateUser.pending, (state) => {
 				state.status = "pending";
 			})
-			.addCase(updateUser.fulfilled, (state, action) => {
+			.addCase(updateUser.fulfilled, (state) => {
 				state.status = "succeeded";
-				state.data = action.payload;
 			})
 			.addCase(updateUser.rejected, (state) => {
 				state.status = "failed";
