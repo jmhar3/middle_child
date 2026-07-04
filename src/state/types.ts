@@ -37,6 +37,7 @@ export interface MenuItemType {
 	label: string;
 	description?: string;
 	price: number;
+	large_price?: number;
 	is_in_stock: boolean;
 	has_long_prep_time: boolean;
 	is_applicable_loyalty_item: boolean;
