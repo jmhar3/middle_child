@@ -156,7 +156,3 @@ function Orders(props: OrdersProps) {
 }
 
 export default Orders;
-
-// const ProtectedPortal = withAuthenticationRequired(Orders);
-
-// export default ProtectedPortal;
