@@ -25,8 +25,7 @@ export const fetchItemOptions = createAsyncThunk(
 	"itemOptions/fetchItemOptions",
 	async () => {
 		const { data, error } = await supabase.from("options").select(
-			`
-        *,
+			`*,
         options_modifiers (
           modifiers (*)
         )`,
