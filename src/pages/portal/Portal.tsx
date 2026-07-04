@@ -149,19 +149,19 @@ function Portal() {
 						value={activeTab}
 						onChange={onChangeTab}
 						data={[
-							{ label: "Take Orders", value: "orders" },
-							{ label: "Manage Menu", value: "menu" },
+							{ label: "Orders", value: "orders" },
+							{ label: "Menu", value: "menu" },
 						]}
 					/>
 
 					<Group gap="sm" w="fit-content">
-						{activeTab === "menu" ? (
-							<ManageMenu />
-						) : (
+						{activeTab === "orders" && (
 							<OrdersNavItems
 								openToggleStoreOpenModal={openToggleStoreOpenModal}
 							/>
 						)}
+
+						<ManageMenu />
 					</Group>
 				</Flex>
 				<Tabs value={activeTab}>
@@ -184,7 +184,6 @@ function Portal() {
 						</Stack>
 					</Tabs.Panel>
 				</Tabs>
-				);
 			</Box>
 		);
 
