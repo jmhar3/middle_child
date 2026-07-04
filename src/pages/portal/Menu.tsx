@@ -33,7 +33,3 @@ function Menu() {
 }
 
 export default Menu;
-
-// const ProtectedPortal = withAuthenticationRequired(Menu);
-
-// export default ProtectedPortal;
