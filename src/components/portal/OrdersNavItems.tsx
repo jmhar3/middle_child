@@ -6,8 +6,6 @@ import StyledButton from "../StyledButton";
 import { useAppSelector } from "../../state/hooks";
 import { selectStoreIsOpen } from "../../state/storeInfo/storeInfoSlice";
 import { selectOrders } from "../../state/orders/ordersSlice";
-import { useDisclosure } from "@mantine/hooks";
-import UpdateStockDrawer from "./UpdateStockDrawer";
 
 interface OrdersNavItemsProps {
 	openToggleStoreOpenModal: () => void;
@@ -15,11 +13,6 @@ interface OrdersNavItemsProps {
 
 function OrdersNavItems(props: OrdersNavItemsProps) {
 	const { openToggleStoreOpenModal } = props;
-
-	const [
-		showUpdateStockDrawer,
-		{ open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
-	] = useDisclosure(false);
 
 	const orders = useAppSelector(selectOrders);
 	const storeIsOpen = useAppSelector(selectStoreIsOpen);
@@ -38,11 +31,6 @@ function OrdersNavItems(props: OrdersNavItemsProps) {
 
 	return (
 		<>
-			<UpdateStockDrawer
-				isOpen={showUpdateStockDrawer}
-				onClose={closeUpdateStockDrawer}
-			/>
-
 			<Stack gap="0">
 				<Flex justify="space-between" gap="xs">
 					<Text>Today:</Text>
@@ -53,12 +41,6 @@ function OrdersNavItems(props: OrdersNavItemsProps) {
 					<Text>${weeklyTotal.toFixed(2)}</Text>
 				</Flex>
 			</Stack>
-
-			<StyledButton
-				variant="outline"
-				label="Update Stock"
-				onClick={openUpdateStockDrawer}
-			/>
 
 			{storeIsOpen && (
 				<StyledButton
