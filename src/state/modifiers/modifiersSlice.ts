@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
 	deleteModifier,
 	fetchModifiers,
+	insertModifier,
+	updateModifier,
 	upsertModifiers,
 } from "./modifierThunks";
 
@@ -104,6 +106,37 @@ const modifiersSlice = createSlice({
 				];
 			})
 			.addCase(upsertModifiers.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(updateModifier.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(updateModifier.fulfilled, (state, { payload }) => {
+				state.status = "succeeded";
+				const filteredState = state.allModifiers.filter(
+					({ id }) => id !== payload.id,
+				);
+				state.allModifiers = [...filteredState, payload];
+				if (payload.is_ingredient) {
+					state.ingredients = state.ingredients.filter(
+						({ id }) => id !== payload.id,
+					);
+				}
+			})
+			.addCase(updateModifier.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(insertModifier.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(insertModifier.fulfilled, (state, { payload }) => {
+				state.status = "succeeded";
+				state.allModifiers = [...state.allModifiers, payload];
+				if (payload.is_ingredient) {
+					state.ingredients = [...state.ingredients, payload];
+				}
+			})
+			.addCase(insertModifier.rejected, (state) => {
 				state.status = "failed";
 			})
 			.addCase(deleteModifier.pending, (state) => {

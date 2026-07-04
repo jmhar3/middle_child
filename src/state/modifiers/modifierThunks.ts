@@ -75,6 +75,109 @@ export const upsertModifiers = createAsyncThunk(
 	},
 );
 
+export const updateModifier = createAsyncThunk(
+	"modifiers/updateModifier",
+	async ({ id, ...modifier }: Partial<Modifier>) => {
+		const formattedModifier = {
+			...modifier,
+			is_in_stock: modifier.is_ingredient ? modifier.is_in_stock : null,
+		};
+
+		const { data, error } = await supabase
+			.from("modifiers")
+			.update(formattedModifier)
+			.eq("id", id)
+			.select()
+			.single();
+
+		if (error) {
+			console.error(error);
+			notifications.show({
+				withCloseButton: false,
+				message: error.message,
+				title: error.name,
+				position: "bottom-right",
+				color: "red",
+			});
+			throw Error(error.message);
+		}
+
+		return data;
+	},
+);
+
+interface InsertModifierParams {
+	modifier: Partial<Modifier>;
+	itemId?: string;
+	optionId?: string;
+}
+
+export const insertModifier = createAsyncThunk(
+	"modifiers/insertModifier",
+	async ({ modifier, itemId, optionId }: InsertModifierParams) => {
+		const formattedModifier = {
+			...modifier,
+			is_in_stock: modifier.is_ingredient ? modifier.is_in_stock : null,
+		};
+
+		const { data, error } = await supabase
+			.from("modifiers")
+			.insert(formattedModifier)
+			.select()
+			.single();
+
+		if (error) {
+			console.error(error);
+			notifications.show({
+				withCloseButton: false,
+				message: error.message,
+				title: error.name,
+				position: "bottom-right",
+				color: "red",
+			});
+			throw Error(error.message);
+		}
+
+		if (itemId) {
+			const itemModifier = await supabase
+				.from("menu_items_modifiers")
+				.insert({ menu_item_id: itemId, modifier_id: data.id });
+
+			if (itemModifier.error) {
+				console.error(itemModifier.error);
+				notifications.show({
+					withCloseButton: false,
+					message: itemModifier.error.message,
+					title: itemModifier.error.name,
+					position: "bottom-right",
+					color: "red",
+				});
+				throw Error(itemModifier.error.message);
+			}
+		}
+
+		if (optionId) {
+			const optionModifier = await supabase
+				.from("options_modifiers")
+				.insert({ option_id: optionId, modifier_id: data.id });
+
+			if (optionModifier.error) {
+				console.error(optionModifier.error);
+				notifications.show({
+					withCloseButton: false,
+					message: optionModifier.error.message,
+					title: optionModifier.error.name,
+					position: "bottom-right",
+					color: "red",
+				});
+				throw Error(optionModifier.error.message);
+			}
+		}
+
+		return data;
+	},
+);
+
 export const deleteModifier = createAsyncThunk(
 	"menu/deleteModifier",
 	async (id: string) => {
