@@ -32,13 +32,10 @@ function Home() {
       <Stack w="100%" gap="3" p="3">
         <NavButton label="Order Here for Pick Up" path="/menu" />
 
-        <NavButton
-          label={user ? "Manage Account" : "Login / Sign Up"}
-          path="/account"
-        />
-
         <NavButton label="About Us" path="/about-us" />
         <NavButton label="Also About Us (AI)" path="/about-us/ai" />
+
+        {/*<MenuButton label="Look Here & Don't Pick Up" path="/view-menu" />*/}
 
         <NavButton label="Our Partners" path="/partners" />
 
@@ -56,6 +53,11 @@ function Home() {
             isExternal
           />
         </Flex>
+
+        <NavButton
+          label={user ? "Manage Account" : "Login / Sign Up"}
+          path="/account"
+        />
 
         <NavButton label="Nudes" path="" />
 

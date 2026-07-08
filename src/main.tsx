@@ -22,6 +22,7 @@ import "@fontsource/poppins";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "./global.css";
+import ViewMenu from "./pages/customer/ViewMenu.js";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -35,6 +36,7 @@ createRoot(document.getElementById("root")!).render(
 
             {/* Customer Routes */}
             <Route index element={<Home />} />
+            <Route path="/view-menu" element={<ViewMenu />} />
             <Route path="about-us" element={<AboutUs />} />
             <Route path="about-us/ai" element={<AboutUs />} />
             <Route path="partners" element={<Partners />} />
