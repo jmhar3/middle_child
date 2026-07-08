@@ -146,17 +146,24 @@ function Weather() {
 
   return (
     weatherData?.temperature && (
-      <Flex gap="0" align="center" w="fit-content">
+      <Flex
+        pl="sm"
+        gap="0"
+        bdrs="sm"
+        align="center"
+        w="fit-content"
+        bg="darkslategray"
+      >
         <Text
           size="xl"
           fw="600"
           w="fit-content"
           variant="transparent"
-          c="darkslategray"
+          c="white"
         >
           {Math.round(weatherData?.temperature)}°C
         </Text>
-        <Image h="50px" w="50px" p="0" src={weatherCode?.image} />
+        <Image w="50px" p="0" src={weatherCode?.image} />
       </Flex>
     )
   );
