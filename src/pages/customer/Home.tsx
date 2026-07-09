@@ -132,8 +132,10 @@ function Home() {
 					</Flex>
 
 					<Flex
-						pb="sm"
-						gap={isMobile ? "sm" : "md"}
+						w="100%"
+						justify="center"
+						pb={isMobile ? "3px" : "sm"}
+						gap={isMobile ? "3px" : "sm"}
 						direction={isMobile ? "column" : "row"}
 					>
 						<Link
