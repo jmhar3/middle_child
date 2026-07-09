@@ -133,8 +133,8 @@ function Home() {
 
 					<Flex
 						pb="sm"
-						direction={isMobile ? "column" : "row"}
 						gap={isMobile ? "sm" : "md"}
+						direction={isMobile ? "column" : "row"}
 					>
 						<Link
 							icon={<MapPinIcon />}
