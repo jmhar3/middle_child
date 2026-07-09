@@ -1,5 +1,6 @@
-import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
+import { useMemo } from "react";
 import { useMediaQuery } from "@mantine/hooks";
+import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
 
 import { calculateOrderItemPrice } from "../../helpers";
 
@@ -22,6 +23,16 @@ function MenuItemButton(props: MenuItemButtonProps) {
 		? calculateOrderItemPrice(item, modifiers)
 		: item.price;
 
+  const formattedPrice = useMemo(() => {
+    if (totalPrice === 0) {
+      return "FREE"
+    } else if (totalPrice % 1 !== 0) {
+      return `$${totalPrice.toFixed((2))}`
+    } else {
+      return `$${totalPrice}`
+    }
+	}, [totalPrice])
+
 	return (
 		<Button
 			px="lg"
@@ -33,7 +44,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
 			justify="space-between"
 			disabled={!item.is_in_stock}
 			size={isMobile ? "sm" : "lg"}
-			rightSection={<Text fw={700}>${totalPrice}</Text>}
+			rightSection={<Text fw={700}>{formattedPrice}</Text>}
 			onClick={onClick}
 		>
 			<Stack gap="0" w="100%" align="flex-start" py="xs">
