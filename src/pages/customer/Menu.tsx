@@ -70,7 +70,7 @@ function Menu() {
 		}
 	}, [dispatch, menuStatus, storeInfoStatus, userStatus]);
 
-	if (!storeIsOpen) navigate("/");
+	if (!isLoading && !storeIsOpen) navigate("/");
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 	const localStorageCart = localStorage.getItem("cart");
