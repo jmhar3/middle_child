@@ -80,6 +80,7 @@ export interface OrderItem {
 	modifiers?: Modifier[];
 	quantity: number;
 	note?: string;
+	is_large?: boolean;
 }
 
 export interface Cart {

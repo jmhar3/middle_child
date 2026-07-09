@@ -1,13 +1,13 @@
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { Box, Group, Stack, Text } from "@mantine/core";
 
 import fartSound from "/assets/fart1.mp3";
 
+import Order from "../../components/portal/orders/Order";
 import StyledButton from "../../components/StyledButton";
-import OrdersList from "../../components/portal/orders/OrdersList";
 import ToggleStoreOpenModal from "../../components/portal/orders/ToggleStoreOpenModal";
 
 import { supabase } from "../../supabase";
@@ -82,6 +82,12 @@ function Orders(props: OrdersProps) {
 		dayjs(order.due_at).isSame(dayjs(), "day"),
 	);
 
+	const sortedOrders = useMemo(() => {
+		const incompleteOrders = orders.filter((order) => !order.is_complete);
+		const completedOrders = orders.filter((order) => order.is_complete);
+		return [...incompleteOrders, ...completedOrders];
+	}, [orders]);
+
 	const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
 		setIsUpdatingOrderTime(true);
 		dispatch(
@@ -138,7 +144,13 @@ function Orders(props: OrdersProps) {
 
 			{storeIsOpen ? (
 				todaysOrders &&
-				todaysOrders.length > 0 && <OrdersList orders={todaysOrders} />
+				todaysOrders.length > 0 && (
+					<Stack w="100%" px="sm">
+						{sortedOrders.map((order) => (
+							<Order key={order.id} order={order} />
+						))}
+					</Stack>
+				)
 			) : (
 				<Stack align="center" gap="sm" pt="3em">
 					<Text ta="center" mb="sm" size="1.6em" fw="600">

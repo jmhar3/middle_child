@@ -31,7 +31,7 @@ function ButtonWithPrice(props: ButtonWithPriceProps) {
 			justify="space-between"
 			size={isMobile ? "md" : "xl"}
 			bg={variant === "outline" ? "white" : undefined}
-			rightSection={<Text fw={700}>${price}</Text>}
+			rightSection={<Text fw={700}>{price}</Text>}
 			loading={isLoading}
 			onClick={onClick}
 		>

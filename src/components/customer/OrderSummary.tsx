@@ -11,7 +11,8 @@ function OrderSummary({ order }: { order: PendingOrderType }) {
 					<Flex justify="space-between" align="center">
 						<Stack gap="0" key={item.id} p="sm">
 							<Text>
-								{item.quantity} x {item.item.label}
+								{item.quantity} x {item.is_large ? "Large " : ""}
+								{item.item.label}
 							</Text>
 							{item.modifiers && (
 								<Text size="sm">
@@ -25,8 +26,11 @@ function OrderSummary({ order }: { order: PendingOrderType }) {
 						<Text pr="sm">
 							$
 							{(
-								calculateOrderItemPrice(item.item, item.modifiers) *
-								item.quantity
+								calculateOrderItemPrice(
+									item.item,
+									item.modifiers,
+									item.is_large,
+								) * item.quantity
 							).toFixed(2)}
 						</Text>
 					</Flex>

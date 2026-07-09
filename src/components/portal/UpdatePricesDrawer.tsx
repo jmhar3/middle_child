@@ -38,9 +38,6 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		large?: number;
 	}>({ base: 0 });
 
-	console.log(newPrices);
-	console.log(itemsToEdit);
-
 	const onCloseDrawer = () => {
 		props.onClose();
 		setNewPrices({ base: 0 });

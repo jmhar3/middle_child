@@ -22,7 +22,6 @@ import { fetchUser } from "../../state/user/userThunks";
 
 import {
 	selectStoreInfo,
-	selectStoreIsOpen,
 	selectStoreInfoStatus,
 } from "../../state/storeInfo/storeInfoSlice";
 
@@ -52,7 +51,6 @@ function Menu() {
 	const menu = useAppSelector(selectMenu);
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
-	const storeIsOpen = useAppSelector(selectStoreIsOpen);
 	const userStatus = useAppSelector(selectUserStatus);
 	const recentlyOrderedItems = useAppSelector(selectRecentlyOrderedItems);
 	const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
@@ -72,9 +70,8 @@ function Menu() {
 		if (userStatus === "idle") {
 			dispatch(fetchUser());
 		}
-	}, [dispatch, menuStatus, storeInfoStatus, userStatus]);
-
-	if (!isLoading && !storeIsOpen) navigate("/");
+		if (storeInfo.id && !storeInfo.is_open) navigate("/");
+	}, [dispatch, menuStatus, storeInfoStatus, userStatus, navigate, storeInfo]);
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 	const localStorageCart = localStorage.getItem("cart");
@@ -142,7 +139,8 @@ function Menu() {
 		const total = orderItems
 			?.map(
 				(item) =>
-					calculateOrderItemPrice(item.item, item.modifiers) * item.quantity,
+					calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
+					item.quantity,
 			)
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 		return total || 0;

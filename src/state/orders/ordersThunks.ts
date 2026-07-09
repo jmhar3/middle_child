@@ -121,6 +121,7 @@ export const placeOrder = createAsyncThunk(
 				const orderItem = await supabase
 					.from("order_items")
 					.insert({
+						is_large: item.is_large,
 						order: order.data.id,
 						menu_item: item.item.id,
 						quantity: item.quantity,

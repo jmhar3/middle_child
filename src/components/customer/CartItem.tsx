@@ -1,6 +1,6 @@
 import { Text, Flex, Stack, ScrollArea, ActionIcon } from "@mantine/core";
 
-import { calculateOrderItemPrice } from "../../helpers";
+import { calculateOrderItemPrice, formatPrice } from "../../helpers";
 
 import EditIcon from "../../icons/EditIcon";
 import CloseIcon from "../../icons/CloseIcon";
@@ -23,9 +23,12 @@ function CartItem(props: CartItemProps) {
 	const { modifiers, item, quantity, note } = orderItem;
 
 	const discountedItemPrice =
-		isFreeItem && calculateOrderItemPrice(item, modifiers) * (quantity - 1);
-
-	const orderItemPrice = calculateOrderItemPrice(item, modifiers) * quantity;
+		isFreeItem &&
+		calculateOrderItemPrice(item, modifiers, orderItem.is_large) *
+			(quantity - 1);
+	const orderItemPrice =
+		calculateOrderItemPrice(item, modifiers, orderItem.is_large) * quantity;
+	const formattedPrice = formatPrice(orderItemPrice);
 
 	return (
 		<Stack gap="3">
@@ -36,7 +39,8 @@ function CartItem(props: CartItemProps) {
 			)}
 			<Flex key={item.label} justify="space-between" align="center">
 				<Text>
-					{quantity} x {item.label}
+					{quantity} x {orderItem.is_large ? "Large " : ""}
+					{item.label}
 				</Text>
 
 				<Flex align="center" gap="sm">
@@ -50,7 +54,7 @@ function CartItem(props: CartItemProps) {
 								: undefined
 						}
 					>
-						${orderItemPrice.toFixed(2)}
+						{formattedPrice}
 					</Text>
 
 					<Flex>

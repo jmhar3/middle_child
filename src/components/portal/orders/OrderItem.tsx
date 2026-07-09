@@ -12,7 +12,7 @@ interface OrderItemProps {
 }
 
 function OrderItem({ item: orderItem }: OrderItemProps) {
-	const { id, quantity, item: menuItem, modifiers, note } = orderItem;
+	const { id, quantity, item: menuItem, modifiers, note, is_large } = orderItem;
 
 	const [showCode, setShowCode] = useState(true);
 
@@ -23,8 +23,6 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
 	const modifiersWithCodeWithoutSize = useMemo(() => {
 		return modifiersWithCode
 			?.filter((code) => code !== null)
-			.filter((code) => code !== "Large")
-			.filter((code) => code !== "Small")
 			.filter((code) => code !== "Full Cream");
 	}, [modifiersWithCode]);
 
@@ -63,6 +61,15 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
 		return menuItem.reference_code;
 	}, [modifiersWithCodeWithoutSize, menuItem]);
 
+	const itemLabel = useMemo(() => {
+		const formattedModifiers = modifiers
+			?.map(({ label }) => (label === "Full Cream" ? undefined : label))
+			.filter((label) => label)
+			.join(", ");
+
+		return `${is_large ? "Large " : ""}${menuItem.label}${formattedModifiers && " - "}${formattedModifiers}`;
+	}, [modifiers, is_large, menuItem]);
+
 	return (
 		<Flex key={id} gap="sm" justify="space-between" align="center">
 			<Stack gap="3">
@@ -70,15 +77,14 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
 					<Text fw="bold" size="lg">
 						{quantity} x{" "}
 					</Text>
+
 					{menuItem.reference_code && showCode && (
 						<Flex gap="sm" align="center">
 							<Badge
 								style={{ letterSpacing: "2px" }}
 								radius="sm"
 								size="xl"
-								color={
-									modifiersWithCode?.includes("Large") ? "darkgreen" : "purple"
-								}
+								color={is_large ? "darkgreen" : "purple"}
 							>
 								{code}
 							</Badge>
@@ -88,19 +94,11 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
 						</Flex>
 					)}
 
-					{(menuItem.reference_code && !showCode) ||
-						(!menuItem.reference_code && (
-							<Text fw="bold" size="lg">
-								{menuItem.label}
-								{modifiers && " - "}
-								{modifiers
-									?.map(({ label }) =>
-										label === "Full Cream" ? undefined : label,
-									)
-									.filter((label) => label)
-									.join(", ")}
-							</Text>
-						))}
+					{(!showCode || !menuItem.reference_code) && (
+						<Text fw="bold" size="lg">
+							{itemLabel}
+						</Text>
+					)}
 				</Flex>
 
 				{note && <Text fs="italic">Note: {note}</Text>}

@@ -3,13 +3,18 @@ import type { MenuItemType, Modifier, OrderItem } from "./state/types";
 export const calculateOrderItemPrice = (
 	menuItem: MenuItemType,
 	modifiers?: Modifier[],
+	is_large?: boolean,
 ) => {
 	if (modifiers) {
 		const modifiersTotalPrice = modifiers?.reduce((accumulator, modifier) => {
 			return modifier.price ? accumulator + modifier.price : accumulator;
 		}, 0);
+		if (is_large && menuItem.large_price)
+			return modifiersTotalPrice + menuItem.price + menuItem.large_price;
 		return modifiersTotalPrice + menuItem.price;
 	}
+	if (is_large && menuItem.large_price)
+		return menuItem.price + menuItem.large_price;
 	return menuItem.price;
 };
 

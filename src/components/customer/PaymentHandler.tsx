@@ -49,6 +49,7 @@ function PaymentHandler(props: PaymentHandlerProps) {
 					total: order.total,
 					note: order.note,
 					orderItems: order.items.map((item) => ({
+						is_large: item.is_large,
 						menuItemId: item.item.id,
 						quantity: item.quantity,
 						note: item.note,

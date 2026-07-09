@@ -12,6 +12,7 @@ import NoteInput from "./customer/NoteInput";
 import { calculateOrderItemPrice, formatPrice } from "../helpers";
 
 import type { Modifier, OrderItem, MenuItemType } from "../state/types";
+import SizeSelect from "./customer/SizeSelect";
 
 interface MenuItemModalProps {
 	isOpen: boolean;
@@ -76,7 +77,12 @@ function MenuItemModal(props: MenuItemModalProps) {
 		);
 
 	const menuItemPrice = useMemo(
-		() => calculateOrderItemPrice(selection.item, selection.modifiers),
+		() =>
+			calculateOrderItemPrice(
+				selection.item,
+				selection.modifiers,
+				selection.is_large,
+			),
 		[selection],
 	);
 
@@ -106,9 +112,19 @@ function MenuItemModal(props: MenuItemModalProps) {
 		return missingRequiredOptions?.filter((item) => item !== undefined);
 	}, [selection, sortedOptions]);
 
+	const onSizeSelect = (isLarge: boolean) => {
+		setSelection((prevSelection) => ({
+			...prevSelection,
+			is_large: isLarge,
+		}));
+	};
+
 	const onAddToCart = () => {
 		setShowErrors(false);
-		if (missingSections?.length && missingSections?.length > 0) {
+		if (
+			(missingSections?.length && missingSections?.length > 0) ||
+			(menuItem.large_price && selection.is_large === undefined)
+		) {
 			setShowErrors(true);
 		} else {
 			onAddToOrder({ ...selection, note: note, quantity: quantity });
@@ -136,6 +152,21 @@ function MenuItemModal(props: MenuItemModalProps) {
 						<Text fs="italic">{menuItem.description}</Text>
 						<Divider w="100%" />
 					</>
+				)}
+
+				{menuItem.large_price && (
+					<SizeSelect
+						onSizeSelect={onSizeSelect}
+						largePrice={menuItem.large_price}
+						isErroneous={showErrors && selection.is_large === undefined}
+						sizeSelection={
+							selection.is_large === undefined
+								? undefined
+								: selection.is_large
+									? "large"
+									: "small"
+						}
+					/>
 				)}
 
 				{sortedOptions?.map((modifierCategory) =>

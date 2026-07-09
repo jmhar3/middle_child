@@ -105,12 +105,13 @@ function CartModal(props: CartModalProps) {
 				if (freeItem?.id === item.id) {
 					if (item.quantity === 1) return 0;
 					return (
-						calculateOrderItemPrice(item.item, item.modifiers) *
+						calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
 						(item.quantity - 1)
 					);
 				}
 				return (
-					calculateOrderItemPrice(item.item, item.modifiers) * item.quantity
+					calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
+					item.quantity
 				);
 			})
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
