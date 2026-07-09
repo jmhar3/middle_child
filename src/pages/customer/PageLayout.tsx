@@ -23,7 +23,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 	const isMenu = pathname === "/";
 
 	return (
-		<Stack align="center" gap="0" pt="4em">
+		<Stack align="center" gap="0" pt="4em" w="100vw">
 			<Flex
 				pt="sm"
 				pb="xs"
@@ -72,6 +72,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 
 			{!hideImage && (
 				<Image
+					w="100%"
 					fit="cover"
 					h={isMobile ? "190px" : "300px"}
 					src={image || banner}
