@@ -16,7 +16,9 @@ import Account from "./pages/customer/Account.js";
 
 import { store } from "./state/store.js";
 
+// @ts-expect-error font
 import "@fontsource/bangers";
+// @ts-expect-error font
 import "@fontsource/poppins";
 
 import "@mantine/core/styles.css";
