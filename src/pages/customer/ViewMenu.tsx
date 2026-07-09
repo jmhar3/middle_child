@@ -93,6 +93,7 @@ function ViewMenu() {
 										<Flex
 											key={item.id}
 											w="100%"
+											gap="sm"
 											align="center"
 											justify="space-between"
 										>
