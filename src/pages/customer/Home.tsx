@@ -37,7 +37,7 @@ function Home() {
 					<NavButton label="Also About Us (AI)" path="/about-us/ai" />
 				</Flex>
 
-				{/*<MenuButton label="Look Here & Don't Pick Up" path="/view-menu" />*/}
+				<NavButton label="Look Here & Don't Pick Up" path="/view-menu" />
 
 				<NavButton label="Our Partners" path="/partners" />
 
