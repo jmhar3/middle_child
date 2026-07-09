@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { Box, Button, Divider, Flex, Stack, Text } from "@mantine/core";
 
+import { formatPrice } from "../../helpers";
+
 import type { Modifier } from "../../state/types";
 
 interface ModifierRadioProps {
@@ -64,24 +66,28 @@ function ModifierRadio(props: ModifierRadioProps) {
 					{sortedModifiers.map((modifier, index) => {
 						const selectedModifier = selectedModifiers?.[0];
 						const isSelected = selectedModifier === modifier;
+						const formattedPrice =
+							modifier.price && formatPrice(modifier.price);
+
 						return (
 							<>
 								{index !== 0 && <Divider />}
+
 								<Button
 									fullWidth
 									radius="0"
-									h={modifier.description && "4.1em"}
 									key={modifier.id}
 									color="darkslategray"
 									justify="space-between"
+									h={modifier.description && "4.1em"}
+									variant={isSelected ? "filled" : "transparent"}
+									rightSection={formattedPrice && `+ ${formattedPrice}`}
+									disabled={modifier.is_ingredient && !modifier.is_in_stock}
 									onClick={() =>
 										isSelected
 											? onModifierSelect(modifier, false)
 											: onSelection(modifier)
 									}
-									disabled={modifier.is_ingredient && !modifier.is_in_stock}
-									rightSection={modifier.price && `+ $${modifier.price}`}
-									variant={isSelected ? "filled" : "transparent"}
 								>
 									<Stack gap="3" align="flex-start" justify="center">
 										{modifier.label}

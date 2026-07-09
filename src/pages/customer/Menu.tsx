@@ -32,7 +32,11 @@ import {
 	selectUserStatus,
 } from "../../state/user/userSlice";
 
-import { calculateOrderItemPrice, filterItemFromOrder } from "../../helpers";
+import {
+	calculateOrderItemPrice,
+	filterItemFromOrder,
+	formatPrice,
+} from "../../helpers";
 
 import type {
 	MenuItemType,
@@ -143,6 +147,8 @@ function Menu() {
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 		return total || 0;
 	}, [orderItems]);
+
+	const formattedPrice = useMemo(() => formatPrice(orderTotal), [orderTotal]);
 
 	const handleOpenMenuItemModal = (menuItem: MenuItemType) => {
 		setSelectedMenuItem(menuItem);
@@ -268,7 +274,7 @@ function Menu() {
 						<ButtonWithPrice
 							onClick={() => setIsCartModalOpen(true)}
 							label={`Review Order ${orderItems && `( ${totalItemsInOrder} )`}`}
-							price={orderTotal}
+							price={formattedPrice}
 						/>
 					</Box>
 				)}
@@ -314,11 +320,13 @@ function Menu() {
 							<Accordion.Control>
 								<Text component="span">RECENTLY ORDERED</Text>
 							</Accordion.Control>
+
 							<Accordion.Panel>
 								<Stack gap="3">
 									{recentlyOrderedItems?.map((orderItem, index) => (
 										<>
 											{index !== 0 && <Divider />}
+
 											<MenuItemButton
 												key={orderItem.item.label}
 												isPrevOrder={true}
@@ -338,11 +346,13 @@ function Menu() {
 							<Accordion.Control disabled={!section.is_in_stock}>
 								<Text component="span">{section.label.toUpperCase()}</Text>
 							</Accordion.Control>
+
 							<Accordion.Panel>
 								<Stack gap="0">
 									{section.items.map((menuItem, index) => (
 										<>
 											{index !== 0 && <Divider />}
+
 											<MenuItemButton
 												key={menuItem.label}
 												item={menuItem}

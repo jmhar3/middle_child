@@ -28,7 +28,7 @@ import {
 	selectUserLoyaltyPoints,
 } from "../../state/user/userSlice";
 
-import { calculateOrderItemPrice } from "../../helpers";
+import { calculateOrderItemPrice, formatPrice } from "../../helpers";
 
 import type {
 	OrderItem,
@@ -145,6 +145,8 @@ function CartModal(props: CartModalProps) {
 		due_at: dayjs().add(pickUpTime, "minute").toISOString(),
 		is_complete: false,
 	};
+
+	const formattedPrice = formatPrice(order.total);
 
 	const onModalClose = () => {
 		reset();
@@ -321,7 +323,7 @@ function CartModal(props: CartModalProps) {
 							onClick={onPlaceOrder}
 							isDisabled={!user}
 							label={user ? "Order Now" : "Login to Place Order"}
-							price={order.total}
+							price={formattedPrice}
 						/>
 						<Text>Pay securely using Square</Text>
 					</Stack>

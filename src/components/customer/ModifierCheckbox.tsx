@@ -3,6 +3,8 @@ import { Box, Button, Divider, Flex, Stack, Text } from "@mantine/core";
 
 import CheckIcon from "../../icons/CheckIcon";
 
+import { formatPrice } from "../../helpers";
+
 import type { Modifier } from "../../state/types";
 
 interface ModifierCheckboxProps {
@@ -57,6 +59,8 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
 				<Button.Group w="100%" orientation="vertical">
 					{sortedModifiers.map((modifier, index) => {
 						const isSelected = selectedModifiers?.includes(modifier);
+						const formattedPrice =
+							modifier.price && formatPrice(modifier.price);
 
 						return (
 							<>
@@ -67,10 +71,10 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
 									key={modifier.id}
 									color="darkslategray"
 									justify="space-between"
-									disabled={modifier.is_ingredient && !modifier.is_in_stock}
-									onClick={() => onModifierSelect(modifier, !isSelected)}
-									rightSection={modifier.price && `+ $${modifier.price}`}
 									variant={isSelected ? "filled" : "transparent"}
+									rightSection={formattedPrice && `+ ${formattedPrice}`}
+									onClick={() => onModifierSelect(modifier, !isSelected)}
+									disabled={modifier.is_ingredient && !modifier.is_in_stock}
 								>
 									{modifier.label}{" "}
 									{isSelected && (

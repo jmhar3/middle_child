@@ -4,7 +4,7 @@ import { useMediaQuery } from "@mantine/hooks";
 interface ButtonWithPriceProps {
 	onClick: () => void;
 	label: string;
-	price: number;
+	price: string;
 	variant?: "filled" | "outline";
 	isDisabled?: boolean;
 	isLoading?: boolean;
@@ -31,7 +31,7 @@ function ButtonWithPrice(props: ButtonWithPriceProps) {
 			justify="space-between"
 			size={isMobile ? "md" : "xl"}
 			bg={variant === "outline" ? "white" : undefined}
-			rightSection={<Text fw={700}>${price.toFixed(2)}</Text>}
+			rightSection={<Text fw={700}>${price}</Text>}
 			loading={isLoading}
 			onClick={onClick}
 		>
