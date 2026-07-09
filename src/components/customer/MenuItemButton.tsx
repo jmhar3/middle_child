@@ -1,8 +1,7 @@
-import { useMemo } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import { Button, em, ScrollArea, Stack, Text } from "@mantine/core";
 
-import { calculateOrderItemPrice } from "../../helpers";
+import { calculateOrderItemPrice, formatPrice } from "../../helpers";
 
 import type { MenuItemType, Modifier } from "../../state/types";
 
@@ -23,15 +22,7 @@ function MenuItemButton(props: MenuItemButtonProps) {
 		? calculateOrderItemPrice(item, modifiers)
 		: item.price;
 
-  const formattedPrice = useMemo(() => {
-    if (totalPrice === 0) {
-      return "FREE"
-    } else if (totalPrice % 1 !== 0) {
-      return `$${totalPrice.toFixed((2))}`
-    } else {
-      return `$${totalPrice}`
-    }
-	}, [totalPrice])
+	const formattedPrice = formatPrice(totalPrice);
 
 	return (
 		<Button

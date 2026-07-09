@@ -13,6 +13,16 @@ export const calculateOrderItemPrice = (
 	return menuItem.price;
 };
 
+export const formatPrice = (price: number) => {
+	if (price === 0) {
+		return "FREE";
+	} else if (price % 1 !== 0) {
+		return `$${price.toFixed(2)}`;
+	} else {
+		return `$${price}`;
+	}
+};
+
 export const filterItemFromOrder = (
 	existingItems: OrderItem[],
 	filterItem: OrderItem,

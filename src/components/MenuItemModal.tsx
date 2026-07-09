@@ -9,7 +9,7 @@ import ButtonWithPrice from "./customer/ButtonWithPrice";
 import ModifierRadio from "./customer/ModifierRadio";
 import NoteInput from "./customer/NoteInput";
 
-import { calculateOrderItemPrice } from "../helpers";
+import { calculateOrderItemPrice, formatPrice } from "../helpers";
 
 import type { Modifier, OrderItem, MenuItemType } from "../state/types";
 
@@ -78,6 +78,11 @@ function MenuItemModal(props: MenuItemModalProps) {
 	const menuItemPrice = useMemo(
 		() => calculateOrderItemPrice(selection.item, selection.modifiers),
 		[selection],
+	);
+
+	const formattedPrice = useMemo(
+		() => formatPrice(menuItemPrice * quantity),
+		[menuItemPrice, quantity],
 	);
 
 	const missingSections = useMemo(() => {
@@ -214,7 +219,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 				>
 					<ButtonWithPrice
 						isDisabled={!menuItem.is_in_stock}
-						price={menuItemPrice * quantity}
+						price={formattedPrice}
 						label={menuItem.is_in_stock ? "Add to order" : "Out of stock"}
 						onClick={onAddToCart}
 					/>
