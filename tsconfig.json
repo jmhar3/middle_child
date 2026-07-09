@@ -1,7 +1,6 @@
 {
 	"include": ["./src/**/*.ts", "./src/**/*.d.ts"],
 	"compilerOptions": {
-		"types": ["vite/client"],
 		"esModuleInterop": true
 	},
 	"files": [],
