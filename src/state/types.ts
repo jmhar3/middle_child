@@ -6,10 +6,20 @@ export interface OrderTime {
 	order: number;
 }
 
+export interface OpeningHours {
+	label: string;
+	hours: {
+		from: string;
+		to: string;
+	};
+}
+
 export interface StoreInfo {
 	id: string;
 	is_open: boolean;
 	current_order_time: OrderTime;
+	opening_hours: OpeningHours[];
+	holiday_opening_hours: OpeningHours[];
 }
 
 export interface Modifier {
