@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { em, Box, Text, Stack, Divider, Accordion } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 
 import banner from "/assets/cafe-counter.jpeg";
@@ -21,8 +22,8 @@ import { fetchUser } from "../../state/user/userThunks";
 
 import {
 	selectStoreInfo,
-	selectStoreInfoStatus,
 	selectStoreIsOpen,
+	selectStoreInfoStatus,
 } from "../../state/storeInfo/storeInfoSlice";
 
 import {
@@ -40,6 +41,8 @@ import type {
 } from "../../state/types";
 
 function Menu() {
+	const navigate = useNavigate();
+
 	const dispatch = useAppDispatch();
 	const menuStatus = useAppSelector(selectMenuStatus);
 	const menu = useAppSelector(selectMenu);
@@ -66,6 +69,8 @@ function Menu() {
 			dispatch(fetchUser());
 		}
 	}, [dispatch, menuStatus, storeInfoStatus, userStatus]);
+
+	if (!storeIsOpen) navigate("/");
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 	const localStorageCart = localStorage.getItem("cart");
@@ -269,18 +274,9 @@ function Menu() {
 				)}
 
 			<Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
-				{storeIsOpen ? (
-					<Text>
-						Pick up time from {storeInfo.current_order_time.short} minutes
-					</Text>
-				) : (
-					<>
-						<Text>Sorry, we're closed.</Text>
-						<Text>Our brewing hours are:</Text>
-						<Text>Mon - Fri 7:30am - 1pm</Text>
-						<Text>Sat - Sun 7:30am - 2pm</Text>
-					</>
-				)}
+				<Text>
+					Pick up time from {storeInfo.current_order_time.short} minutes
+				</Text>
 
 				{pointsRemaining !== null ? (
 					<>
