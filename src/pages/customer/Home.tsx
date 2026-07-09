@@ -39,8 +39,6 @@ function Home() {
 		}
 	}, [dispatch, userStatus, storeInfoStatus]);
 
-	console.log(storeInfo);
-
 	return (
 		<PageLayout>
 			<Stack w="100%" gap="3" p="3">
