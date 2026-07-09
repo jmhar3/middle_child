@@ -1,78 +1,86 @@
-import { Box, Button, Flex, Image, Stack, Title } from "@mantine/core";
-import { useLocation } from "react-router-dom";
+import { Burger, Flex, Image, Stack, Title } from "@mantine/core";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
 
 import Weather from "../../components/Weather";
 
 import banner from "/assets/cafe-view.jpeg";
-import CoffeeIcon from "../../icons/CoffeeIcon";
 
 import type { PropsWithChildren } from "react";
-import NavButton from "../../components/NavButton";
 
 interface PageLayoutProps extends PropsWithChildren {
-  hideImage?: boolean;
-  image?: string;
-  title?: string;
+	hideImage?: boolean;
+	image?: string;
+	title?: string;
 }
 
 function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
-  const { pathname } = useLocation();
+	const { pathname } = useLocation();
+	const navigate = useNavigate();
 
-  const isMobile = useMediaQuery(`(max-width: 750px)`);
+	const isMobile = useMediaQuery(`(max-width: 750px)`);
 
-  const isMenu = pathname === "/";
+	const isMenu = pathname === "/";
 
-  return (
-    <Stack align="center" gap="0" pt="4em">
-      <Flex
-        pt="sm"
-        pb="xs"
-        w="100%"
-        top="0"
-        left="0"
-        pos="fixed"
-        align="center"
-        bg="whitesmoke"
-        justify="space-between"
-        pl={isMobile ? "md" : "lg"}
-        pr={isMobile ? "md" : "lg"}
-      >
-        {!isMenu && <NavButton label="Menu" path="/" />}
+	return (
+		<Stack align="center" gap="0" pt="4em">
+			<Flex
+				pt="sm"
+				pb="xs"
+				w="100%"
+				top="0"
+				left="0"
+				pos="fixed"
+				align="center"
+				bg="whitesmoke"
+				justify="space-between"
+				pl={isMobile ? "md" : "lg"}
+				pr={isMobile ? "md" : "lg"}
+			>
+				{!isMenu && (
+					<Burger
+						opened={false}
+						color="darkslategray"
+						lineSize={isMobile ? 3 : 4}
+						size={isMobile ? "md" : "lg"}
+						onClick={() => navigate("/")}
+						aria-label="Open Navigation Menu"
+					/>
+				)}
 
-        {isMenu && <Weather />}
+				{isMenu && <Weather />}
 
-        {isMobile ? (
-          <Title lts="1.6px" ff="Bangers" c="darkslategray">
-            {title || "Middle Child"}
-          </Title>
-        ) : (
-          <Flex style={{ zIndex: 1 }} w="100%" pos="fixed" justify="center">
-            <Title
-              pr="lg"
-              lts="1.6px"
-              ff="Bangers"
-              c="darkslategray"
-              pt={isMobile ? "md" : "lg"}
-              pb={isMobile ? "xs" : "md"}
-            >
-              {title || "Middle Child"}
-            </Title>
-          </Flex>
-        )}
-      </Flex>
+				{isMobile ? (
+					<Title lts="1.6px" ff="Bangers" c="darkslategray">
+						{title || "Middle Child"}
+					</Title>
+				) : (
+					<Flex style={{ zIndex: 1 }} w="100%" pos="fixed" justify="center">
+						<Title
+							pr="lg"
+							lts="1.6px"
+							ff="Bangers"
+							c="darkslategray"
+							pt={isMobile ? "md" : "lg"}
+							pb={isMobile ? "xs" : "md"}
+						>
+							{title || "Middle Child"}
+						</Title>
+					</Flex>
+				)}
+			</Flex>
 
-      {!hideImage && (
-        <Image
-          fit="cover"
-          h={isMobile ? "190px" : "300px"}
-          src={image || banner}
-        />
-      )}
+			{!hideImage && (
+				<Image
+					fit="cover"
+					h={isMobile ? "190px" : "300px"}
+					src={image || banner}
+				/>
+			)}
 
-      {children}
-    </Stack>
-  );
+			{children}
+		</Stack>
+	);
 }
 
 export default PageLayout;
