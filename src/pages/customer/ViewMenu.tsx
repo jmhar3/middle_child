@@ -3,7 +3,7 @@ import { Text, Stack, Flex, Accordion, Divider } from "@mantine/core";
 
 import PageLayout from "./PageLayout";
 
-import banner from "/assets/partners.jpg";
+import banner from "/assets/beans.jpg";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { fetchMenu } from "../../state/menu/menuThunks";
