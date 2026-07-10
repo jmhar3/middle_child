@@ -102,8 +102,9 @@ function ViewMenu() {
 												<Text size="sm">{item.description}</Text>
 											</Stack>
 											<Text>
-												{item.price}
-												{item.large_price && ` / ${item.large_price}`}
+												{item.price === 0 ? "FREE" : item.price}
+												{item.large_price &&
+													` / ${item.price + item.large_price}`}
 											</Text>
 										</Flex>
 									))}
