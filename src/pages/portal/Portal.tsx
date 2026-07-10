@@ -123,6 +123,7 @@ function Portal() {
 		ordersStatus,
 	]);
 
+	if (userStatus === "idle" || userStatus === "pending") return <Loading message="Loading... Please wait" />;
 	if (!user) return <LoginModal isModalOpen={true} onModalClose={() => {}} />;
 
 	const onChangeTab = (tab: string) => {
