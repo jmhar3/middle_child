@@ -12,6 +12,7 @@ import {
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import type { User } from "../types";
+import dayjs from "dayjs";
 
 export interface UserState {
 	data: User | null;
@@ -107,4 +108,8 @@ export const selectUserLoyaltyPoints = (state: RootState) =>
 export const selectRecentlyOrderedItems = (state: RootState) =>
 	state.user.data?.recent_items;
 
-export const selectUserOrders = (state: RootState) => state.user.data?.orders;
+export const selectUserOrders = (state: RootState) =>
+	state.user.data?.orders &&
+	[...state.user.data.orders].sort((a, b) =>
+		dayjs(b.due_at).diff(dayjs(a.due_at)),
+	);
