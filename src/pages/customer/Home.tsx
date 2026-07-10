@@ -7,7 +7,7 @@ import NavButton from "../../components/NavButton";
 import Link from "../../components/Link";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { selectUser, selectUserStatus } from "../../state/user/userSlice";
+import { selectUserStatus } from "../../state/user/userSlice";
 import { fetchUser } from "../../state/user/userThunks";
 
 import MapPinIcon from "../../icons/MapPinIcon";
@@ -25,7 +25,7 @@ function Home() {
 
 	const dispatch = useAppDispatch();
 	const userStatus = useAppSelector(selectUserStatus);
-	const user = useAppSelector(selectUser);
+	// const user = useAppSelector(selectUser);
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
 	// const storeIsOpen = useAppSelector(selectStoreIsOpen);
@@ -82,10 +82,10 @@ function Home() {
 					/>
 				</Flex>
 
-				<NavButton
+				{/*<NavButton
 					label={user ? "Manage Account" : "Login / Sign Up"}
 					path="/account"
-				/>
+				/>*/}
 
 				<NavButton label="Nudes" path="" />
 
