@@ -44,7 +44,11 @@ function Home() {
 			<Stack w="100%" gap="3" p="3">
 				<NavButton
 					path="/menu"
-					isDisabled={!storeIsOpen}
+					isDisabled={
+						storeInfoStatus !== "idle" &&
+						storeInfoStatus !== "pending" &&
+						!storeIsOpen
+					}
 					label="Order Here for Pick Up"
 				/>
 
