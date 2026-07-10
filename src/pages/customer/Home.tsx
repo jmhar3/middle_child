@@ -16,7 +16,7 @@ import EmailIcon from "../../icons/EmailIcon";
 import {
 	selectStoreInfo,
 	selectStoreInfoStatus,
-	selectStoreIsOpen,
+	// selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
 import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 
