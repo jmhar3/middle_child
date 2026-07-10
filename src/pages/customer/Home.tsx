@@ -42,7 +42,7 @@ function Home() {
 	return (
 		<PageLayout>
 			<Stack w="100%" gap="3" p="3">
-				<NavButton
+				{/*<NavButton
 					path="/menu"
 					isDisabled={
 						storeInfoStatus !== "idle" &&
@@ -50,6 +50,12 @@ function Home() {
 						!storeIsOpen
 					}
 					label="Order Here for Pick Up"
+				/>*/}
+
+				<NavButton
+          path="https://heyyou.com.au/restaurant/8394/middle-child"
+					label="Order Here for Pick Up"
+					isExternal
 				/>
 
 				<Flex w="100%" gap="3">
