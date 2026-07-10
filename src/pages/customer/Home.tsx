@@ -8,7 +8,7 @@ import Link from "../../components/Link";
 
 import { supabase } from "../../supabase";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { selectUser, selectUserStatus } from "../../state/user/userSlice";
+import { selectUserStatus } from "../../state/user/userSlice";
 import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 import { fetchUser } from "../../state/user/userThunks";
 
@@ -27,7 +27,7 @@ function Home() {
 
 	const dispatch = useAppDispatch();
 	const userStatus = useAppSelector(selectUserStatus);
-	const user = useAppSelector(selectUser);
+	// const user = useAppSelector(selectUser);
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
 	// const storeIsOpen = useAppSelector(selectStoreIsOpen);
