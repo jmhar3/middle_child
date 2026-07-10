@@ -6,26 +6,28 @@ import PageLayout from "./PageLayout";
 import NavButton from "../../components/NavButton";
 import Link from "../../components/Link";
 
+import { supabase } from "../../supabase";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { selectUserStatus } from "../../state/user/userSlice";
+import { selectUser, selectUserStatus } from "../../state/user/userSlice";
+import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 import { fetchUser } from "../../state/user/userThunks";
 
-import MapPinIcon from "../../icons/MapPinIcon";
-import InstagramIcon from "../../icons/InstagramIcon";
-import EmailIcon from "../../icons/EmailIcon";
 import {
 	selectStoreInfo,
 	selectStoreInfoStatus,
 	// selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
-import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
+
+import MapPinIcon from "../../icons/MapPinIcon";
+import InstagramIcon from "../../icons/InstagramIcon";
+import EmailIcon from "../../icons/EmailIcon";
 
 function Home() {
 	const isMobile = useMediaQuery("(max-width: 960px)");
 
 	const dispatch = useAppDispatch();
 	const userStatus = useAppSelector(selectUserStatus);
-	// const user = useAppSelector(selectUser);
+	const user = useAppSelector(selectUser);
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
 	// const storeIsOpen = useAppSelector(selectStoreIsOpen);
@@ -37,6 +39,21 @@ function Home() {
 		if (storeInfoStatus === "idle") {
 			dispatch(fetchStoreInfo());
 		}
+
+		supabase.auth.onAuthStateChange(async (event) => {
+			if (event === "PASSWORD_RECOVERY") {
+				const newPassword = prompt(
+					"What would you like your new password to be?",
+				);
+				if (newPassword) {
+					const { data, error } = await supabase.auth.updateUser({
+						password: newPassword,
+					});
+					if (data) alert("Password updated successfully!");
+					if (error) alert("There was an error updating your password.");
+				}
+			}
+		});
 	}, [dispatch, userStatus, storeInfoStatus]);
 
 	return (
