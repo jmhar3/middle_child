@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 
@@ -15,13 +15,13 @@ import {
 import PasswordInputWithRequirements from "./PasswordInput";
 
 import { useAppDispatch } from "../state/hooks";
+
 import {
 	fetchUser,
 	resetPassword,
 	signInUser,
 	signUpUser,
 } from "../state/user/userThunks";
-import { supabase } from "../supabase";
 
 interface LoginModalProps {
 	isModalOpen: boolean;
@@ -39,6 +39,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [resetPasswordSent, setResetPasswordSent] = useState(false);
 	const [signUpSuccess, setSignUpSuccess] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -77,7 +78,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 
 		if (showResetPassword) {
 			dispatch(resetPassword({ email: email }))
-				.then(() => setSignUpSuccess(true))
+				.then(() => setResetPasswordSent(true))
 				.catch((error) =>
 					notifications.show({
 						message: error,
@@ -142,24 +143,29 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 			.finally(() => setIsSubmitting(false));
 	};
 
-	const resendVerificationEmail = () => {};
+	const resendVerificationEmail = () => {
+		setIsSubmitting(true);
 
-	useEffect(() => {
-		supabase.auth.onAuthStateChange(async (event) => {
-			if (event == "PASSWORD_RECOVERY") {
-				const newPassword = prompt(
-					"What would you like your new password to be?",
-				);
-				if (newPassword) {
-					const { data, error } = await supabase.auth.updateUser({
-						password: newPassword,
-					});
-					if (data) alert("Password updated successfully!");
-					if (error) alert("There was an error updating your password.");
-				}
-			}
-		});
-	}, []);
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+		if (!emailRegex.test(email)) {
+			setErrorMessage("Please provide a valid email.");
+			setIsSubmitting(false);
+			return;
+		}
+
+		dispatch(resetPassword({ email: email }))
+			.then(() => setResetPasswordSent(true))
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			)
+			.finally(() => setIsSubmitting(false));
+	};
 
 	return (
 		<Modal
@@ -177,6 +183,30 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 				},
 			}}
 		>
+			{resetPasswordSent && (
+				<Stack align="center" gap="xs" pt="xl">
+					<Text fw="bold">Reset password link has been sent</Text>
+
+					<Text ta="center">
+						Please check your email to reset your password or
+					</Text>
+
+					<Button
+						fullWidth
+						radius="md"
+						variant="filled"
+						color="darkslategray"
+						onClick={() => {
+							closeResetPassword();
+							setResetPasswordSent(false);
+						}}
+						loading={isSubmitting}
+					>
+						Return to Sign In
+					</Button>
+				</Stack>
+			)}
+
 			{signUpSuccess && (
 				<Stack align="center" gap="xs" pt="xl">
 					<Text fw="bold">You have successfully signed up!</Text>
@@ -194,7 +224,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 							toggleShowSignUp();
 							setSignUpSuccess(false);
 						}}
-						disabled={isSubmitting}
+						loading={isSubmitting}
 					>
 						Already verified your email? Sign In
 					</Button>
@@ -205,14 +235,14 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 						variant="outline"
 						color="darkslategray"
 						onClick={resendVerificationEmail}
-						disabled={isSubmitting}
+						loading={isSubmitting}
 					>
 						Resend verification email
 					</Button>
 				</Stack>
 			)}
 
-			{!signUpSuccess && (
+			{!resetPasswordSent && !signUpSuccess && (
 				<Stack gap="lg">
 					<Stack w="100%" gap="sm">
 						{showSignUp && (
@@ -271,7 +301,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 							variant="filled"
 							color="darkslategray"
 							onClick={onSubmit}
-							disabled={isSubmitting}
+							loading={isSubmitting}
 						>
 							{label}
 						</Button>
