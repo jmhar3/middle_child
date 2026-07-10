@@ -49,7 +49,7 @@ function Account() {
 		setName(user.name);
 	}
 
-	const isLoading = userStatus === "pending";
+	const isLoading = userStatus === "idle" || userStatus === "pending";
 
 	const onUpdateUserName = () => {
 		if (user) {
