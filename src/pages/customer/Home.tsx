@@ -28,7 +28,7 @@ function Home() {
 	const user = useAppSelector(selectUser);
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
-	const storeIsOpen = useAppSelector(selectStoreIsOpen);
+	// const storeIsOpen = useAppSelector(selectStoreIsOpen);
 
 	useEffect(() => {
 		if (userStatus === "idle") {
