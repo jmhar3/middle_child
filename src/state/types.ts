@@ -19,7 +19,7 @@ export interface StoreInfo {
 	is_open: boolean;
 	current_order_time: OrderTime;
 	opening_hours: OpeningHours[];
-	holiday_opening_hours: OpeningHours[];
+	holiday_opening_hours?: OpeningHours[];
 }
 
 export interface Modifier {

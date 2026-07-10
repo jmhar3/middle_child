@@ -16,7 +16,6 @@ const initialState: StoreInfoState = {
 		id: "",
 		is_open: false,
 		opening_hours: [],
-		holiday_opening_hours: [],
 		current_order_time: {
 			id: "",
 			label: "Not Busy",
