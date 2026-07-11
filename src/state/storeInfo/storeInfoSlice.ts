@@ -7,23 +7,12 @@ import type { RootState } from "../store";
 import type { StoreInfo } from "../types";
 
 export interface StoreInfoState {
-	data: StoreInfo;
+	data: StoreInfo | null;
 	status: "idle" | "pending" | "succeeded" | "failed";
 }
 
 const initialState: StoreInfoState = {
-	data: {
-		id: "",
-		is_open: false,
-		opening_hours: [],
-		current_order_time: {
-			id: "",
-			label: "Not Busy",
-			short: 10,
-			long: 15,
-			order: 0,
-		},
-	},
+	data: null,
 	status: "idle",
 };
 

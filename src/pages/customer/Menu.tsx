@@ -70,7 +70,7 @@ function Menu() {
 		if (userStatus === "idle") {
 			dispatch(fetchUser());
 		}
-		if (storeInfo.id && !storeInfo.is_open) navigate("/");
+		if (storeInfo?.id && !storeInfo.is_open) navigate("/");
 	}, [dispatch, menuStatus, storeInfoStatus, userStatus, navigate, storeInfo]);
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -279,7 +279,7 @@ function Menu() {
 
 			<Stack w="100%" p="xs" pb="sm" gap="xs" align="center">
 				<Text>
-					Pick up time from {storeInfo.current_order_time.short} minutes
+					Pick up time from {storeInfo?.current_order_time.short} minutes
 				</Text>
 
 				{pointsRemaining !== null ? (

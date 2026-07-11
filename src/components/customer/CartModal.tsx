@@ -127,9 +127,9 @@ function CartModal(props: CartModalProps) {
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
 		if (hasLongPrepTime || numOfItems > 5) {
-			return storeInfo.current_order_time.long;
+			return storeInfo?.current_order_time.long || 20;
 		} else {
-			return storeInfo.current_order_time.short;
+			return storeInfo?.current_order_time.short || 10;
 		}
 	}, [items, storeInfo]);
 
