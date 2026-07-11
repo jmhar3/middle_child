@@ -19,6 +19,7 @@ function Section({ section }: { section: MenuSection }) {
 		id: uuid(),
 		label: "",
 		price: 0,
+		has_large: false,
 		is_in_stock: true,
 		has_long_prep_time: false,
 		is_applicable_loyalty_item: false,

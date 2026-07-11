@@ -48,6 +48,7 @@ export interface MenuItemType {
 	description?: string;
 	price: number;
 	large_price?: number;
+	has_large: boolean;
 	is_in_stock: boolean;
 	has_long_prep_time: boolean;
 	is_applicable_loyalty_item: boolean;
@@ -140,6 +141,8 @@ export interface SupabaseMenuItem {
 	label: string;
 	price: number;
 	order: number;
+	large_price?: number;
+	has_large: boolean;
 	description?: string;
 	is_in_stock: boolean;
 	has_long_prep_time: boolean;
