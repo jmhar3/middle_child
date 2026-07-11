@@ -12,18 +12,18 @@ import {
 	SegmentedControl,
 } from "@mantine/core";
 
-import StyledButton from "../StyledButton";
+import StyledButton from "../../StyledButton";
 
-import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 
-import { selectMenu } from "../../state/menu/menuSlice";
-import { selectAllIngredients } from "../../state/modifiers/modifiersSlice";
+import { selectMenu } from "../../../state/menu/menuSlice";
+import { selectAllIngredients } from "../../../state/modifiers/modifiersSlice";
 
-import { upsertMenuItems } from "../../state/menuItems/menuItemsThunks";
-import { upsertModifiers } from "../../state/modifiers/modifierThunks";
-import { updateSection } from "../../state/menu/menuThunks";
+import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
+import { upsertModifiers } from "../../../state/modifiers/modifierThunks";
+import { updateSection } from "../../../state/menu/menuThunks";
 
-import type { MenuItemType, MenuSection, Modifier } from "../../state/types";
+import type { MenuItemType, MenuSection, Modifier } from "../../../state/types";
 
 interface UpdateStockDrawerProps {
 	isOpen: boolean;

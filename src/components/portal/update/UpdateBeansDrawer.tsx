@@ -13,23 +13,23 @@ import {
 	TextInput,
 } from "@mantine/core";
 
-import StyledButton from "../StyledButton";
+import StyledButton from "../../StyledButton";
 
-import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { fetchItemOptions } from "../../state/itemOptions/itemOptionThunks";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import { fetchItemOptions } from "../../../state/itemOptions/itemOptionThunks";
 
 import {
 	selectItemOptionById,
 	selectItemOptionsStatus,
-} from "../../state/itemOptions/itemOptionsSlice";
+} from "../../../state/itemOptions/itemOptionsSlice";
 
 import {
 	deleteModifier,
 	insertModifier,
 	updateModifier,
-} from "../../state/modifiers/modifierThunks";
+} from "../../../state/modifiers/modifierThunks";
 
-import type { Modifier } from "../../state/types";
+import type { Modifier } from "../../../state/types";
 
 interface UpdateBeansDrawerProps {
 	isOpen: boolean;

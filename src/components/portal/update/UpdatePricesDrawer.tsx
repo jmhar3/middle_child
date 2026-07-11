@@ -15,12 +15,14 @@ import {
 	SegmentedControl,
 } from "@mantine/core";
 
-import StyledButton from "../StyledButton";
+import StyledButton from "../../StyledButton";
 
-import { useAppSelector } from "../../state/hooks";
-import { selectMenu } from "../../state/menu/menuSlice";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import { selectMenu } from "../../../state/menu/menuSlice";
 
-import type { MenuItemType, MenuSection } from "../../state/types";
+import type { MenuItemType, MenuSection } from "../../../state/types";
+import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
+import { notifications } from "@mantine/notifications";
 
 interface UpdatePricesDrawerProps {
 	isOpen: boolean;
@@ -28,9 +30,11 @@ interface UpdatePricesDrawerProps {
 }
 
 function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
+	const dispatch = useAppDispatch();
 	const menu: MenuSection[] = useAppSelector(selectMenu);
 	const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [hasLarge, setHasLarge] = useState(false);
 	const [menuView, setMenuView] = useState<"Edit Selection" | "Edit All">(
 		"Edit All",
@@ -65,7 +69,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	const onEditSelection = () => {
 		setShowPriceEdit(true);
-		if (firstItem.large_price) setHasLarge(true);
+		if (firstItem.has_large) setHasLarge(true);
 		setNewPrices({ base: firstItem.price, large: firstItem.large_price });
 	};
 
@@ -100,7 +104,9 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 			prevMenu.map((section) => {
 				if (section.id === sectionId) {
 					const items = section.items.map((item) =>
-						item.id === itemId ? { ...item, large_price: price } : item,
+						item.id === itemId
+							? { ...item, large_price: price === 0 ? undefined : price }
+							: item,
 					);
 					return { ...section, items: items };
 				}
@@ -120,9 +126,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 			prevMenu.map((section) => {
 				if (section.id === sectionId) {
 					const items = section.items.map((item) =>
-						item.id === itemId
-							? { ...item, large_price: hasLarge ? 0 : undefined }
-							: item,
+						item.id === itemId ? { ...item, has_large: hasLarge } : item,
 					);
 					return { ...section, items: items };
 				}
@@ -131,29 +135,68 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		);
 	};
 
+	const handleUpdate = (items: MenuItemType[]) => {
+		dispatch(upsertMenuItems(items))
+			.then((data) => {
+				console.log(data);
+				if (data.payload) {
+					notifications.show({
+						message: "Prices updated successfully",
+						withCloseButton: false,
+						position: "bottom-right",
+						color: "red",
+					});
+					onCloseDrawer();
+				}
+			})
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			)
+			.finally(() => setIsSubmitting(false));
+	};
+
 	const onSaveChanges = () => {
+		setIsSubmitting(true);
+
 		if (menuView === "Edit All") {
 			const allItems = menu.flatMap(({ items }) => items);
 			const allEditableItems = editedMenu.flatMap(({ items }) => items);
-			allEditableItems.forEach((item) => {
+
+			const filterEditedItems = allEditableItems.filter((item) => {
 				const findItem = allItems.find((item2) => item.id === item2.id);
+
 				if (findItem) {
-					if (
+					return (
 						findItem.price !== item.price ||
-						findItem.large_price !== item.large_price
-					) {
-						// update item with new prices
-						console.log(item);
-						console.log(newPrices);
-					}
+						findItem.large_price !== item.large_price ||
+						findItem.has_large !== item.has_large
+					);
 				}
+
+				return false;
 			});
+
+			const itemsWithNewPrices = filterEditedItems.map((item) => ({
+				...item,
+				large_price: item.has_large ? item.large_price : undefined,
+			}));
+
+			handleUpdate(itemsWithNewPrices);
+		} else {
+			const itemsWithNewPrices = itemsToEdit.map((item) => ({
+				...item,
+				price: newPrices.base,
+				large_price: hasLarge ? newPrices.large : undefined,
+				has_large: hasLarge,
+			}));
+
+			handleUpdate(itemsWithNewPrices);
 		}
-		itemsToEdit.forEach((item) => {
-			// update item with new prices
-			console.log(item);
-			console.log(newPrices);
-		});
 	};
 
 	return (
@@ -218,8 +261,8 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 								<Button
 									size="sm"
-									color="darkslategray"
 									variant="outline"
+									color="darkslategray"
 									onClick={() => setShowPriceEdit(false)}
 								>
 									Edit Selection
@@ -279,8 +322,13 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 								label="Cancel"
 								variant="outline"
 								onClick={onCloseDrawer}
+								isLoading={isSubmitting}
 							/>
-							<StyledButton label="Save Changes" onClick={onSaveChanges} />
+							<StyledButton
+								label="Save Changes"
+								onClick={onSaveChanges}
+								isLoading={isSubmitting}
+							/>
 						</Group>
 					</Stack>
 				) : (
@@ -326,8 +374,8 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 								</Accordion>
 							)}
 
-							{menuView === "Edit All" && (
-								<Accordion defaultValue={menu[0].id}>
+							{menuView === "Edit All" && editedMenu.length > 0 && (
+								<Accordion defaultValue={editedMenu[0].id}>
 									{editedMenu.map((section) => (
 										<Accordion.Item key={section.id} value={section.id}>
 											<Accordion.Control>{section.label}</Accordion.Control>
@@ -350,11 +398,11 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 																	<Switch
 																		size="xs"
-																		checked={!!item.large_price}
+																		checked={item.has_large}
 																		onChange={(event) =>
 																			onToggleLarge({
-																				sectionId: section.id,
 																				itemId: item.id,
+																				sectionId: section.id,
 																				hasLarge: event.currentTarget.checked,
 																			})
 																		}
@@ -365,7 +413,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 																<Flex gap="3px">
 																	<NumberInput
 																		w="90px"
-																		label={item.large_price ? "Small" : "Price"}
+																		label={item.has_large ? "Small" : "Price"}
 																		value={item.price}
 																		onChange={(price) =>
 																			onEditBasePrice({
@@ -376,7 +424,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 																		}
 																	/>
 
-																	{!!item.large_price && (
+																	{item.has_large && (
 																		<NumberInput
 																			w="90px"
 																			label="Large"
@@ -407,12 +455,18 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 								label="Cancel"
 								variant="outline"
 								onClick={onCloseDrawer}
+								isLoading={isSubmitting}
 							/>
 							{menuView === "Edit All" ? (
-								<StyledButton label="Save Changes" onClick={onSaveChanges} />
+								<StyledButton
+									label="Save Changes"
+									isLoading={isSubmitting}
+									onClick={onSaveChanges}
+								/>
 							) : (
 								<StyledButton
 									label="Edit Selection"
+									isLoading={isSubmitting}
 									onClick={onEditSelection}
 								/>
 							)}

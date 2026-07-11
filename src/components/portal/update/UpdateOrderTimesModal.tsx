@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { Group, Modal, Stack, Text, TextInput, Divider } from "@mantine/core";
 
-import StyledButton from "../StyledButton";
+import StyledButton from "../../StyledButton";
 
-import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 
 import {
 	fetchOrderTimes,
 	updateOrderTimes,
-} from "../../state/orderTimes/orderTimesThunks";
+} from "../../../state/orderTimes/orderTimesThunks";
 
 import {
 	selectAllOrderTimes,
 	selectOrderTimesStatus,
-} from "../../state/orderTimes/orderTimesSlice";
+} from "../../../state/orderTimes/orderTimesSlice";
 
 interface UpdateOrderTimesModalProps {
 	isOpen: boolean;
@@ -37,45 +37,51 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
 		}
 	}, [dispatch, orderTimesStatus]);
 
-	if (orderTimes.length > 0 && editedOrderTimes.length === 0)
+	if (
+		orderTimes?.length &&
+		orderTimes?.length > 0 &&
+		editedOrderTimes?.length === 0
+	)
 		setEditedOrderTimes(orderTimes);
 
 	const updateOrderTime = (time: number) => {
-		setEditedOrderTimes((prevOrderTimes) =>
-			prevOrderTimes.map((orderTime) => {
-				if (orderTime.order === 0) {
-					return { ...orderTime, short: time, long: time + 5 };
-				} else if (orderTime.order === 1) {
-					return { ...orderTime, short: time + 5, long: time + 10 };
-				} else {
-					return { ...orderTime, short: time + 10, long: time + 20 };
-				}
-			}),
+		setEditedOrderTimes(
+			(prevOrderTimes) =>
+				prevOrderTimes?.map((orderTime) => {
+					if (orderTime.order === 0) {
+						return { ...orderTime, short: time, long: time + 5 };
+					} else if (orderTime.order === 1) {
+						return { ...orderTime, short: time + 5, long: time + 10 };
+					} else {
+						return { ...orderTime, short: time + 10, long: time + 20 };
+					}
+				}) || null,
 		);
 	};
 
 	const onUpdateOrderTimes = () => {
 		setIsUpdatingOrderTimes(true);
 
-		dispatch(updateOrderTimes(editedOrderTimes))
-			.then(() => {
-				notifications.show({
-					withCloseButton: false,
-					message: "Order times successfully updated",
-					position: "bottom-right",
-					color: "green",
-				});
-				onClose();
-			})
-			.catch((error) =>
-				notifications.show({
-					message: error,
-					withCloseButton: false,
-					position: "bottom-right",
-					color: "red",
-				}),
-			)
-			.finally(() => setIsUpdatingOrderTimes(false));
+		if (editedOrderTimes)
+			dispatch(updateOrderTimes(editedOrderTimes))
+				.then(() => {
+					notifications.show({
+						withCloseButton: false,
+						message: "Order times successfully updated",
+						position: "bottom-right",
+						color: "green",
+					});
+					onClose();
+				})
+				.catch((error) =>
+					notifications.show({
+						message: error,
+						withCloseButton: false,
+						position: "bottom-right",
+						color: "red",
+					}),
+				)
+				.finally(() => setIsUpdatingOrderTimes(false));
 	};
 
 	return (
