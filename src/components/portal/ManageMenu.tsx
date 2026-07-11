@@ -1,16 +1,17 @@
 import { Button, em, Menu } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 
-import UpdateStockDrawer from "./UpdateStockDrawer";
+import UpdateStockDrawer from "./update/UpdateStockDrawer";
 // import UpsertSectionModal from "./menu/sections/UpsertSectionModal";
 // import UpdateModifierDrawer from "./menu/modifiers/UpdateModifierDrawer";
 // import InsertModifierDrawer from "./menu/modifiers/InsertModifierDrawer";
 // import DeleteModifierModal from "./menu/modifiers/DeleteModifierModal";
 // import InsertOptionDrawer from "./menu/itemOptions/InsertOptionDrawer";
 // import UpdateOptionDrawer from "./menu/itemOptions/UpdateOptionDrawer";
-import UpdateOrderTimesModal from "./UpdateOrderTimesModal";
-import UpdateBeansDrawer from "./UpdateBeansDrawer";
-import UpdatePricesDrawer from "./UpdatePricesDrawer";
+import UpdateOrderTimesModal from "./update/UpdateOrderTimesModal";
+import UpdateBeansDrawer from "./update/UpdateBeansDrawer";
+import UpdatePricesDrawer from "./update/UpdatePricesDrawer";
+import UpdateOpeningHoursModal from "./update/UpdateOpeningHoursDrawer";
 
 function ManageMenu() {
 	const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -55,6 +56,13 @@ function ManageMenu() {
 		showUpdateOrderTimesDrawer,
 		{ open: openUpdateOrderTimesDrawer, close: closeUpdateOrderTimesDrawer },
 	] = useDisclosure(false);
+	const [
+		showUpdateOpeningHoursDrawer,
+		{
+			open: openUpdateOpeningHoursDrawer,
+			close: closeUpdateOpeningHoursDrawer,
+		},
+	] = useDisclosure(false);
 
 	return (
 		<>
@@ -77,6 +85,9 @@ function ManageMenu() {
 					<Menu.Item onClick={openUpdatePricesDrawer}>Prices</Menu.Item>
 					<Menu.Item onClick={openUpdateOrderTimesDrawer}>
 						Order Times
+					</Menu.Item>
+					<Menu.Item onClick={openUpdateOpeningHoursDrawer}>
+						Opening Hours
 					</Menu.Item>
 
 					{/*
@@ -204,6 +215,11 @@ function ManageMenu() {
 			<UpdateOrderTimesModal
 				isOpen={showUpdateOrderTimesDrawer}
 				onClose={closeUpdateOrderTimesDrawer}
+			/>
+
+			<UpdateOpeningHoursModal
+				isOpen={showUpdateOpeningHoursDrawer}
+				onClose={closeUpdateOpeningHoursDrawer}
 			/>
 		</>
 	);
