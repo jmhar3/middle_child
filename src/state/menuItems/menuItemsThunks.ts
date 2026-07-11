@@ -75,7 +75,23 @@ export const upsertMenuItems = createAsyncThunk(
 		const { data, error } = await supabase
 			.from("menu_items")
 			.upsert(formattedMenuItems)
-			.select();
+			.select(
+				`
+          *,
+          menu_items_options (
+            options (
+              *,
+              options_modifiers (
+              modifiers (*)
+              )
+            )
+          ),
+          menu_items_modifiers (
+            modifiers (*)
+          )
+        `,
+			)
+			.order("order");
 
 		if (error) {
 			console.error(error);
