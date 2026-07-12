@@ -138,7 +138,6 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 	const handleUpdate = (items: MenuItemType[]) => {
 		dispatch(upsertMenuItems(items))
 			.then((data) => {
-				console.log(data);
 				if (data.payload) {
 					notifications.show({
 						message: "Prices updated successfully",
