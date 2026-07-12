@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
 
@@ -38,11 +39,19 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 	const storeInfo = useAppSelector(selectStoreInfo);
 	const storeStatus = useAppSelector(selectStoreInfoStatus);
 
+	const formattedHours = {
+		opening_hours: storeInfo?.opening_hours.map((hours) => ({
+			...hours,
+			id: uuid(),
+		})),
+		holiday_opening_hours: storeInfo?.holiday_opening_hours?.map((hours) => ({
+			...hours,
+			id: uuid(),
+		})),
+	};
+
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [editedOpeningHours, setEditedOpeningHours] = useState({
-		opening_hours: storeInfo?.opening_hours,
-		holiday_opening_hours: storeInfo?.holiday_opening_hours,
-	});
+	const [editedOpeningHours, setEditedOpeningHours] = useState(formattedHours);
 
 	useEffect(() => {
 		if (storeStatus === "idle") {
@@ -51,23 +60,66 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 	}, [dispatch, storeStatus]);
 
 	if (!editedOpeningHours.opening_hours && storeInfo?.opening_hours) {
-		setEditedOpeningHours({
-			opening_hours: storeInfo?.opening_hours,
-			holiday_opening_hours: storeInfo?.holiday_opening_hours,
-		});
+		setEditedOpeningHours(formattedHours);
 	}
 
 	const onCloseDrawer = () => {
-		setEditedOpeningHours({
-			opening_hours: storeInfo?.opening_hours,
-			holiday_opening_hours: storeInfo?.holiday_opening_hours,
-		});
+		setEditedOpeningHours(formattedHours);
 		onClose();
 	};
 
-	const blankHour = { label: "", hours: { from: "", to: "" } };
+	const onEditOpeningHours = (data: {
+		id: string;
+		label?: string;
+		hours?: { from?: string; to?: string };
+	}) => {
+		setEditedOpeningHours((prevHours) => ({
+			...prevHours,
+			opening_hours: prevHours.opening_hours?.map((hours) => {
+				if (data.id === hours.id)
+					return {
+						id: data.id,
+						label: typeof data.label === "string" ? data.label : hours.label,
+						hours: {
+							from:
+								typeof data.hours?.from === "string"
+									? data.hours?.from
+									: hours.hours.from,
+							to:
+								typeof data.hours?.to === "string"
+									? data.hours?.to
+									: hours.hours.to,
+						},
+					};
+				return hours;
+			}),
+		}));
+	};
+
+	const onEditHolidayOpeningHours = (data: {
+		id: string;
+		label?: string;
+		hours?: { from?: string; to?: string };
+	}) => {
+		setEditedOpeningHours((prevHours) => ({
+			...prevHours,
+			holiday_opening_hours: prevHours.holiday_opening_hours?.map((hours) => {
+				if (data.id === hours.id)
+					return {
+						id: data.id,
+						label: data.label || hours.label,
+						hours: {
+							from: data.hours?.from || hours.hours.from,
+							to: data.hours?.to || hours.hours.to,
+						},
+					};
+				return hours;
+			}),
+		}));
+	};
 
 	const onAddNewOpeningHours = () => {
+		const blankHour = { id: uuid(), label: "", hours: { from: "", to: "" } };
 		setEditedOpeningHours((prevHours) => ({
 			...prevHours,
 			opening_hours: prevHours.opening_hours
@@ -77,6 +129,7 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 	};
 
 	const onAddNewHolidayOpeningHours = () => {
+		const blankHour = { id: uuid(), label: "", hours: { from: "", to: "" } };
 		setEditedOpeningHours((prevHours) => ({
 			...prevHours,
 			holiday_opening_hours: prevHours.holiday_opening_hours
@@ -85,20 +138,20 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 		}));
 	};
 
-	const onRemoveOpeningHours = (label: string) => {
+	const onRemoveOpeningHours = (id: string) => {
 		setEditedOpeningHours((prevHours) => ({
 			...prevHours,
 			opening_hours: prevHours.opening_hours?.filter(
-				(hours) => hours.label !== label,
+				(hours) => hours.id !== id,
 			),
 		}));
 	};
 
-	const onRemoveHolidayOpeningHours = (label: string) => {
+	const onRemoveHolidayOpeningHours = (id: string) => {
 		setEditedOpeningHours((prevHours) => ({
 			...prevHours,
 			holiday_opening_hours: prevHours.holiday_opening_hours?.filter(
-				(hours) => hours.label !== label,
+				(hours) => hours.id !== id,
 			),
 		}));
 	};
@@ -106,16 +159,31 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 	const onUpdateOpeningHours = () => {
 		setIsSubmitting(true);
 
-		if (editedOpeningHours)
-			dispatch(updateStoreInfo({ id: storeInfo?.id, ...editedOpeningHours }))
-				.then(() => {
-					notifications.show({
-						withCloseButton: false,
-						message: "Order times successfully updated",
-						position: "bottom-right",
-						color: "green",
-					});
-					onClose();
+		if (editedOpeningHours) {
+			const openingHours = editedOpeningHours.opening_hours?.map(
+				({ label, hours }) => ({ label: label, hours: hours }),
+			);
+			const holidayOpeningHours = editedOpeningHours.holiday_opening_hours?.map(
+				({ label, hours }) => ({ label: label, hours: hours }),
+			);
+
+			dispatch(
+				updateStoreInfo({
+					id: storeInfo?.id,
+					opening_hours: openingHours,
+					holiday_opening_hours: holidayOpeningHours,
+				}),
+			)
+				.then((data) => {
+					if (data.payload) {
+						notifications.show({
+							withCloseButton: false,
+							message: "Order times successfully updated",
+							position: "bottom-right",
+							color: "green",
+						});
+						onClose();
+					}
 				})
 				.catch((error) =>
 					notifications.show({
@@ -126,6 +194,7 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 					}),
 				)
 				.finally(() => setIsSubmitting(false));
+		}
 	};
 
 	return (
@@ -147,27 +216,17 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 					<>
 						{index !== 0 && <Divider w="100%" />}
 
-						<Stack key={openingHours.label} gap="sm">
+						<Stack key={openingHours.id} gap="sm">
 							<Flex gap="sm" justify="space-between" align="flex-end">
 								<TextInput
 									size="md"
 									label="Label"
 									value={openingHours.label}
 									onChange={(event) =>
-										setEditedOpeningHours((prevHours) => ({
-											...prevHours,
-											openingHours: prevHours.opening_hours?.map((hours) =>
-												hours.label === openingHours.label
-													? {
-															label: event.target.value,
-															hours: {
-																from: hours.hours.from,
-																to: hours.hours.to,
-															},
-														}
-													: hours,
-											),
-										}))
+										onEditOpeningHours({
+											id: openingHours.id,
+											label: event.target.value,
+										})
 									}
 								/>
 
@@ -175,7 +234,7 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 									size="md"
 									variant="outline"
 									color="darkslategray"
-									onClick={() => onRemoveOpeningHours(openingHours.label)}
+									onClick={() => onRemoveOpeningHours(openingHours.id)}
 								>
 									Remove
 								</Button>
@@ -188,20 +247,10 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 									label="From"
 									value={openingHours.hours.from}
 									onChange={(event) =>
-										setEditedOpeningHours((prevHours) => ({
-											...prevHours,
-											openingHours: prevHours.opening_hours?.map((hours) =>
-												hours.label === openingHours.label
-													? {
-															label: hours.label,
-															hours: {
-																from: event.target.value,
-																to: hours.hours.to,
-															},
-														}
-													: hours,
-											),
-										}))
+										onEditOpeningHours({
+											id: openingHours.id,
+											hours: { from: event.target.value },
+										})
 									}
 								/>
 
@@ -211,20 +260,10 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 									label="To"
 									value={openingHours.hours.to}
 									onChange={(event) =>
-										setEditedOpeningHours((prevHours) => ({
-											...prevHours,
-											openingHours: prevHours.opening_hours?.map((hours) =>
-												hours.label === openingHours.label
-													? {
-															label: hours.label,
-															hours: {
-																from: hours.hours.from,
-																to: event.target.value,
-															},
-														}
-													: hours,
-											),
-										}))
+										onEditOpeningHours({
+											id: openingHours.id,
+											hours: { to: event.target.value },
+										})
 									}
 								/>
 							</Group>
@@ -252,28 +291,17 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 						<>
 							{index !== 0 && <Divider w="100%" />}
 
-							<Stack key={openingHours.label} gap="sm">
+							<Stack key={openingHours.id} gap="sm">
 								<Flex gap="sm" justify="space-between" align="flex-end">
 									<TextInput
 										size="md"
 										label="Label"
-										value={openingHours.label}
+										defaultValue={openingHours.label}
 										onChange={(event) =>
-											setEditedOpeningHours((prevHours) => ({
-												...prevHours,
-												holiday_opening_hours:
-													prevHours.holiday_opening_hours?.map((hours) =>
-														hours.label === openingHours.label
-															? {
-																	label: event.target.value,
-																	hours: {
-																		from: hours.hours.from,
-																		to: hours.hours.to,
-																	},
-																}
-															: hours,
-													),
-											}))
+											onEditHolidayOpeningHours({
+												id: openingHours.id,
+												label: event.target.value,
+											})
 										}
 									/>
 
@@ -281,9 +309,7 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 										size="md"
 										variant="outline"
 										color="darkslategray"
-										onClick={() =>
-											onRemoveHolidayOpeningHours(openingHours.label)
-										}
+										onClick={() => onRemoveHolidayOpeningHours(openingHours.id)}
 									>
 										Remove
 									</Button>
@@ -296,21 +322,10 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 										label="From"
 										value={openingHours.hours.from}
 										onChange={(event) =>
-											setEditedOpeningHours((prevHours) => ({
-												...prevHours,
-												holiday_opening_hours:
-													prevHours.holiday_opening_hours?.map((hours) =>
-														hours.label === openingHours.label
-															? {
-																	label: hours.label,
-																	hours: {
-																		from: event.target.value,
-																		to: hours.hours.to,
-																	},
-																}
-															: hours,
-													),
-											}))
+											onEditHolidayOpeningHours({
+												id: openingHours.id,
+												hours: { from: event.target.value },
+											})
 										}
 									/>
 									<TextInput
@@ -319,21 +334,10 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 										label="To"
 										value={openingHours.hours.to}
 										onChange={(event) =>
-											setEditedOpeningHours((prevHours) => ({
-												...prevHours,
-												holiday_opening_hours:
-													prevHours.holiday_opening_hours?.map((hours) =>
-														hours.label === openingHours.label
-															? {
-																	label: hours.label,
-																	hours: {
-																		from: hours.hours.from,
-																		to: event.target.value,
-																	},
-																}
-															: hours,
-													),
-											}))
+											onEditHolidayOpeningHours({
+												id: openingHours.id,
+												hours: { to: event.target.value },
+											})
 										}
 									/>
 								</Group>
