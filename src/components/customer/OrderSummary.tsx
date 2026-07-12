@@ -20,7 +20,11 @@ function OrderSummary({ order }: { order: PendingOrderType }) {
 								</Text>
 							)}
 
-							{item.note && <Text>{item.note}</Text>}
+							{item.note && (
+								<Text size="sm" fs="italic">
+									{item.note}
+								</Text>
+							)}
 						</Stack>
 
 						<Text pr="sm">
