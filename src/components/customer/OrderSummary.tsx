@@ -40,6 +40,15 @@ function OrderSummary({ order }: { order: PendingOrderType }) {
 					</Flex>
 				</>
 			))}
+
+			{order.note && (
+				<>
+					<Divider />
+					<Text size="sm" fs="italic">
+						{order.note}
+					</Text>
+				</>
+			)}
 		</Stack>
 	);
 }
