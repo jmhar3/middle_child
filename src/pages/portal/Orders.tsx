@@ -91,7 +91,10 @@ function Orders(props: OrdersProps) {
 	const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
 		setIsUpdatingOrderTime(true);
 		dispatch(
-			updateStoreInfo({ ...storeInfo, current_order_time: selectedOrderTime }),
+			updateStoreInfo({
+				id: storeInfo?.id,
+				current_order_time: selectedOrderTime,
+			}),
 		)
 			.catch((error) =>
 				notifications.show({
