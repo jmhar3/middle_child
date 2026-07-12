@@ -67,7 +67,9 @@ function OrderItem({ item: orderItem }: OrderItemProps) {
 			.filter((label) => label)
 			.join(", ");
 
-		return `${is_large ? "Large " : ""}${menuItem.label}${formattedModifiers && " - "}${formattedModifiers}`;
+		console.log(formattedModifiers);
+
+		return `${is_large ? "Large " : ""}${menuItem.label}${formattedModifiers ? ` - ${formattedModifiers}` : ""}`;
 	}, [modifiers, is_large, menuItem]);
 
 	return (
