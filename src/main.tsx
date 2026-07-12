@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { BrowserRouter, Routes, Route } from "react-router";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
@@ -46,11 +46,7 @@ createRoot(document.getElementById("root")!).render(
 						<Route path="account" element={<Account />} />
 
 						{/* Private Portal */}
-						<Route path="portal">
-							<Route index element={<Navigate to="/portal/orders" />} />
-							<Route path="orders" element={<Portal />} />
-							<Route path="menu" element={<Portal />} />
-						</Route>
+						<Route path="portal" element={<Portal />} />
 					</Routes>
 				</BrowserRouter>
 			</MantineProvider>
