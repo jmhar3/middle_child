@@ -1,18 +1,8 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
-import {
-	Box,
-	em,
-	Flex,
-	Group,
-	SegmentedControl,
-	Stack,
-	Tabs,
-	Text,
-	Title,
-} from "@mantine/core";
+import { em, Box, Tabs, Text, Flex, Group, Stack, Title } from "@mantine/core";
 
 import Menu from "./Menu";
 import Orders from "./Orders";
@@ -20,7 +10,6 @@ import Loading from "../../components/Loading";
 import LoginModal from "../../components/LoginModal";
 import StyledButton from "../../components/StyledButton";
 import ManageMenu from "../../components/portal/ManageMenu";
-import OrdersNavItems from "../../components/portal/OrdersNavItems";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
@@ -46,21 +35,18 @@ import {
 import {
 	selectStoreInfo,
 	selectStoreInfoStatus,
+	selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
+import dayjs from "dayjs";
 
 function Portal() {
 	const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
 	const navigate = useNavigate();
-	const { pathname } = useLocation();
-
-	const route = pathname.replace("/portal/", "");
 
 	const [
 		showToggleStoreOpenModal,
 		{ open: openToggleStoreOpenModal, close: closeToggleStoreOpenModal },
 	] = useDisclosure(false);
-
-	const [activeTab, setActiveTab] = useState<string>(route);
 
 	const dispatch = useAppDispatch();
 
@@ -76,6 +62,7 @@ function Portal() {
 	const menu = useAppSelector(selectMenu);
 	const orders = useAppSelector(selectOrders);
 	const storeInfo = useAppSelector(selectStoreInfo);
+	const storeIsOpen = useAppSelector(selectStoreIsOpen);
 
 	const isLoading =
 		!menu &&
@@ -127,10 +114,17 @@ function Portal() {
 		return <Loading message="Loading... Please wait" />;
 	if (!user) return <LoginModal isModalOpen={true} onModalClose={() => {}} />;
 
-	const onChangeTab = (tab: string) => {
-		setActiveTab(tab);
-		navigate(`/portal/${tab}`);
-	};
+	const todaysOrders = orders.filter((order) =>
+		dayjs(order.due_at).isSame(dayjs(), "day"),
+	);
+
+	const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
+
+	const weeksOrders = orders.filter((order) =>
+		dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
+	);
+
+	const weeklyTotal = weeksOrders.reduce((acc, order) => acc + order.total, 0);
 
 	if (user.is_admin)
 		return (
@@ -145,47 +139,41 @@ function Portal() {
 					align="center"
 					justify="space-between"
 				>
-					<SegmentedControl
-						size="lg"
-						radius="sm"
-						value={activeTab}
-						onChange={onChangeTab}
-						data={[
-							{ label: "Orders", value: "orders" },
-							{ label: "Menu", value: "menu" },
-						]}
-					/>
-
 					<Group gap="sm" w="fit-content">
-						{activeTab === "orders" && (
-							<OrdersNavItems
-								openToggleStoreOpenModal={openToggleStoreOpenModal}
+						<ManageMenu />
+
+						{storeIsOpen && (
+							<StyledButton
+								variant="outline"
+								label="Close Store"
+								onClick={openToggleStoreOpenModal}
 							/>
 						)}
-
-						<ManageMenu />
 					</Group>
+
+					<Stack gap="0">
+						<Flex justify="space-between" gap="xs">
+							<Text>Today:</Text>
+							<Text>${todaysTotal.toFixed(2)}</Text>
+						</Flex>
+						<Flex justify="space-between" gap="xs">
+							<Text>This Week:</Text>
+							<Text>${weeklyTotal.toFixed(2)}</Text>
+						</Flex>
+					</Stack>
 				</Flex>
-				<Tabs value={activeTab}>
-					<Tabs.Panel value="menu">
-						<Stack pt={isMobile ? "4em" : "5.2em"} pb="lg" w="100vw">
-							{isLoading ? <Loading message="Loading menu" /> : <Menu />}
-						</Stack>
-					</Tabs.Panel>
-					<Tabs.Panel value="orders">
-						<Stack pt={isMobile ? "4em" : "5.2em"} pb="lg" w="100vw">
-							{isLoading ? (
-								<Loading message="Loading orders" />
-							) : (
-								<Orders
-									openToggleStoreOpenModal={openToggleStoreOpenModal}
-									showToggleStoreOpenModal={showToggleStoreOpenModal}
-									closeToggleStoreOpenModal={closeToggleStoreOpenModal}
-								/>
-							)}
-						</Stack>
-					</Tabs.Panel>
-				</Tabs>
+
+				<Stack pt={isMobile ? "4em" : "5.2em"} pb="lg" w="100vw">
+					{isLoading ? (
+						<Loading message="Loading orders" />
+					) : (
+						<Orders
+							openToggleStoreOpenModal={openToggleStoreOpenModal}
+							showToggleStoreOpenModal={showToggleStoreOpenModal}
+							closeToggleStoreOpenModal={closeToggleStoreOpenModal}
+						/>
+					)}
+				</Stack>
 			</Box>
 		);
 
@@ -200,7 +188,7 @@ function Portal() {
 
 			<Flex gap="md">
 				<StyledButton label="Logout" onClick={() => dispatch(signOutUser())} />
-				<StyledButton label="Menu" onClick={() => navigate("/")} />
+				<StyledButton label="View Menu" onClick={() => navigate("/")} />
 			</Flex>
 		</Stack>
 	);
