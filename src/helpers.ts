@@ -10,11 +10,10 @@ export const calculateOrderItemPrice = (
 			return modifier.price ? accumulator + modifier.price : accumulator;
 		}, 0);
 		if (is_large && menuItem.large_price)
-			return modifiersTotalPrice + menuItem.price + menuItem.large_price;
+			return modifiersTotalPrice + menuItem.large_price;
 		return modifiersTotalPrice + menuItem.price;
 	}
-	if (is_large && menuItem.large_price)
-		return menuItem.price + menuItem.large_price;
+	if (is_large && menuItem.large_price) return menuItem.large_price;
 	return menuItem.price;
 };
 

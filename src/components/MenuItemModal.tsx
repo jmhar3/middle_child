@@ -157,7 +157,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 				{menuItem.large_price && (
 					<SizeSelect
 						onSizeSelect={onSizeSelect}
-						largePrice={menuItem.large_price}
+						largePrice={menuItem.large_price - menuItem.price}
 						isErroneous={showErrors && selection.is_large === undefined}
 						sizeSelection={
 							selection.is_large === undefined
