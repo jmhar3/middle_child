@@ -32,10 +32,10 @@ export const fetchStoreInfo = createAsyncThunk(
 
 export const updateStoreInfo = createAsyncThunk(
 	"storeInfo/updateStoreInfo",
-	async ({ id, current_order_time, is_open }: Partial<StoreInfo>) => {
+	async ({ id, current_order_time, ...storeInfo }: Partial<StoreInfo>) => {
 		const { data, error } = await supabase
 			.from("store_info")
-			.update({ current_order_time: current_order_time?.id, is_open: is_open })
+			.update({ current_order_time: current_order_time?.id, ...storeInfo })
 			.eq("id", id)
 			.select("*, current_order_time (id, label, short, long)")
 			.single();
