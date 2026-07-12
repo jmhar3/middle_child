@@ -1,10 +1,10 @@
+import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
-import { em, Box, Tabs, Text, Flex, Group, Stack, Title } from "@mantine/core";
+import { em, Box, Text, Flex, Group, Stack, Title } from "@mantine/core";
 
-import Menu from "./Menu";
 import Orders from "./Orders";
 import Loading from "../../components/Loading";
 import LoginModal from "../../components/LoginModal";
@@ -37,7 +37,6 @@ import {
 	selectStoreInfoStatus,
 	selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
-import dayjs from "dayjs";
 
 function Portal() {
 	const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
