@@ -14,16 +14,21 @@ import {
 	selectUserLoyaltyPoints,
 	selectUserStatus,
 } from "../../state/user/userSlice";
-import { selectStoreInfo } from "../../state/storeInfo/storeInfoSlice";
+import {
+	selectStoreInfo,
+	selectStoreInfoStatus,
+} from "../../state/storeInfo/storeInfoSlice";
+import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 
 interface LoyaltyPointsProps {
-	additionalPoints: number;
+	additionalPoints?: number;
 }
 
 function LoyaltyPoints(props: LoyaltyPointsProps) {
-	const { additionalPoints } = props;
+	const { additionalPoints = 0 } = props;
 
 	const dispatch = useAppDispatch();
+	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
 	const userStatus = useAppSelector(selectUserStatus);
 	const user = useAppSelector(selectUser);
@@ -35,7 +40,10 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 		if (userStatus === "idle") {
 			dispatch(fetchUser());
 		}
-	}, [dispatch, userStatus]);
+		if (storeInfoStatus === "idle") {
+			dispatch(fetchStoreInfo());
+		}
+	}, [dispatch, userStatus, storeInfoStatus]);
 
 	const newPointTotal = existingPoints
 		? existingPoints + additionalPoints
@@ -79,12 +87,14 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 				<StarFilledIcon />
 			</Flex>
 
-			{pointsRequired && newPointTotal < pointsRequired ? (
+			{pointsRequired && newPointTotal > pointsRequired && (
+				<Text>You've unlocked a free coffee!</Text>
+			)}
+
+			{pointsRequired && newPointTotal < pointsRequired && (
 				<Text>
 					You're {pointsRequired - newPointTotal} coffees away from a freebie!
 				</Text>
-			) : (
-				<Text>You've unlocked a free coffee!</Text>
 			)}
 			{!user && <LoginButton />}
 		</Stack>
