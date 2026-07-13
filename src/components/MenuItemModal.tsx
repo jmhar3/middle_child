@@ -42,9 +42,22 @@ function MenuItemModal(props: MenuItemModalProps) {
 		{ min: 1 },
 	);
 
-	const [note, setNote] = useState<string | undefined>(orderItem.note);
-	const [selection, setSelection] = useState<OrderItem>(orderItem);
+	const fullCream = useMemo(() => {
+		const allModifiers = menuItem.modifierCategories?.flatMap(
+			(option) => option.modifiers,
+		);
+		return allModifiers?.find(({ label }) => label === "Full Cream");
+	}, [menuItem]);
+
+	console.log(fullCream);
 	const [showErrors, setShowErrors] = useState(false);
+	const [note, setNote] = useState<string | undefined>(orderItem.note);
+
+	const [selection, setSelection] = useState<OrderItem>({
+		...orderItem,
+		is_large: menuItem.has_large ? false : undefined,
+		modifiers: fullCream ? [fullCream] : undefined,
+	});
 
 	const sortedOptions =
 		menuItem.modifierCategories &&
@@ -154,18 +167,12 @@ function MenuItemModal(props: MenuItemModalProps) {
 					</>
 				)}
 
-				{menuItem.large_price && (
+				{menuItem.has_large && menuItem.large_price && (
 					<SizeSelect
 						onSizeSelect={onSizeSelect}
 						largePrice={menuItem.large_price - menuItem.price}
 						isErroneous={showErrors && selection.is_large === undefined}
-						sizeSelection={
-							selection.is_large === undefined
-								? undefined
-								: selection.is_large
-									? "large"
-									: "small"
-						}
+						sizeSelection={selection.is_large ? "large" : "small"}
 					/>
 				)}
 
