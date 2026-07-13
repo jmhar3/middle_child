@@ -106,18 +106,26 @@ function Menu() {
 			) {
 				return null;
 			}
-			return 12 - additionalLoyaltyPoints;
+			return (
+				storeInfo?.loyalty_points &&
+				storeInfo.loyalty_points - additionalLoyaltyPoints
+			);
 		}
 
 		if (
 			additionalLoyaltyPoints === undefined ||
 			additionalLoyaltyPoints === 0
 		) {
-			return 12 - loyaltyPoints;
+			return (
+				storeInfo?.loyalty_points && storeInfo.loyalty_points - loyaltyPoints
+			);
 		}
 
-		return 12 - loyaltyPoints - additionalLoyaltyPoints;
-	}, [orderItems, loyaltyPoints]);
+		return (
+			storeInfo?.loyalty_points &&
+			storeInfo.loyalty_points - loyaltyPoints - additionalLoyaltyPoints
+		);
+	}, [storeInfo, orderItems, loyaltyPoints]);
 
 	const totalItemsInOrder = useMemo(
 		() =>

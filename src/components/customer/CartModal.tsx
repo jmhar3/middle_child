@@ -87,17 +87,17 @@ function CartModal(props: CartModalProps) {
 	const pointsTotal = (loyaltyPoints || 0) + additionalLoyaltyPoints;
 
 	const freeItem = useMemo(() => {
-		if (pointsTotal >= 12) {
+		if (storeInfo?.loyalty_points && pointsTotal >= storeInfo.loyalty_points) {
 			let quantity = loyaltyPoints || 0;
 			for (const item of applicableLoyaltyItems) {
-				if (quantity + item.quantity >= 12) {
+				if (quantity + item.quantity >= storeInfo?.loyalty_points) {
 					return item;
 				}
 				quantity += item.quantity;
 			}
 		}
 		return null;
-	}, [pointsTotal, loyaltyPoints, applicableLoyaltyItems]);
+	}, [storeInfo, pointsTotal, loyaltyPoints, applicableLoyaltyItems]);
 
 	const orderTotal = useMemo(() => {
 		return items
@@ -158,7 +158,10 @@ function CartModal(props: CartModalProps) {
 		dispatch(
 			updateUser({
 				id: user.id,
-				loyalty_points: freeItem ? pointsTotal - 12 : pointsTotal,
+				loyalty_points:
+					storeInfo?.loyalty_points && freeItem
+						? pointsTotal - storeInfo?.loyalty_points
+						: pointsTotal,
 			}),
 		)
 			.then(() => {

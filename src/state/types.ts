@@ -20,6 +20,7 @@ export interface StoreInfo {
 	current_order_time: OrderTime;
 	opening_hours: OpeningHours[];
 	holiday_opening_hours?: OpeningHours[];
+	loyalty_points: number;
 }
 
 export interface Modifier {
