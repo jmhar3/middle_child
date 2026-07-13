@@ -52,14 +52,18 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	if (menu.length > 0 && editedMenu.length === 0) setEditedMenu(menu);
 
-	const onCloseDrawer = () => {
-		props.onClose();
+	const onClearDrawer = () => {
 		setHasLarge(false);
 		setMenuView("Edit Selection");
 		setItemsToEdit([]);
 		setShowPriceEdit(false);
 		setNewPrices({ base: 0 });
 		setEditedMenu(menu);
+	};
+
+	const onCloseDrawer = () => {
+		props.onClose();
+		onClearDrawer();
 	};
 
 	const onSelectItemToEdit = (itemIds: string[]) =>
@@ -143,9 +147,9 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 						message: "Prices updated successfully",
 						withCloseButton: false,
 						position: "bottom-right",
-						color: "red",
+						color: "green",
 					});
-					onCloseDrawer();
+					onClearDrawer();
 				}
 			})
 			.catch((error) =>
@@ -320,7 +324,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 							<StyledButton
 								label="Cancel"
 								variant="outline"
-								onClick={onCloseDrawer}
+								onClick={onClearDrawer}
 								isLoading={isSubmitting}
 							/>
 							<StyledButton
@@ -453,7 +457,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 							<StyledButton
 								label="Cancel"
 								variant="outline"
-								onClick={onCloseDrawer}
+								onClick={onClearDrawer}
 								isLoading={isSubmitting}
 							/>
 							{menuView === "Edit All" ? (
