@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { notifications } from "@mantine/notifications";
 
 import {
 	Text,
@@ -18,11 +19,10 @@ import {
 import StyledButton from "../../StyledButton";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
+import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
 import { selectMenu } from "../../../state/menu/menuSlice";
 
 import type { MenuItemType, MenuSection } from "../../../state/types";
-import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
-import { notifications } from "@mantine/notifications";
 
 interface UpdatePricesDrawerProps {
 	isOpen: boolean;
@@ -54,7 +54,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	const onClearDrawer = () => {
 		setHasLarge(false);
-		setMenuView("Edit Selection");
+		setMenuView("Edit All");
 		setItemsToEdit([]);
 		setShowPriceEdit(false);
 		setNewPrices({ base: 0 });
