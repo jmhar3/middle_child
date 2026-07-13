@@ -290,7 +290,7 @@ function Menu() {
 					Pick up time from {storeInfo?.current_order_time.short} minutes
 				</Text>
 
-				{pointsRemaining !== null ? (
+				{pointsRemaining ? (
 					<>
 						<Divider w="100%" />
 
