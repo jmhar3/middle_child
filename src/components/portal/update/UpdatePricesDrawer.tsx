@@ -23,6 +23,7 @@ import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
 import { selectMenu } from "../../../state/menu/menuSlice";
 
 import type { MenuItemType, MenuSection } from "../../../state/types";
+import { fetchMenu } from "../../../state/menu/menuThunks";
 
 interface UpdatePricesDrawerProps {
 	isOpen: boolean;
@@ -52,12 +53,16 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	if (menu.length > 0 && editedMenu.length === 0) setEditedMenu(menu);
 
+	const onClearSelection = () => {
+		setShowPriceEdit(false);
+		setNewPrices({ base: 0 });
+	};
+
 	const onClearDrawer = () => {
+		onClearSelection();
 		setHasLarge(false);
 		setMenuView("Edit All");
 		setItemsToEdit([]);
-		setShowPriceEdit(false);
-		setNewPrices({ base: 0 });
 		setEditedMenu(menu);
 	};
 
@@ -72,9 +77,11 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		);
 
 	const onEditSelection = () => {
-		setShowPriceEdit(true);
-		if (firstItem.has_large) setHasLarge(true);
-		setNewPrices({ base: firstItem.price, large: firstItem.large_price });
+		if (itemsToEdit.length > 0) {
+			setShowPriceEdit(true);
+			if (firstItem.has_large) setHasLarge(true);
+			setNewPrices({ base: firstItem.price, large: firstItem.large_price });
+		}
 	};
 
 	const onEditBasePrice = (params: {
@@ -149,6 +156,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 						position: "bottom-right",
 						color: "green",
 					});
+					dispatch(fetchMenu());
 					onClearDrawer();
 				}
 			})
@@ -204,6 +212,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	return (
 		<Drawer
+			size="xl"
 			offset={12}
 			radius="sm"
 			position="right"
@@ -324,9 +333,10 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 							<StyledButton
 								label="Cancel"
 								variant="outline"
-								onClick={onClearDrawer}
 								isLoading={isSubmitting}
+								onClick={onClearSelection}
 							/>
+
 							<StyledButton
 								label="Save Changes"
 								onClick={onSaveChanges}
@@ -361,15 +371,21 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 													value={itemsToEdit.map(({ id }) => id)}
 													onChange={onSelectItemToEdit}
 												>
-													<Group mt="xs">
+													<Stack mt="xs">
 														{section.items.map((item) => (
-															<Checkbox
-																key={item.id}
-																value={item.id}
-																label={item.label}
-															/>
+															<Flex align="center" justify="space-between">
+																<Checkbox
+																	key={item.id}
+																	value={item.id}
+																	label={item.label}
+																/>
+																<Text>
+																	{item.price}
+																	{item.has_large && ` / ${item.large_price}`}
+																</Text>
+															</Flex>
 														))}
-													</Group>
+													</Stack>
 												</Checkbox.Group>
 											</Accordion.Panel>
 										</Accordion.Item>
@@ -457,8 +473,8 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 							<StyledButton
 								label="Cancel"
 								variant="outline"
-								onClick={onClearDrawer}
 								isLoading={isSubmitting}
+								onClick={showPriceEdit ? onClearDrawer : onCloseDrawer}
 							/>
 							{menuView === "Edit All" ? (
 								<StyledButton
