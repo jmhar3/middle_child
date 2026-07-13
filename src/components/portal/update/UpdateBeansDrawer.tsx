@@ -30,6 +30,7 @@ import {
 } from "../../../state/modifiers/modifierThunks";
 
 import type { Modifier } from "../../../state/types";
+import { selectModifierById } from "../../../state/modifiers/modifiersSlice";
 
 interface UpdateBeansDrawerProps {
 	isOpen: boolean;
@@ -43,6 +44,9 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 	const beans = useAppSelector((state) =>
 		selectItemOptionById(state, beansOptionsId),
 	);
+	const batchBean = useAppSelector((state) =>
+		selectModifierById(state, "9118221a-fec6-45ec-ac72-c53f5cfe1f44"),
+	);
 
 	const isLoading = itemOptionsStatus === "pending";
 
@@ -52,12 +56,16 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 		}
 	}, [dispatch, itemOptionsStatus]);
 
+	const [batchBeanEdit, setBatchBeanEdit] = useState(batchBean);
+	const [editBatchBean, setEditBatchBean] = useState(false);
 	const [beanToEdit, setBeanToEdit] = useState<string | null>("");
 	const [editedBean, setEditedBean] = useState<Modifier | null>();
 	const [newBean, setNewBean] = useState<Modifier | null>();
 	const [beansToDelete, setBeansToDelete] = useState<Modifier[]>([]);
 	const [beansToUpdate, setBeansToUpdate] = useState<Modifier[]>([]);
 	const [beansToSave, setBeansToSave] = useState<Modifier[]>([]);
+
+	if (batchBeanEdit === undefined && batchBean) setBatchBeanEdit(batchBean);
 
 	const beansMinusDeleted = useMemo(() => {
 		return beans?.modifiers.filter(
@@ -76,6 +84,8 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 	}, [beansMinusDeleted, beansToUpdate, beansToSave]);
 
 	const onClear = () => {
+		setBatchBeanEdit(batchBean);
+		setEditBatchBean(false);
 		setEditedBean(null);
 		setNewBean(null);
 		setBeanToEdit(null);
@@ -153,6 +163,34 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 				return [...prevBeans, newBean];
 			});
 			onClear();
+		}
+	};
+
+	const onSaveBatch = () => {
+		if (batchBeanEdit) {
+			dispatch(updateModifier(batchBeanEdit))
+				.then((data) => {
+					if (data.payload)
+						notifications.show({
+							withCloseButton: false,
+							message: `Successfully updated ${batchBeanEdit.label}`,
+							position: "bottom-right",
+							color: "green",
+						});
+
+					dispatch(fetchItemOptions());
+					onCloseDrawer();
+				})
+				.catch((error) => {
+					console.error(error);
+					notifications.show({
+						withCloseButton: false,
+						message: error.message,
+						title: error.name,
+						position: "bottom-right",
+						color: "red",
+					});
+				});
 		}
 	};
 
@@ -249,6 +287,113 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 						UPDATE BEANS
 					</Text>
 
+					{batchBean && (
+						<Stack w="100%" gap="xs">
+							<Text size="lg" ta="center" w="100%">
+								Batch Brew Bean
+							</Text>
+
+							{!editBatchBean ? (
+								<>
+									<Stack
+										p="sm"
+										gap="0"
+										w="100%"
+										bdrs="sm"
+										bd="solid 1px darkslategray"
+									>
+										<Text fw="bold">{batchBean.label}</Text>
+										<Text>{batchBean.description}</Text>
+									</Stack>
+
+									<Group grow w="100%">
+										<StyledButton
+											label="Edit Batch Bean"
+											onClick={() => setEditBatchBean(true)}
+										/>
+									</Group>
+								</>
+							) : (
+								batchBeanEdit && (
+									<Stack w="100%">
+										<TextInput
+											label="Label"
+											value={batchBeanEdit.label}
+											onChange={(event) =>
+												setBatchBeanEdit({
+													...batchBeanEdit,
+													label: event.target.value,
+												})
+											}
+										/>
+										<TextInput
+											label="Description"
+											value={batchBeanEdit.description}
+											onChange={(event) =>
+												setBatchBeanEdit({
+													...batchBeanEdit,
+													description: event.target.value,
+												})
+											}
+										/>
+
+										<Group grow>
+											<StyledButton
+												label="Cancel"
+												variant="outline"
+												onClick={onClear}
+											/>
+
+											<StyledButton label="Save" onClick={onSaveBatch} />
+										</Group>
+
+										<Divider w="100%" />
+									</Stack>
+								)
+							)}
+
+							<Divider mt="md" />
+						</Stack>
+					)}
+
+					{!editedBean && !newBean && (
+						<Stack w="100%">
+							<Text size="lg" ta="center" w="100%">
+								Black Coffee Beans
+							</Text>
+
+							<Text>Choose bean to edit</Text>
+
+							<Select
+								data={beansMinusDeleted?.map((bean) => ({
+									value: bean.id,
+									label: bean.label,
+								}))}
+								value={beanToEdit}
+								onChange={setBeanToEdit}
+							/>
+
+							<Group grow>
+								<StyledButton
+									variant="outline"
+									label="Add New"
+									onClick={onAddNewBean}
+								/>
+
+								<StyledButton
+									label="Delete"
+									onClick={onDeleteBean}
+									isDisabled={!beanToEdit}
+								/>
+								<StyledButton
+									label="Edit"
+									onClick={onEditBean}
+									isDisabled={!beanToEdit}
+								/>
+							</Group>
+						</Stack>
+					)}
+
 					{editedBean && (
 						<Stack w="100%">
 							<TextInput
@@ -317,49 +462,12 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 						</Stack>
 					)}
 
-					{!editedBean && !newBean && (
-						<Stack w="100%">
-							<Text ta="left">{beans?.label}</Text>
-							<Select
-								data={beansMinusDeleted?.map((bean) => ({
-									value: bean.id,
-									label: bean.label,
-								}))}
-								value={beanToEdit}
-								onChange={setBeanToEdit}
-							/>
-
-							<Group grow>
-								<StyledButton
-									variant="outline"
-									label="Add New"
-									onClick={onAddNewBean}
-								/>
-
-								<StyledButton
-									label="Delete"
-									onClick={onDeleteBean}
-									isDisabled={!beanToEdit}
-								/>
-								<StyledButton
-									label="Edit"
-									onClick={onEditBean}
-									isDisabled={!beanToEdit}
-								/>
-							</Group>
-						</Stack>
-					)}
-
 					{newBeansSelection.length > 0 && (
 						<>
 							<Divider w="100%" />
 
-							<Text size="lg" ta="center" w="100%">
-								Review Summary
-							</Text>
-
 							<Stack w="100%" gap="xs">
-								<Text>New Selection</Text>
+								<Text>Preview Selection</Text>
 								<Stack w="100%" gap="0" bdrs="sm" bd="solid 1px darkslategray">
 									{newBeansSelection.map((bean, index) => (
 										<>
@@ -376,12 +484,15 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 							{beansToDelete.length > 0 && (
 								<>
 									<Divider w="100%" />
+
 									<Stack w="100%" gap="xs">
 										<Text>Removed from selection</Text>
+
 										<Stack w="100%" gap="0" bdrs="sm" bd="solid 1px crimson">
 											{beansToDelete.map((bean, index) => (
 												<>
 													{index !== 0 && <Divider my="0" />}
+
 													<Flex align="center" justify="space-between" px="sm">
 														<Stack key={bean.id} gap="0" p="sm">
 															<Text fw="bold">{bean.label}</Text>
