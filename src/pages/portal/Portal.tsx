@@ -137,6 +137,7 @@ function Portal() {
 					bg="white"
 					align="center"
 					justify="space-between"
+					style={{ zIndex: 1 }}
 				>
 					<Group gap="sm" w="fit-content">
 						<ManageMenu />
