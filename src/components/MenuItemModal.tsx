@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCounter, useMediaQuery } from "@mantine/hooks";
 import { v4 as uuid } from "uuid";
 
@@ -13,6 +13,12 @@ import { calculateOrderItemPrice, formatPrice } from "../helpers";
 
 import type { Modifier, OrderItem, MenuItemType } from "../state/types";
 import SizeSelect from "./customer/SizeSelect";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import {
+	selectModifierById,
+	selectModifiersStatus,
+} from "../state/modifiers/modifiersSlice";
+import { fetchModifiers } from "../state/modifiers/modifierThunks";
 
 interface MenuItemModalProps {
 	isOpen: boolean;
@@ -42,16 +48,27 @@ function MenuItemModal(props: MenuItemModalProps) {
 		{ min: 1 },
 	);
 
+	const [showErrors, setShowErrors] = useState(false);
+	const [note, setNote] = useState<string | undefined>(orderItem.note);
+
+	const dispatch = useAppDispatch();
+	const modifiersStatus = useAppSelector(selectModifiersStatus);
+	const batchBean = useAppSelector((state) =>
+		selectModifierById(state, "9118221a-fec6-45ec-ac72-c53f5cfe1f44"),
+	);
+
+	useEffect(() => {
+		if (modifiersStatus === "idle") {
+			dispatch(fetchModifiers());
+		}
+	}, [dispatch, modifiersStatus]);
+
 	const fullCream = useMemo(() => {
 		const allModifiers = menuItem.modifierCategories?.flatMap(
 			(option) => option.modifiers,
 		);
 		return allModifiers?.find(({ label }) => label === "Full Cream");
 	}, [menuItem]);
-
-	console.log(fullCream);
-	const [showErrors, setShowErrors] = useState(false);
-	const [note, setNote] = useState<string | undefined>(orderItem.note);
 
 	const [selection, setSelection] = useState<OrderItem>({
 		...orderItem,
@@ -160,6 +177,25 @@ function MenuItemModal(props: MenuItemModalProps) {
 		>
 			<Stack pb={60} align="center">
 				<Divider w="100%" />
+
+				{(menuItem.label.includes("Batch Brew") ||
+					menuItem.label.includes("Cold Brew")) &&
+					batchBean && (
+						<Stack gap="3px" w="100%">
+							<Text>Todays Bean</Text>
+							<Stack
+								p="sm"
+								gap="0"
+								w="100%"
+								bdrs="sm"
+								bd="solid 1px darkslategray"
+							>
+								<Text fw="bold">{batchBean.label}</Text>
+								<Text>{batchBean.description}</Text>
+							</Stack>
+						</Stack>
+					)}
+
 				{menuItem.description && (
 					<>
 						<Text fs="italic">{menuItem.description}</Text>
