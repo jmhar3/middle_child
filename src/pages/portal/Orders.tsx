@@ -83,10 +83,10 @@ function Orders(props: OrdersProps) {
 	);
 
 	const sortedOrders = useMemo(() => {
-		const incompleteOrders = orders.filter((order) => !order.is_complete);
-		const completedOrders = orders.filter((order) => order.is_complete);
+		const incompleteOrders = todaysOrders.filter((order) => !order.is_complete);
+		const completedOrders = todaysOrders.filter((order) => order.is_complete);
 		return [...incompleteOrders, ...completedOrders];
-	}, [orders]);
+	}, [todaysOrders]);
 
 	const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
 		setIsUpdatingOrderTime(true);
