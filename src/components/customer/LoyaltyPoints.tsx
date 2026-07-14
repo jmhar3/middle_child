@@ -94,6 +94,18 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 				</Flex>
 			)}
 
+			{remainingPointsRequired ? (
+				remainingPointsRequired > 0 ? (
+					<Text>
+						You're {remainingPointsRequired} coffees away from a freebie!
+					</Text>
+				) : (
+					<Text>You've unlocked a free coffee!</Text>
+				)
+			) : (
+				<Text>Start drinking to earn free coffee!</Text>
+			)}
+
 			{pointsRequired && newPointTotal > pointsRequired && (
 				<Text>You've unlocked a free coffee!</Text>
 			)}
