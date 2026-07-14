@@ -47,10 +47,6 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 		}
 	}, [dispatch, userStatus, storeInfoStatus]);
 
-	const newPointTotal = existingPoints
-		? existingPoints + additionalPoints
-		: additionalPoints;
-
 	const remainingPointsRequired = useMemo(() => {
 		if (pointsRequired) {
 			return pointsRequired - (existingPoints || 0) - (additionalPoints || 0);
