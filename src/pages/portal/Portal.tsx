@@ -9,7 +9,7 @@ import Orders from "./Orders";
 import Loading from "../../components/Loading";
 import LoginModal from "../../components/LoginModal";
 import StyledButton from "../../components/StyledButton";
-import ManageMenu from "../../components/portal/ManageMenu";
+import ManageMenu from "../../components/portal/manageMenu/ManageMenu";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 
