@@ -1,24 +1,26 @@
-import { useEffect } from "react";
-import { Stack, Text, Progress, Flex } from "@mantine/core";
+import { useEffect, useMemo } from "react";
+import { Stack, Text, Flex, Title, Center } from "@mantine/core";
 
 import LoginButton from "../Login";
 
-import OutlineStarIcon from "../../icons/StarOutlineIcon";
+import CoffeeIcon from "../../icons/CoffeeIcon";
+import StarOutlineIcon from "../../icons/StarOutlineIcon";
 import StarFilledIcon from "../../icons/StarFilledIcon";
 
 import { fetchUser } from "../../state/user/userThunks";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
+import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 
 import {
 	selectUser,
-	selectUserLoyaltyPoints,
 	selectUserStatus,
+	selectUserLoyaltyPoints,
 } from "../../state/user/userSlice";
+
 import {
 	selectStoreInfo,
 	selectStoreInfoStatus,
 } from "../../state/storeInfo/storeInfoSlice";
-import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 
 interface LoyaltyPointsProps {
 	additionalPoints?: number;
@@ -49,15 +51,12 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 		? existingPoints + additionalPoints
 		: additionalPoints;
 
-	const existingPointsPercentage =
-		pointsRequired && existingPoints
-			? (existingPoints / pointsRequired) * 100
-			: 0;
-
-	const additionalPointsPercentage =
-		pointsRequired && additionalPoints
-			? (additionalPoints / pointsRequired) * 100
-			: 0;
+	const remainingPointsRequired = useMemo(() => {
+		if (pointsRequired) {
+			return pointsRequired - (existingPoints || 0) - (additionalPoints || 0);
+		}
+		return pointsRequired;
+	}, [pointsRequired, existingPoints, additionalPoints]);
 
 	return (
 		<Stack
@@ -67,35 +66,38 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 			bdrs="sm"
 			bg="white"
 			align="center"
-			bd="darkslategray solid 1px"
+			bd="lightslategray solid 1px"
 		>
-			<Flex w="100%" gap="sm" align="center">
-				<OutlineStarIcon />
+			{remainingPointsRequired && (
+				<Flex w="100%" gap="sm" align="center" justify="space-evenly">
+					{[...new Array(existingPoints)].map(() => (
+						<Center c="yellow" bdrs="100%" h="30px" w="30px">
+							<StarFilledIcon />
+						</Center>
+					))}
 
-				<Progress.Root size="xl" w="100%">
-					<Progress.Section
-						value={existingPointsPercentage}
-						color="yellow"
-						animated
-					/>
-					<Progress.Section
-						value={additionalPointsPercentage}
-						color="gold"
-						animated
-					/>
-				</Progress.Root>
-				<StarFilledIcon />
-			</Flex>
+					{[...new Array(additionalPoints)].map(() => (
+						<Center c="gold" bdrs="100%" h="30px" w="30px">
+							<StarOutlineIcon />
+						</Center>
+					))}
+
+					{[...new Array(remainingPointsRequired)].map(() => (
+						<Center c="lightgray" bdrs="100%" h="30px" w="30px">
+							<CoffeeIcon />
+						</Center>
+					))}
+
+					<Title c="yellow" size="xl">
+						FREE
+					</Title>
+				</Flex>
+			)}
 
 			{pointsRequired && newPointTotal > pointsRequired && (
 				<Text>You've unlocked a free coffee!</Text>
 			)}
 
-			{pointsRequired && newPointTotal < pointsRequired && (
-				<Text>
-					You're {pointsRequired - newPointTotal} coffees away from a freebie!
-				</Text>
-			)}
 			{!user && <LoginButton />}
 		</Stack>
 	);
