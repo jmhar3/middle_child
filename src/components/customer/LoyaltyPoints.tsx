@@ -106,10 +106,6 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 				<Text>Start drinking to earn free coffee!</Text>
 			)}
 
-			{pointsRequired && newPointTotal > pointsRequired && (
-				<Text>You've unlocked a free coffee!</Text>
-			)}
-
 			{!user && <LoginButton />}
 		</Stack>
 	);
