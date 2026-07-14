@@ -1,17 +1,17 @@
 import { Button, em, Menu } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 
-import UpdateStockDrawer from "./update/UpdateStockDrawer";
+import UpdateStockDrawer from "./UpdateStockDrawer";
 // import UpsertSectionModal from "./menu/sections/UpsertSectionModal";
 // import UpdateModifierDrawer from "./menu/modifiers/UpdateModifierDrawer";
 // import InsertModifierDrawer from "./menu/modifiers/InsertModifierDrawer";
 // import DeleteModifierModal from "./menu/modifiers/DeleteModifierModal";
 // import InsertOptionDrawer from "./menu/itemOptions/InsertOptionDrawer";
 // import UpdateOptionDrawer from "./menu/itemOptions/UpdateOptionDrawer";
-import UpdateOrderTimesModal from "./update/UpdateOrderTimesModal";
-import UpdateBeansDrawer from "./update/UpdateBeansDrawer";
-import UpdatePricesDrawer from "./update/UpdatePricesDrawer";
-import UpdateOpeningHoursModal from "./update/UpdateOpeningHoursDrawer";
+import UpdateOrderTimesModal from "./UpdateOrderTimesModal";
+import UpdateBeansDrawer from "./UpdateBeansDrawer";
+import UpdatePricesDrawer from "./UpdatePricesDrawer";
+import UpdateOpeningHoursModal from "./UpdateOpeningHoursDrawer";
 
 function ManageMenu() {
 	const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -90,6 +90,12 @@ function ManageMenu() {
 					<Menu.Item onClick={openUpdateOpeningHoursDrawer}>
 						Opening Hours
 					</Menu.Item>
+
+					{/*<Menu.Divider />
+
+          <Menu.Label>Create / Edit</Menu.Label>
+
+          <Menu.Item onClick={() => {}}>Item</Menu.Item>*/}
 					{/*
           <Menu.Divider />
 
