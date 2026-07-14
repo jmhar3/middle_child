@@ -373,7 +373,11 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 												>
 													<Stack mt="xs">
 														{section.items.map((item) => (
-															<Flex align="center" justify="space-between">
+															<Flex
+																key={item.id}
+																align="center"
+																justify="space-between"
+															>
 																<Checkbox
 																	key={item.id}
 																	value={item.id}
