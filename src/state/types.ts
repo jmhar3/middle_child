@@ -37,6 +37,7 @@ export interface Modifier {
 export interface ItemOptions {
 	id: string;
 	label: string;
+	internal_note?: string;
 	allow_multiple_selections: boolean;
 	is_required: boolean;
 	modifiers: Modifier[];
@@ -137,6 +138,7 @@ export interface SupabaseItemOptions {
 	id: string;
 	label: string;
 	is_required: boolean;
+	internal_note?: string;
 	allow_multiple_selections: boolean;
 	options_modifiers: { modifiers: Modifier }[];
 }
