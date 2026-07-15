@@ -51,6 +51,10 @@ export interface MenuItemType {
 	large_price?: number;
 	has_large: boolean;
 	is_in_stock: boolean;
+	section?: {
+		id: string;
+		label: string;
+	};
 	has_long_prep_time: boolean;
 	is_applicable_loyalty_item: boolean;
 	modifierCategories?: ItemOptions[];
@@ -146,6 +150,10 @@ export interface SupabaseMenuItem {
 	has_large: boolean;
 	description?: string;
 	is_in_stock: boolean;
+	section?: {
+		id: string;
+		label: string;
+	};
 	has_long_prep_time: boolean;
 	is_applicable_loyalty_item: boolean;
 	menu_items_modifiers: { modifiers: Modifier }[];

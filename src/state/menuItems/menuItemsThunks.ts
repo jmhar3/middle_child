@@ -31,19 +31,23 @@ export const fetchMenuItems = createAsyncThunk(
 			.from("menu_items")
 			.select(
 				`
-    *,
-    menu_items_options (
-      options (
-        *,
-        options_modifiers (
-         modifiers (*)
-        )
-      )
-    ),
-    menu_items_modifiers (
-      modifiers (*)
-    )
-  `,
+          *,
+          section (
+            id,
+            label
+          ),
+          menu_items_options (
+            options (
+              *,
+              options_modifiers (
+              modifiers (*)
+              )
+            )
+          ),
+          menu_items_modifiers (
+            modifiers (*)
+          )
+        `,
 			)
 			.order("order");
 
@@ -78,6 +82,10 @@ export const upsertMenuItems = createAsyncThunk(
 			.select(
 				`
           *,
+          section (
+            id,
+            label
+          ),
           menu_items_options (
             options (
               *,

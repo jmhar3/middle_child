@@ -38,6 +38,10 @@ export const fetchMenu = createAsyncThunk("menu/fetchMenu", async () => {
 			`
         *, menu_items (
           *,
+          section (
+            id,
+            label
+          ),
           menu_items_options (
             options (
               *,
@@ -92,6 +96,10 @@ export const upsertSections = createAsyncThunk(
 				`
           *, menu_items (
             *,
+            section (
+              id,
+              label
+            ),
             menu_items_options (
               options (
                 *,
@@ -127,6 +135,10 @@ export const updateSection = createAsyncThunk(
 				`
           *, menu_items (
             *,
+            section (
+              id,
+              label
+            ),
             menu_items_options (
               options (
                 *,
