@@ -14,16 +14,17 @@ import {
 	Accordion,
 	NumberInput,
 	SegmentedControl,
+	CloseButton,
 } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
+import { fetchMenu } from "../../../state/menu/menuThunks";
 import { selectMenu } from "../../../state/menu/menuSlice";
 
 import type { MenuItemType, MenuSection } from "../../../state/types";
-import { fetchMenu } from "../../../state/menu/menuThunks";
 
 interface UpdatePricesDrawerProps {
 	isOpen: boolean;
@@ -212,7 +213,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	return (
 		<Drawer
-			size="xl"
+			size="100%"
 			offset={12}
 			radius="sm"
 			position="right"
@@ -222,9 +223,13 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 			trapFocus={false}
 		>
 			<Stack align="flex-end">
-				<Text size="1.4em" fw="600" ta="left" w="100%">
-					UPDATE PRICES
-				</Text>
+				<Flex w="100%" justify="space-between" align="center">
+					<Text size="1.4em" fw="600" ta="left" w="100%">
+						UPDATE PRICES
+					</Text>
+
+					<CloseButton onClick={onCloseDrawer} />
+				</Flex>
 
 				{showPriceEdit ? (
 					<Stack w="100%">

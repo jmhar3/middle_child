@@ -10,6 +10,8 @@ import {
 	Checkbox,
 	MultiSelect,
 	SegmentedControl,
+	CloseButton,
+	Flex,
 } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
@@ -256,6 +258,7 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 
 	return (
 		<Drawer
+			size="100%"
 			offset={12}
 			radius="sm"
 			position="right"
@@ -265,9 +268,13 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 			trapFocus={false}
 		>
 			<Stack align="flex-end">
-				<Text size="1.4em" fw="600" ta="left" w="100%">
-					UPDATE STOCK
-				</Text>
+				<Flex w="100%" justify="space-between" align="center">
+					<Text size="1.4em" fw="600" ta="left" w="100%">
+						UPDATE STOCK
+					</Text>
+
+					<CloseButton onClick={onClose} />
+				</Flex>
 
 				<Divider w="100%" />
 

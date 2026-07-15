@@ -11,6 +11,7 @@ import {
 	Button,
 	Flex,
 	Drawer,
+	CloseButton,
 } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
@@ -208,9 +209,13 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 			trapFocus={false}
 		>
 			<Stack gap="md" align="center">
-				<Text ta="center" size="1.4em" fw="600">
-					Update Opening Hours
-				</Text>
+				<Flex w="100%" justify="space-between" align="center">
+					<Text size="1.4em" fw="600" ta="left" w="100%">
+						UPDATE OPENING HOURS
+					</Text>
+
+					<CloseButton onClick={onCloseDrawer} />
+				</Flex>
 
 				{editedOpeningHours.opening_hours?.map((openingHours, index) => (
 					<>
@@ -282,8 +287,8 @@ function UpdateOpeningHoursModal(props: UpdateOpeningHoursModalProps) {
 
 				<Divider w="100%" />
 
-				<Text ta="center" size="1.4em" fw="600">
-					Update Holiday Opening Hours
+				<Text size="1.4em" fw="600" ta="left" w="100%">
+					UPDATE HOLIDAY OPENING HOURS
 				</Text>
 
 				{editedOpeningHours.holiday_opening_hours?.map(

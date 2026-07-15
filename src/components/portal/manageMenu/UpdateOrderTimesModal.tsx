@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { Group, Modal, Stack, Text, TextInput, Divider } from "@mantine/core";
+import {
+	Group,
+	Modal,
+	Stack,
+	Text,
+	TextInput,
+	Divider,
+	Flex,
+	CloseButton,
+} from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
 
@@ -93,9 +102,13 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
 			}}
 		>
 			<Stack gap="md" align="center">
-				<Text ta="center" size="1.4em" fw="600">
-					Update Order Times
-				</Text>
+				<Flex w="100%" justify="space-between" align="center">
+					<Text size="1.4em" fw="600" ta="left" w="100%">
+						UPDATE ORDER TIMES
+					</Text>
+
+					<CloseButton onClick={onClose} />
+				</Flex>
 
 				{editedOrderTimes?.map((orderTime) => (
 					<>

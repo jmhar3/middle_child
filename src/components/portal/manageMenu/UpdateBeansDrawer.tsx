@@ -11,12 +11,14 @@ import {
 	Stack,
 	Select,
 	TextInput,
+	CloseButton,
 } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 import { fetchItemOptions } from "../../../state/itemOptions/itemOptionThunks";
+import { selectModifierById } from "../../../state/modifiers/modifiersSlice";
 
 import {
 	selectItemOptionById,
@@ -30,7 +32,6 @@ import {
 } from "../../../state/modifiers/modifierThunks";
 
 import type { Modifier } from "../../../state/types";
-import { selectModifierById } from "../../../state/modifiers/modifiersSlice";
 
 interface UpdateBeansDrawerProps {
 	isOpen: boolean;
@@ -283,9 +284,13 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 				trapFocus={false}
 			>
 				<Stack align="flex-end">
-					<Text size="1.4em" fw="600" ta="left" w="100%">
-						UPDATE BEANS
-					</Text>
+					<Flex w="100%" justify="space-between" align="center">
+						<Text size="1.4em" fw="600" ta="left" w="100%">
+							UPDATE BEANS
+						</Text>
+
+						<CloseButton onClick={onCloseDrawer} />
+					</Flex>
 
 					{batchBean && (
 						<Stack w="100%" gap="xs">
