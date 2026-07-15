@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchMenuItems, upsertMenuItems } from "./menuItemsThunks";
+import {
+	deleteMenuItem,
+	fetchMenuItems,
+	upsertMenuItems,
+} from "./menuItemsThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -68,6 +72,16 @@ const menuItemsSlice = createSlice({
 				state.data = [...filteredState, ...oldMenuItems, ...newMenuItems];
 			})
 			.addCase(upsertMenuItems.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(deleteMenuItem.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(deleteMenuItem.fulfilled, (state, { payload }) => {
+				state.status = "succeeded";
+				state.data = state.data.filter(({ id }) => id !== payload);
+			})
+			.addCase(deleteMenuItem.rejected, (state) => {
 				state.status = "failed";
 			});
 	},

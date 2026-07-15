@@ -63,3 +63,24 @@ export const upsertOptions = createAsyncThunk(
 		return formatData(data);
 	},
 );
+
+export const deleteOption = createAsyncThunk(
+	"menu/deleteOption",
+	async (id: string) => {
+		const { error } = await supabase.from("options").delete().eq("id", id);
+
+		if (error) {
+			console.error(error);
+			notifications.show({
+				withCloseButton: false,
+				message: error.message,
+				title: error.name,
+				position: "bottom-right",
+				color: "red",
+			});
+			throw Error(error.message);
+		}
+
+		return id;
+	},
+);

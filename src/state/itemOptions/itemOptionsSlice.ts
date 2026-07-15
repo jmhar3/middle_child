@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchItemOptions, upsertOptions } from "./itemOptionThunks";
+import {
+	deleteOption,
+	fetchItemOptions,
+	upsertOptions,
+} from "./itemOptionThunks";
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
@@ -52,6 +56,16 @@ const itemOptionsSlice = createSlice({
 				state.data = action.payload;
 			})
 			.addCase(upsertOptions.rejected, (state) => {
+				state.status = "failed";
+			})
+			.addCase(deleteOption.pending, (state) => {
+				state.status = "pending";
+			})
+			.addCase(deleteOption.fulfilled, (state, { payload }) => {
+				state.status = "succeeded";
+				state.data = state.data.filter(({ id }) => id !== payload);
+			})
+			.addCase(deleteOption.rejected, (state) => {
 				state.status = "failed";
 			});
 	},

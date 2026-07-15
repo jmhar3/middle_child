@@ -116,3 +116,24 @@ export const upsertMenuItems = createAsyncThunk(
 		return formatSupaBaseMenuItems(data);
 	},
 );
+
+export const deleteMenuItem = createAsyncThunk(
+	"menu/deleteMenuItem",
+	async (id: string) => {
+		const { error } = await supabase.from("menu_items").delete().eq("id", id);
+
+		if (error) {
+			console.error(error);
+			notifications.show({
+				withCloseButton: false,
+				message: error.message,
+				title: error.name,
+				position: "bottom-right",
+				color: "red",
+			});
+			throw Error(error.message);
+		}
+
+		return id;
+	},
+);
