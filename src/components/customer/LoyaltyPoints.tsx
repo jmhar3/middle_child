@@ -66,24 +66,27 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 		>
 			{remainingPointsRequired && (
 				<Flex w="100%" gap="sm" align="center" justify="space-evenly">
-					{[...new Array(existingPoints)].map(() => (
-						<Center c="yellow" bdrs="100%" h="30px" w="30px">
+					{[...new Array(existingPoints)].map((point) => (
+						<Center key={point} c="yellow" h="30px" w="30px">
 							<StarFilledIcon />
 						</Center>
 					))}
 
-					{[...new Array(additionalPoints)].map(() => (
-						<Center c="gold" bdrs="100%" h="30px" w="30px">
+					{[...new Array(additionalPoints)].map((point) => (
+						<Center key={point} c="gold" h="30px" w="30px">
 							<StarOutlineIcon />
 						</Center>
 					))}
 
-					{[...new Array(remainingPointsRequired)].map(() => (
-						<Center c="lightgray" bdrs="100%" h="30px" w="30px">
+					{[...new Array(remainingPointsRequired)].map((point) => (
+						<Center key={point} c="lightgray" h="30px" w="30px">
 							<CoffeeIcon />
 						</Center>
 					))}
 
+					{/*<Center c="gold" h="30px" w="30px">
+            <CoffeeIcon />
+          </Center>*/}
 					<Title c="yellow" size="xl">
 						FREE
 					</Title>
