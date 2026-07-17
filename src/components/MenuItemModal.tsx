@@ -6,19 +6,20 @@ import { em, Box, Text, Modal, Stack, Button, Divider } from "@mantine/core";
 
 import ModifierCheckbox from "./customer/ModifierCheckbox";
 import ButtonWithPrice from "./customer/ButtonWithPrice";
-import ModifierRadio from "./customer/ModifierRadio";
-import NoteInput from "./customer/NoteInput";
-
-import { calculateOrderItemPrice, formatPrice } from "../helpers";
-
-import type { Modifier, OrderItem, MenuItemType } from "../state/types";
 import SizeSelect from "./customer/SizeSelect";
+import NoteInput from "./customer/NoteInput";
+import OptionSelect from "./OptionSelect";
+
 import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { fetchModifiers } from "../state/modifiers/modifierThunks";
+
 import {
 	selectModifierById,
 	selectModifiersStatus,
 } from "../state/modifiers/modifiersSlice";
-import { fetchModifiers } from "../state/modifiers/modifierThunks";
+
+import { calculateOrderItemPrice, formatPrice } from "../helpers";
+import type { Modifier, OrderItem, MenuItemType } from "../state/types";
 
 interface MenuItemModalProps {
 	isOpen: boolean;
@@ -212,37 +213,19 @@ function MenuItemModal(props: MenuItemModalProps) {
 					/>
 				)}
 
-				{sortedOptions?.map((modifierCategory) =>
-					modifierCategory.allow_multiple_selections ? (
-						<ModifierCheckbox
-							key={modifierCategory.label}
-							onModifierSelect={onModifierSelect}
-							isRequired={modifierCategory.is_required}
-							selectedModifiers={filterSelectedModifiers(
-								modifierCategory.modifiers,
-							)}
-							isErroneous={
-								showErrors &&
-								missingSections?.some(({ id }) => id === modifierCategory.id)
-							}
-							{...modifierCategory}
-						/>
-					) : (
-						<ModifierRadio
-							key={modifierCategory.label}
-							onModifierSelect={onModifierSelect}
-							isRequired={modifierCategory.is_required}
-							selectedModifiers={filterSelectedModifiers(
-								modifierCategory.modifiers,
-							)}
-							isErroneous={
-								showErrors &&
-								missingSections?.some(({ id }) => id === modifierCategory.id)
-							}
-							{...modifierCategory}
-						/>
-					),
-				)}
+				{sortedOptions?.map((modifierCategory) => (
+					<OptionSelect
+						modifierCategory={modifierCategory}
+						isErroneous={
+							showErrors &&
+							missingSections?.some(({ id }) => id === modifierCategory.id)
+						}
+						selectedModifiers={filterSelectedModifiers(
+							modifierCategory.modifiers,
+						)}
+						onModifierSelect={onModifierSelect}
+					/>
+				))}
 
 				{menuItem.modifiers && menuItem.modifiers.length > 0 && (
 					<ModifierCheckbox
