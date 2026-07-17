@@ -20,43 +20,51 @@ import {
 import StyledButton from "../../StyledButton";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
 import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
-import { deleteModifier } from "../../../state/modifiers/modifierThunks";
+
+import {
+	deleteModifier,
+	upsertModifiers,
+} from "../../../state/modifiers/modifierThunks";
 
 import type { Modifier } from "../../../state/types";
 
 interface ManageModifiersDrawerProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSuccess?: (modifier: Modifier) => void;
+	onCreateNew?: (modifier: Modifier) => void;
 }
 
 function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
-	const { isOpen, onClose, onSuccess } = props;
-
-	const dispatch = useAppDispatch();
-	const modifiers = useAppSelector(selectAllModifiers);
-
-	const [isUpsertingModifier, setIsUpsertingModifier] = useState(false);
-	const [showModifierInputs, setShowModifierInputs] = useState(false);
-	const [showCodeInput, setShowCodeInput] = useState(false);
-	const [selectedModifier, setSelectedModifier] = useState<Modifier | null>(
-		null,
-	);
-	const [editedModifier, setEditedModifier] = useState<Modifier | null>(null);
+	const { isOpen, onClose, onCreateNew } = props;
 
 	const blankModifier: Modifier = {
 		id: uuid(),
 		label: "",
+		reference_code: "",
 		price: 0,
 		is_ingredient: false,
 		order: 0,
 	};
 
+	const dispatch = useAppDispatch();
+	const modifiers = useAppSelector(selectAllModifiers);
+
+	const [hasReferenceCode, setHasReferenceCode] = useState(false);
+	const [isUpsertingModifier, setIsUpsertingModifier] = useState(false);
+	const [showModifierInputs, setShowModifierInputs] = useState(!!onCreateNew);
+
+	const [editedModifier, setEditedModifier] = useState<Modifier | null>(
+		onCreateNew ? blankModifier : null,
+	);
+
+	const [selectedModifier, setSelectedModifier] = useState<Modifier | null>(
+		null,
+	);
+
 	const onCloseDrawer = () => {
 		setSelectedModifier(null);
-		setShowCodeInput(false);
+		setHasReferenceCode(false);
 		setSelectedModifier(null);
 		setShowModifierInputs(false);
 		onClose();
@@ -69,19 +77,19 @@ function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
 
 	const onEditItem = () => {
 		setShowModifierInputs(true);
-		if (selectedModifier?.reference_code) setShowCodeInput(true);
+		if (selectedModifier?.reference_code) setHasReferenceCode(true);
 		setEditedModifier(selectedModifier ? selectedModifier : blankModifier);
 	};
 
 	const onAddNewModifier = () => {
 		setSelectedModifier(null);
-		setShowCodeInput(false);
+		setHasReferenceCode(false);
 		setEditedModifier(blankModifier);
 		setShowModifierInputs(true);
 	};
 
 	const toggleReferenceCode = (hasReferenceCode: boolean) => {
-		setShowCodeInput(hasReferenceCode);
+		setHasReferenceCode(hasReferenceCode);
 	};
 
 	const toggleIngredient = (hasLarge: boolean) => {
@@ -112,7 +120,6 @@ function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
 							position: "bottom-right",
 							color: "green",
 						});
-						onClose();
 					}
 				})
 				.catch((error) =>
@@ -127,28 +134,54 @@ function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
 		setIsUpsertingModifier(false);
 	};
 
+	const upsert = (modifier: Partial<Modifier>) => {
+		dispatch(
+			upsertModifiers([
+				{
+					...modifier,
+					reference_code: hasReferenceCode
+						? modifier.reference_code
+						: undefined,
+				},
+			]),
+		)
+			.then((data) => {
+				if (data.payload) {
+					const payload = data.payload as Modifier[];
+					if (onCreateNew) {
+						onCloseDrawer();
+						onCreateNew(payload[0]);
+					}
+					notifications.show({
+						withCloseButton: false,
+						message: "Modifiers successfully updated",
+						position: "bottom-right",
+						color: "green",
+					});
+				}
+			})
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			);
+	};
+
 	const onSave = () => {
 		setIsUpsertingModifier(true);
-
 		if (editedModifier) {
 			if (selectedModifier) {
-				dispatch(upsertMenuItems([editedModifier]))
-					.then((data) => {
-						if (data.payload && onSuccess) onSuccess(data.payload as Modifier);
-					})
-					.finally(() => {
-						setIsUpsertingModifier(false);
-					});
-				return;
+				upsert(editedModifier);
+			} else {
+				const modifier: Partial<Modifier> = { ...editedModifier };
+				delete modifier.id;
+				upsert(modifier);
 			}
-			dispatch(upsertMenuItems([editedModifier]))
-				.then((data) => {
-					if (data.payload && onSuccess) onSuccess(data.payload as Modifier);
-				})
-				.finally(() => {
-					setIsUpsertingModifier(false);
-				});
 		}
+		setIsUpsertingModifier(false);
 	};
 
 	return (
@@ -165,64 +198,68 @@ function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
 			<Stack align="flex-end">
 				<Flex w="100%" justify="space-between" align="center">
 					<Text size="1.4em" fw="600" ta="left" w="100%">
-						MANAGE MODIFIERS
+						{onCreateNew ? "CREATE MODIFIER" : "MANAGE MODIFIERS"}
 					</Text>
 
 					<CloseButton onClick={onCloseDrawer} />
 				</Flex>
 
-				<Divider w="100%" />
+				{!onCreateNew && (
+					<>
+						<Divider w="100%" />
 
-				<Stack w="100%" gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
-					<Select
-						w="100%"
-						size="md"
-						searchable
-						disabled={showModifierInputs}
-						label="Select Modifier to Edit"
-						nothingFoundMessage="No sections found matching your search"
-						value={selectedModifier?.id}
-						onChange={onSelectModifier}
-						data={modifiers?.map((item) => ({
-							value: item.id,
-							label: item.label,
-						}))}
-					/>
+						<Stack w="100%" gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
+							<Select
+								w="100%"
+								size="md"
+								searchable
+								disabled={showModifierInputs}
+								label="Select Modifier to Edit"
+								nothingFoundMessage="No sections found matching your search"
+								value={selectedModifier?.id}
+								onChange={onSelectModifier}
+								data={modifiers?.map((item) => ({
+									value: item.id,
+									label: item.label,
+								}))}
+							/>
 
-					<Group gap="sm" grow>
-						<StyledButton
-							label="Delete"
-							onClick={onDeleteModifier}
-							isDisabled={!selectedModifier || showModifierInputs}
-							isLoading={isUpsertingModifier}
-						/>
+							<Group gap="sm" grow>
+								<StyledButton
+									label="Delete"
+									onClick={onDeleteModifier}
+									isDisabled={!selectedModifier || showModifierInputs}
+									isLoading={isUpsertingModifier}
+								/>
 
-						<StyledButton
-							label="Edit"
-							onClick={onEditItem}
-							isDisabled={!selectedModifier || showModifierInputs}
-							isLoading={isUpsertingModifier}
-						/>
-					</Group>
+								<StyledButton
+									label="Edit"
+									onClick={onEditItem}
+									isDisabled={!selectedModifier || showModifierInputs}
+									isLoading={isUpsertingModifier}
+								/>
+							</Group>
 
-					<Text ta="center">OR</Text>
+							<Text ta="center">OR</Text>
 
-					<Group gap="sm" grow>
-						<StyledButton
-							variant="outline"
-							label="Create New Modifier"
-							onClick={onAddNewModifier}
-							isDisabled={showModifierInputs}
-							isLoading={isUpsertingModifier}
-						/>
-					</Group>
-				</Stack>
+							<Group gap="sm" grow>
+								<StyledButton
+									variant="outline"
+									label="Create New Modifier"
+									onClick={onAddNewModifier}
+									isDisabled={showModifierInputs}
+									isLoading={isUpsertingModifier}
+								/>
+							</Group>
+						</Stack>
+					</>
+				)}
 
 				{showModifierInputs && editedModifier && (
 					<Stack w="100%">
 						<Stack gap="xs">
 							<Flex gap="xs">
-								{showCodeInput && (
+								{hasReferenceCode && (
 									<TextInput
 										w="210px"
 										size="md"
@@ -270,7 +307,7 @@ function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
 
 							<Switch
 								size="md"
-								checked={showCodeInput}
+								checked={hasReferenceCode}
 								onChange={(event) =>
 									toggleReferenceCode(event.currentTarget.checked)
 								}
@@ -322,7 +359,8 @@ function ManageModifiersDrawer(props: ManageModifiersDrawerProps) {
 								variant="outline"
 								onClick={() => {
 									setShowModifierInputs(false);
-									setShowCodeInput(false);
+									setHasReferenceCode(false);
+									if (onCreateNew) onCloseDrawer();
 								}}
 								isLoading={isUpsertingModifier}
 							/>

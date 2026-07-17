@@ -20,34 +20,25 @@ import StyledButton from "../../StyledButton";
 import ManageModifiersDrawer from "./ManageModifiersDrawer";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
-import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
 import { selectAllModifiers } from "../../../state/modifiers/modifiersSlice";
-import { deleteOption } from "../../../state/itemOptions/itemOptionThunks";
+import { selectAllItemOptions } from "../../../state/itemOptions/itemOptionsSlice";
+
+import {
+	deleteOption,
+	upsertOptions,
+} from "../../../state/itemOptions/itemOptionThunks";
 
 import type { ItemOptions, Modifier } from "../../../state/types";
+import OptionSelect from "../../OptionSelect";
 
 interface ManageOptionsDrawerProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSuccess?: (option: ItemOptions) => void;
+	onCreateNew?: (option: ItemOptions) => void;
 }
 
 function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
-	const { isOpen, onClose, onSuccess } = props;
-
-	const dispatch = useAppDispatch();
-	const options = useAppSelector(selectAllItemOptions);
-	const modifiers = useAppSelector(selectAllModifiers);
-
-	const [showManageModifierDrawer, setShowManageModifierDrawer] =
-		useState(false);
-	const [isUpsertingOption, setIsUpsertingOption] = useState(false);
-	const [showOptionInputs, setShowOptionInputs] = useState(false);
-	const [selectedOption, setSelectedOption] = useState<ItemOptions | null>(
-		null,
-	);
-	const [editedOption, setEditedOption] = useState<ItemOptions | null>(null);
+	const { isOpen, onClose, onCreateNew } = props;
 
 	const blankOption: ItemOptions = {
 		id: uuid(),
@@ -57,6 +48,27 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 		modifiers: [],
 		order: 0,
 	};
+
+	const dispatch = useAppDispatch();
+	const options = useAppSelector(selectAllItemOptions);
+	const modifiers = useAppSelector(selectAllModifiers);
+
+	const [showOptionInputs, setShowOptionInputs] = useState(!!onCreateNew);
+	const [isUpsertingOption, setIsUpsertingOption] = useState(false);
+
+	const [showManageModifierDrawer, setShowManageModifierDrawer] =
+		useState(false);
+
+	const [selectedOption, setSelectedOption] = useState<ItemOptions | null>(
+		null,
+	);
+
+	const [editedOption, setEditedOption] = useState<ItemOptions | null>(
+		onCreateNew ? blankOption : null,
+	);
+
+	console.log(editedOption);
+	console.log(modifiers);
 
 	const onCloseDrawer = () => {
 		setSelectedOption(null);
@@ -136,16 +148,47 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 		setIsUpsertingOption(false);
 	};
 
+	const upsert = (option: Partial<ItemOptions>) => {
+		dispatch(
+			upsertOptions([
+				{
+					...option,
+				},
+			]),
+		)
+			.then((data) => {
+				if (data.payload) {
+					const payload = data.payload as ItemOptions[];
+					if (onCreateNew) {
+						onCloseDrawer();
+						onCreateNew(payload[0]);
+					}
+					notifications.show({
+						withCloseButton: false,
+						message: "Options successfully updated",
+						position: "bottom-right",
+						color: "green",
+					});
+				}
+			})
+			.catch((error) =>
+				notifications.show({
+					message: error,
+					withCloseButton: false,
+					position: "bottom-right",
+					color: "red",
+				}),
+			);
+	};
+
 	const onSave = () => {
 		setIsUpsertingOption(true);
 		if (selectedOption && editedOption) {
-			dispatch(upsertMenuItems([editedOption])).then((data) => {
-				if (data.payload && onSuccess) onSuccess(data.payload as ItemOptions);
-			});
+			upsert(editedOption);
 		} else if (editedOption) {
-			dispatch(upsertMenuItems([editedOption])).then((data) => {
-				if (data.payload && onSuccess) onSuccess(data.payload as ItemOptions);
-			});
+			const option: Partial<ItemOptions> = { ...editedOption };
+			delete option.id;
+			upsert(option);
 		}
 		setIsUpsertingOption(false);
 	};
@@ -156,7 +199,7 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 				<ManageModifiersDrawer
 					isOpen={showManageModifierDrawer}
 					onClose={() => setShowManageModifierDrawer(false)}
-					onSuccess={(modifier: Modifier) => onSelectModifiers([modifier.id])}
+					onCreateNew={(modifier: Modifier) => onSelectModifiers([modifier.id])}
 				/>
 			)}
 
@@ -173,58 +216,68 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 				<Stack align="flex-end">
 					<Flex w="100%" justify="space-between" align="center">
 						<Text size="1.4em" fw="600" ta="left" w="100%">
-							MANAGE OPTIONS
+							{onCreateNew ? "CREATE OPTION" : "MANAGE OPTIONS"}
 						</Text>
 
 						<CloseButton onClick={onCloseDrawer} />
 					</Flex>
 
-					<Divider w="100%" />
+					{!onCreateNew && (
+						<>
+							<Divider w="100%" />
 
-					<Stack w="100%" gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
-						<Select
-							w="100%"
-							size="md"
-							searchable
-							disabled={showOptionInputs}
-							label="Select Option to Edit"
-							nothingFoundMessage="No sections found matching your search"
-							value={selectedOption?.id}
-							onChange={onSelectOption}
-							data={options?.map((item) => ({
-								value: item.id,
-								label: item.label,
-							}))}
-						/>
+							<Stack
+								w="100%"
+								gap="xs"
+								bd="solid 1px lightgray"
+								bdrs="sm"
+								p="sm"
+							>
+								<Select
+									w="100%"
+									size="md"
+									searchable
+									disabled={showOptionInputs}
+									label="Select Option to Edit"
+									nothingFoundMessage="No sections found matching your search"
+									value={selectedOption?.id}
+									onChange={onSelectOption}
+									data={options?.map((item) => ({
+										value: item.id,
+										label: item.label,
+									}))}
+								/>
 
-						<Group gap="sm" grow>
-							<StyledButton
-								label="Delete"
-								onClick={onDeleteOption}
-								isDisabled={!selectedOption || showOptionInputs}
-								isLoading={isUpsertingOption}
-							/>
+								<Group gap="sm" grow>
+									<StyledButton
+										label="Delete"
+										onClick={onDeleteOption}
+										isDisabled={!selectedOption || showOptionInputs}
+										isLoading={isUpsertingOption}
+									/>
 
-							<StyledButton
-								label="Edit"
-								onClick={onEditItem}
-								isDisabled={!selectedOption || showOptionInputs}
-								isLoading={isUpsertingOption}
-							/>
-						</Group>
+									<StyledButton
+										label="Edit"
+										onClick={onEditItem}
+										isDisabled={!selectedOption || showOptionInputs}
+										isLoading={isUpsertingOption}
+									/>
+								</Group>
 
-						<Text ta="center">OR</Text>
+								<Text ta="center">OR</Text>
 
-						<Group gap="sm" grow>
-							<StyledButton
-								variant="outline"
-								label="Create New Option"
-								onClick={onAddNewOption}
-								isDisabled={showOptionInputs}
-								isLoading={isUpsertingOption}
-							/>
-						</Group>
-					</Stack>
+								<Group gap="sm" grow>
+									<StyledButton
+										variant="outline"
+										label="Create New Option"
+										onClick={onAddNewOption}
+										isDisabled={showOptionInputs}
+										isLoading={isUpsertingOption}
+									/>
+								</Group>
+							</Stack>
+						</>
+					)}
 
 					{showOptionInputs && editedOption && (
 						<Stack w="100%">
@@ -279,13 +332,7 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 								/>
 							</Group>
 
-							<Stack
-								w="100%"
-								gap="sm"
-								bd="solid 2px lightgray"
-								bdrs="sm"
-								p="sm"
-							>
+							<Stack p="md" w="100%" gap="sm" bdrs="sm" bg="whitesmoke">
 								<MultiSelect
 									w="100%"
 									size="md"
@@ -310,11 +357,25 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 								</Group>
 							</Stack>
 
+							<Stack gap="xs" p="md" bdrs="sm" bd="solid 1px lightgray">
+								<Text size="1.2em" fw="bold" ta="center" w="100%">
+									PREVIEW
+								</Text>
+
+								<OptionSelect
+									modifierCategory={editedOption}
+									onModifierSelect={() => {}}
+								/>
+							</Stack>
+
 							<Group grow gap="sm">
 								<StyledButton
 									label="Cancel"
 									variant="outline"
-									onClick={() => setShowOptionInputs(false)}
+									onClick={() => {
+										setShowOptionInputs(false);
+										if (onCreateNew) onCloseDrawer();
+									}}
 									isLoading={isUpsertingOption}
 								/>
 

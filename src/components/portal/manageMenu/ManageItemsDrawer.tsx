@@ -50,8 +50,8 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 
 	const dispatch = useAppDispatch();
 	const menu: MenuSection[] = useAppSelector(selectMenu);
-	const modifiers = useAppSelector(selectAllModifiers);
-	const options = useAppSelector(selectAllItemOptions);
+	const allModifiers = useAppSelector(selectAllModifiers);
+	const allOptions = useAppSelector(selectAllItemOptions);
 	const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
 	const [showManageModifiersDrawer, setShowManageModifiersDrawer] =
@@ -63,6 +63,13 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 	const [showCodeInput, setShowCodeInput] = useState(false);
 	const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
 	const [editedItem, setEditedItem] = useState<MenuItemType | null>(null);
+	const [modifiers, setModifiers] = useState(allModifiers);
+	const [options, setOptions] = useState(allOptions);
+
+	if (allModifiers?.length && allModifiers?.length > 0 && !modifiers)
+		setModifiers(allModifiers);
+	if (allOptions?.length && allOptions?.length > 0 && !options)
+		setOptions(allOptions);
 
 	const blankItem: MenuItemType = {
 		id: uuid(),
@@ -160,6 +167,28 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 			});
 	};
 
+	const onCreateNewModifier = (modifier: Modifier) => {
+		setModifiers([...modifiers, modifier]);
+		if (editedItem)
+			setEditedItem({
+				...editedItem,
+				modifiers: editedItem.modifiers
+					? [...editedItem.modifiers, modifier]
+					: [modifier],
+			});
+	};
+
+	const onCreateNewOption = (option: ItemOptions) => {
+		setOptions([...options, option]);
+		if (editedItem)
+			setEditedItem({
+				...editedItem,
+				modifierCategories: editedItem.modifierCategories
+					? [...editedItem.modifierCategories, option]
+					: [option],
+			});
+	};
+
 	const onDeleteItem = () => {
 		setIsUpsertingItem(true);
 		if (selectedItem) {
@@ -203,7 +232,7 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 				<ManageModifiersDrawer
 					isOpen={showManageModifiersDrawer}
 					onClose={() => setShowManageModifiersDrawer(false)}
-					onSuccess={(modifier: Modifier) => onSelectModifiers([modifier.id])}
+					onCreateNew={onCreateNewModifier}
 				/>
 			)}
 
@@ -211,7 +240,16 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 				<ManageOptionsDrawer
 					isOpen={showManageOptionsDrawer}
 					onClose={() => setShowManageOptionsDrawer(false)}
-					onSuccess={(option: ItemOptions) => onSelectOptions([option.id])}
+					onCreateNew={onCreateNewOption}
+				/>
+			)}
+
+			{editedItem && showMenuItemModal && (
+				<MenuItemModal
+					menuItem={editedItem}
+					onAddToOrder={() => {}}
+					isOpen={showMenuItemModal}
+					onClose={() => setShowMenuItemModal(false)}
 				/>
 			)}
 
@@ -225,15 +263,6 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 				withCloseButton={false}
 				trapFocus={false}
 			>
-				{editedItem && showMenuItemModal && (
-					<MenuItemModal
-						isOpen={showMenuItemModal}
-						onClose={() => setShowMenuItemModal(false)}
-						menuItem={editedItem}
-						onAddToOrder={() => {}}
-					/>
-				)}
-
 				<Stack align="flex-end">
 					<Flex w="100%" justify="space-between" align="center">
 						<Text size="1.4em" fw="600" ta="left" w="100%">
@@ -292,21 +321,21 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 
 					{showItemInputs && editedItem && (
 						<Stack w="100%">
-							<Select
-								w="100%"
-								size="md"
-								searchable
-								label="Menu Section"
-								nothingFoundMessage="No sections found matching your search"
-								value={editedItem.section?.id}
-								data={menu?.map((section) => ({
-									value: section.id,
-									label: section.label,
-								}))}
-								onChange={setSection}
-							/>
-
-							<Divider />
+							<Flex p="md" w="100%" bdrs="sm" bg="whitesmoke">
+								<Select
+									w="100%"
+									size="md"
+									searchable
+									label="Menu Section"
+									nothingFoundMessage="No sections found matching your search"
+									value={editedItem.section?.id}
+									data={menu?.map((section) => ({
+										value: section.id,
+										label: section.label,
+									}))}
+									onChange={setSection}
+								/>
+							</Flex>
 
 							<Stack gap="xs">
 								<Flex gap="xs">
@@ -351,7 +380,7 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 								</Flex>
 
 								<Switch
-									size="sm"
+									size="md"
 									checked={showCodeInput}
 									onChange={(event) =>
 										toggleReferenceCode(event.currentTarget.checked)
@@ -363,10 +392,30 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 
 							<Divider />
 
+							<Textarea
+								w="100%"
+								size="md"
+								label="Description"
+								value={editedItem.description}
+								onChange={(event) =>
+									setEditedItem((prevItem) =>
+										prevItem
+											? {
+													...prevItem,
+													description: event.target.value,
+												}
+											: { ...blankItem, description: event.target.value },
+									)
+								}
+							/>
+
+							<Divider />
+
 							<Stack gap="xs">
 								<Group grow gap="xs">
 									<NumberInput
 										w="90px"
+										size="md"
 										label={editedItem.has_large ? "Small" : "Price"}
 										value={editedItem.price}
 										onChange={(price) =>
@@ -393,6 +442,7 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 									{editedItem.has_large && (
 										<NumberInput
 											w="90px"
+											size="md"
 											label="Large"
 											value={editedItem.large_price}
 											onChange={(price) =>
@@ -419,35 +469,70 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 								</Group>
 
 								<Switch
-									size="sm"
+									size="md"
 									checked={editedItem.has_large}
 									onChange={(event) => toggleLarge(event.currentTarget.checked)}
 									label="Has Large"
 								/>
 							</Stack>
 
-							<Divider />
+							<Flex p="md" w="100%" gap="sm" bdrs="sm" bg="whitesmoke">
+								<Stack w="100%" gap="sm">
+									<MultiSelect
+										w="100%"
+										size="md"
+										label="Modifiers"
+										placeholder="Select item modifiers"
+										nothingFoundMessage="No modifiers found matching your search"
+										value={editedItem.modifiers?.map(({ id }) => id)}
+										onChange={onSelectModifiers}
+										data={modifiers?.map((modifier) => ({
+											value: modifier.id,
+											label: modifier.label,
+										}))}
+										hidePickedOptions
+										searchable
+									/>
 
-							<Textarea
-								w="100%"
-								size="md"
-								label="Description"
-								value={editedItem.description}
-								onChange={(event) =>
-									setEditedItem((prevItem) =>
-										prevItem
-											? {
-													...prevItem,
-													description: event.target.value,
-												}
-											: { ...blankItem, description: event.target.value },
-									)
-								}
-							/>
+									<Group grow>
+										<StyledButton
+											label="Add New Modifier"
+											onClick={() => setShowManageModifiersDrawer(true)}
+										/>
+									</Group>
+								</Stack>
+
+								<Divider orientation="vertical" />
+
+								<Stack w="100%" gap="sm">
+									<MultiSelect
+										w="100%"
+										size="md"
+										label="Options"
+										placeholder="Select item options"
+										nothingFoundMessage="No options found matching your search"
+										value={editedItem.modifierCategories?.map(({ id }) => id)}
+										onChange={onSelectOptions}
+										data={options?.map((option) => ({
+											value: option.id,
+											label: option.label,
+										}))}
+										hidePickedOptions
+										searchable
+									/>
+
+									<Group grow>
+										<StyledButton
+											label="Add New Option"
+											onClick={() => setShowManageOptionsDrawer(true)}
+										/>
+									</Group>
+								</Stack>
+							</Flex>
 
 							<Group grow gap="sm">
 								<Switch
-									size="sm"
+									size="md"
 									checked={editedItem.is_applicable_loyalty_item}
 									onChange={(event) =>
 										toggleLoyaltyPointItem(event.currentTarget.checked)
@@ -457,7 +542,7 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 								/>
 
 								<Switch
-									size="sm"
+									size="md"
 									checked={editedItem.has_long_prep_time}
 									onChange={(event) =>
 										toggleLongPrepTime(event.currentTarget.checked)
@@ -466,57 +551,6 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 									label="Has Long Prep Time"
 								/>
 							</Group>
-
-							<Stack
-								w="100%"
-								gap="sm"
-								bd="solid 2px lightgray"
-								bdrs="sm"
-								p="sm"
-							>
-								<MultiSelect
-									w="100%"
-									size="md"
-									label="Modifiers"
-									placeholder="Select item modifiers"
-									nothingFoundMessage="No modifiers found matching your search"
-									value={editedItem.modifiers?.map(({ id }) => id)}
-									onChange={onSelectModifiers}
-									data={modifiers?.map((modifier) => ({
-										value: modifier.id,
-										label: modifier.label,
-									}))}
-									hidePickedOptions
-									searchable
-								/>
-
-								<MultiSelect
-									w="100%"
-									size="md"
-									label="Options"
-									placeholder="Select item options"
-									nothingFoundMessage="No options found matching your search"
-									value={editedItem.modifierCategories?.map(({ id }) => id)}
-									onChange={onSelectOptions}
-									data={options?.map((option) => ({
-										value: option.id,
-										label: option.label,
-									}))}
-									hidePickedOptions
-									searchable
-								/>
-
-								<Group grow gap="sm">
-									<StyledButton
-										label="Add New Modifier"
-										onClick={() => setShowManageModifiersDrawer(true)}
-									/>
-									<StyledButton
-										label="Add New Option"
-										onClick={() => setShowManageOptionsDrawer(true)}
-									/>
-								</Group>
-							</Stack>
 
 							<Group grow gap="sm">
 								<StyledButton
