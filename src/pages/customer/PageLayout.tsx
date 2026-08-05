@@ -74,7 +74,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 				<Image
 					w="100%"
 					fit="cover"
-					h={isMobile ? "190px" : "300px"}
+					h={isMobile ? "190px" : "390px"}
 					src={image || banner}
 				/>
 			)}
