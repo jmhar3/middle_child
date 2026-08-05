@@ -45,6 +45,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 						size={isMobile ? "md" : "lg"}
 						onClick={() => navigate("/")}
 						aria-label="Open Navigation Menu"
+						style={{ zIndex: 999 }}
 					/>
 				)}
 
