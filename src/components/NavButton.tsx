@@ -29,7 +29,6 @@ function NavButton(props: NavButtonProps) {
 		<Button
 			px="lg"
 			w={width}
-			href={path}
 			component="a"
 			variant={variant}
 			justify={textAlign}
@@ -37,6 +36,7 @@ function NavButton(props: NavButtonProps) {
 			disabled={isDisabled}
 			style={{ zIndex: 999 }}
 			size={isMobile ? "md" : "lg"}
+			href={isDisabled ? undefined : path}
 			target={isExternal ? "_blank" : undefined}
 		>
 			{label}
