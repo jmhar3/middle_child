@@ -67,7 +67,7 @@ function Home() {
 					isDisabled={menuIsDisabled}
 					label={
 						menuIsDisabled
-							? "Closed for Online Ordering. See You Tomorrow!"
+							? "Online Ordering Closed for the Day"
 							: "Order Here for Pick Up"
 					}
 				/>
@@ -97,7 +97,7 @@ function Home() {
 				</Flex>
 
 				<NavButton
-					label={user ? "Manage Account" : "Login / Sign Up"}
+					label={user ? "Manage Account" : "Login to Manage Account"}
 					path="/account"
 				/>
 
