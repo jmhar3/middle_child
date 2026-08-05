@@ -8,14 +8,14 @@ import Link from "../../components/Link";
 
 import { supabase } from "../../supabase";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
-import { selectUserStatus } from "../../state/user/userSlice";
+import { selectUser, selectUserStatus } from "../../state/user/userSlice";
 import { fetchStoreInfo } from "../../state/storeInfo/storeInfoThunks";
 import { fetchUser } from "../../state/user/userThunks";
 
 import {
 	selectStoreInfo,
 	selectStoreInfoStatus,
-	// selectStoreIsOpen,
+	selectStoreIsOpen,
 } from "../../state/storeInfo/storeInfoSlice";
 
 import MapPinIcon from "../../icons/MapPinIcon";
@@ -27,10 +27,10 @@ function Home() {
 
 	const dispatch = useAppDispatch();
 	const userStatus = useAppSelector(selectUserStatus);
-	// const user = useAppSelector(selectUser);
+	const user = useAppSelector(selectUser);
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
-	// const storeIsOpen = useAppSelector(selectStoreIsOpen);
+	const storeIsOpen = useAppSelector(selectStoreIsOpen);
 
 	useEffect(() => {
 		if (userStatus === "idle") {
@@ -59,7 +59,7 @@ function Home() {
 	return (
 		<PageLayout>
 			<Stack w="100%" gap="3" p="3">
-				{/*<NavButton
+				<NavButton
 					path="/menu"
 					isDisabled={
 						storeInfoStatus !== "idle" &&
@@ -67,12 +67,6 @@ function Home() {
 						!storeIsOpen
 					}
 					label="Order Here for Pick Up"
-				/>*/}
-
-				<NavButton
-					path="https://heyyou.com.au/restaurant/8394/middle-child"
-					label="Order Here for Pick Up"
-					isExternal
 				/>
 
 				<Flex w="100%" gap="3">
@@ -99,10 +93,10 @@ function Home() {
 					/>
 				</Flex>
 
-				{/*<NavButton
+				<NavButton
 					label={user ? "Manage Account" : "Login / Sign Up"}
 					path="/account"
-				/>*/}
+				/>
 
 				<NavButton label="Nudes" path="" />
 
