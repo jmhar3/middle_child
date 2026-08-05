@@ -34,7 +34,7 @@ function NavButton(props: NavButtonProps) {
 			justify={textAlign}
 			color="darkslategray"
 			disabled={isDisabled}
-			style={{ zIndex: 999 }}
+			style={{ zIndex: 0 }}
 			size={isMobile ? "md" : "lg"}
 			href={isDisabled ? undefined : path}
 			target={isExternal ? "_blank" : undefined}

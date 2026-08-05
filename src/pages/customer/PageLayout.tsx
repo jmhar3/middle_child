@@ -36,6 +36,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 				justify="space-between"
 				pl={isMobile ? "md" : "lg"}
 				pr={isMobile ? "md" : "lg"}
+				style={{ zIndex: 999 }}
 			>
 				{!isMenu && (
 					<Burger
