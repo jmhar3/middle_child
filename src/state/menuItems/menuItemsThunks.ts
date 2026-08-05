@@ -3,7 +3,7 @@ import { notifications } from "@mantine/notifications";
 
 import { supabase } from "../../supabase";
 
-import type { MenuItemType, SupabaseMenuItem } from "../types";
+import type { MenuItemType, SupabaseMenuItem, UpsertMenuItem } from "../types";
 
 const formatSupaBaseMenuItems: (
 	supabaseItem: SupabaseMenuItem[],
@@ -69,7 +69,7 @@ export const fetchMenuItems = createAsyncThunk(
 
 export const upsertMenuItems = createAsyncThunk(
 	"menuItems/upsertMenuItems",
-	async (menuItems: Partial<MenuItemType>[]) => {
+	async (menuItems: Partial<UpsertMenuItem>[]) => {
 		const formattedMenuItems = menuItems.map((item) => {
 			delete item.modifiers;
 			delete item.modifierCategories;
