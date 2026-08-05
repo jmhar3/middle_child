@@ -67,9 +67,6 @@ function ManageOptionsDrawer(props: ManageOptionsDrawerProps) {
 		onCreateNew ? blankOption : null,
 	);
 
-	console.log(editedOption);
-	console.log(modifiers);
-
 	const onCloseDrawer = () => {
 		setSelectedOption(null);
 		setSelectedOption(null);
