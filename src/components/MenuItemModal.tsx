@@ -215,6 +215,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 
 				{sortedOptions?.map((modifierCategory) => (
 					<OptionSelect
+						key={modifierCategory.id}
 						modifierCategory={modifierCategory}
 						isErroneous={
 							showErrors &&
