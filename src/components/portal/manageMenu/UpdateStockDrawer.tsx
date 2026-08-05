@@ -224,11 +224,19 @@ function UpdateStockDrawer(props: UpdateStockDrawerProps) {
 		) {
 			const newlyOutOfStockMenuItems = outOfStockMenuItems
 				.filter((item) => !existingOutOfStockMenuItems.includes(item))
-				.map((menuItem) => ({ ...menuItem, is_in_stock: false }));
+				.map((menuItem) => ({
+					...menuItem,
+					is_in_stock: false,
+					section: menuItem.section?.id,
+				}));
 
 			const nowInStockMenuItems = existingOutOfStockMenuItems
 				.filter((item) => !outOfStockMenuItems.includes(item))
-				.map((menuItem) => ({ ...menuItem, is_in_stock: true }));
+				.map((menuItem) => ({
+					...menuItem,
+					is_in_stock: true,
+					section: menuItem.section?.id,
+				}));
 
 			const menuItemsToUpdate = [
 				...newlyOutOfStockMenuItems,

@@ -52,7 +52,7 @@ export interface MenuItemType {
 	large_price?: number;
 	has_large: boolean;
 	is_in_stock: boolean;
-	section?: {
+	section: {
 		id: string;
 		label: string;
 	};
@@ -152,7 +152,7 @@ export interface SupabaseMenuItem {
 	has_large: boolean;
 	description?: string;
 	is_in_stock: boolean;
-	section?: {
+	section: {
 		id: string;
 		label: string;
 	};
@@ -167,4 +167,21 @@ export interface SupabaseSection {
 	label: string;
 	order: number;
 	menu_items: SupabaseMenuItem[];
+}
+
+export interface UpsertMenuItem {
+	id: string;
+	label: string;
+	description?: string;
+	price: number;
+	large_price?: number;
+	has_large: boolean;
+	is_in_stock: boolean;
+	section: string;
+	has_long_prep_time: boolean;
+	is_applicable_loyalty_item: boolean;
+	modifierCategories?: ItemOptions[];
+	modifiers?: Modifier[];
+	order: number;
+	reference_code?: string;
 }

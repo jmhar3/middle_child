@@ -22,6 +22,7 @@ function Section({ section }: { section: MenuSection }) {
 		has_large: false,
 		is_in_stock: true,
 		has_long_prep_time: false,
+		section: { id: "", label: "" },
 		is_applicable_loyalty_item: false,
 		order: section.items.length + 1,
 	};

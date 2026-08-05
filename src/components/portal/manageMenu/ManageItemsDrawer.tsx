@@ -75,11 +75,12 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 		id: uuid(),
 		label: "",
 		price: 0,
+		order: 0,
 		has_large: false,
+		is_in_stock: true,
 		has_long_prep_time: false,
 		is_applicable_loyalty_item: false,
-		is_in_stock: true,
-		order: 0,
+		section: { id: "", label: "" },
 	};
 
 	const onCloseDrawer = () => {
@@ -219,9 +220,13 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 	const onSave = () => {
 		setIsUpsertingItem(true);
 		if (selectedItem && editedItem) {
-			dispatch(upsertMenuItems([editedItem]));
+			dispatch(
+				upsertMenuItems([{ ...editedItem, section: editedItem.section?.id }]),
+			);
 		} else if (editedItem) {
-			dispatch(upsertMenuItems([editedItem]));
+			dispatch(
+				upsertMenuItems([{ ...editedItem, section: editedItem.section?.id }]),
+			);
 		}
 		setIsUpsertingItem(false);
 	};

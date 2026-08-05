@@ -42,7 +42,11 @@ function EditableItem(props: EditableItemProps) {
 
 	const onUpsertMenuItem = () => {
 		setIsUpdatingMenuItems(true);
-		dispatch(upsertMenuItems([editedMenuItem])).finally(() => {
+		dispatch(
+			upsertMenuItems([
+				{ ...editedMenuItem, section: editedMenuItem.section?.id },
+			]),
+		).finally(() => {
 			setIsUpdatingMenuItems(false);
 			onCloseEditableItem();
 		});

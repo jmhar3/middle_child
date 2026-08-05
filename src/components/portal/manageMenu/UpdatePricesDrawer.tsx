@@ -24,7 +24,11 @@ import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
 import { fetchMenu } from "../../../state/menu/menuThunks";
 import { selectMenu } from "../../../state/menu/menuSlice";
 
-import type { MenuItemType, MenuSection } from "../../../state/types";
+import type {
+	MenuItemType,
+	MenuSection,
+	UpsertMenuItem,
+} from "../../../state/types";
 
 interface UpdatePricesDrawerProps {
 	isOpen: boolean;
@@ -147,7 +151,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		);
 	};
 
-	const handleUpdate = (items: MenuItemType[]) => {
+	const handleUpdate = (items: UpsertMenuItem[]) => {
 		dispatch(upsertMenuItems(items))
 			.then((data) => {
 				if (data.payload) {
@@ -195,6 +199,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 			const itemsWithNewPrices = filterEditedItems.map((item) => ({
 				...item,
+				section: item.section?.id,
 				large_price: item.has_large ? item.large_price : undefined,
 			}));
 
@@ -205,6 +210,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 				price: newPrices.base,
 				large_price: hasLarge ? newPrices.large : undefined,
 				has_large: hasLarge,
+				section: item.section?.id,
 			}));
 
 			handleUpdate(itemsWithNewPrices);
