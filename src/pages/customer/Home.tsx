@@ -56,17 +56,20 @@ function Home() {
 		});
 	}, [dispatch, userStatus, storeInfoStatus]);
 
+	const menuIsDisabled =
+		storeInfoStatus !== "idle" && storeInfoStatus !== "pending" && !storeIsOpen;
+
 	return (
 		<PageLayout>
 			<Stack w="100%" gap="3" p="3">
 				<NavButton
 					path="/menu"
-					isDisabled={
-						storeInfoStatus !== "idle" &&
-						storeInfoStatus !== "pending" &&
-						!storeIsOpen
+					isDisabled={menuIsDisabled}
+					label={
+						menuIsDisabled
+							? "Closed for Online Ordering. See You Tomorrow!"
+							: "Order Here for Pick Up"
 					}
-					label="Order Here for Pick Up"
 				/>
 
 				<Flex w="100%" gap="3">
