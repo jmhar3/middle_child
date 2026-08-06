@@ -36,7 +36,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 				justify="space-between"
 				pl={isMobile ? "md" : "lg"}
 				pr={isMobile ? "md" : "lg"}
-				style={{ zIndex: 999 }}
+				style={{ zIndex: 2 }}
 			>
 				{!isMenu && (
 					<Burger
@@ -46,7 +46,7 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 						size={isMobile ? "md" : "lg"}
 						onClick={() => navigate("/")}
 						aria-label="Open Navigation Menu"
-						style={{ zIndex: 999 }}
+						style={{ zIndex: 2 }}
 					/>
 				)}
 
