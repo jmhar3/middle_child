@@ -105,7 +105,7 @@ function Account() {
 
 					<LoyaltyPoints />
 
-					{userOrders?.length && userOrders.length > 0 && (
+					{(userOrders?.length ?? 0) > 0 && (
 						<>
 							<Divider />
 
@@ -125,7 +125,7 @@ function Account() {
 										},
 									}}
 								>
-									{userOrders.map((order) => (
+									{userOrders?.map((order) => (
 										<Accordion.Item key={order.id} value={order.id}>
 											<Accordion.Control>
 												<Stack component="span">

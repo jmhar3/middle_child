@@ -153,7 +153,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 	const onAddToCart = () => {
 		setShowErrors(false);
 		if (
-			(missingSections?.length && missingSections?.length > 0) ||
+			(missingSections?.length ?? 0) > 0 ||
 			(menuItem.large_price && selection.is_large === undefined)
 		) {
 			setShowErrors(true);

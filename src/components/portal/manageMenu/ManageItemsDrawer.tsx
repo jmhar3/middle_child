@@ -66,10 +66,8 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 	const [modifiers, setModifiers] = useState(allModifiers);
 	const [options, setOptions] = useState(allOptions);
 
-	if (allModifiers?.length && allModifiers?.length > 0 && !modifiers)
-		setModifiers(allModifiers);
-	if (allOptions?.length && allOptions?.length > 0 && !options)
-		setOptions(allOptions);
+	if ((allModifiers?.length ?? 0) > 0 && !modifiers) setModifiers(allModifiers);
+	if ((allOptions?.length ?? 0) > 0 && !options) setOptions(allOptions);
 
 	const blankItem: MenuItemType = {
 		id: uuid(),

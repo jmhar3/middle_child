@@ -46,7 +46,7 @@ function UpdateOrderTimesModal(props: UpdateOrderTimesModalProps) {
 		}
 	}, [dispatch, orderTimesStatus]);
 
-	if (orderTimes?.length && orderTimes?.length > 0 && !editedOrderTimes)
+	if ((orderTimes?.length ?? 0) > 0 && !editedOrderTimes)
 		setEditedOrderTimes(orderTimes);
 
 	const updateOrderTime = (time: number) => {

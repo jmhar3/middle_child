@@ -104,67 +104,59 @@ function Home() {
 				<NavButton label="Nudes" path="" />
 
 				<Stack gap="sm" align="center" pb={isMobile ? undefined : "lg"}>
-					{storeInfo?.opening_hours.length &&
-						storeInfo?.opening_hours.length > 0 && (
-							<Flex
-								py="md"
-								align="center"
-								gap={isMobile ? "sm" : "xl"}
-								direction={isMobile ? "column" : "row"}
-							>
-								{" "}
+					{(storeInfo?.opening_hours.length ?? 0) > 0 && (
+						<Flex
+							py="md"
+							align="center"
+							gap={isMobile ? "sm" : "xl"}
+							direction={isMobile ? "column" : "row"}
+						>
+							{" "}
+							<Stack align="center" gap="0">
+								<Text>BREWING HOURS</Text>
+
+								<Flex gap="md">
+									<Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
+										{storeInfo?.opening_hours.map(({ label }) => (
+											<Text key={label}>{label}</Text>
+										))}
+									</Stack>
+
+									<Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
+										{storeInfo?.opening_hours.map(({ label, hours }) => (
+											<Text key={label}>
+												{hours.from} - {hours.to}
+											</Text>
+										))}
+									</Stack>
+								</Flex>
+							</Stack>
+							{!isMobile && <Divider orientation="vertical" />}
+							{(storeInfo?.holiday_opening_hours?.length ?? 0) > 0 && (
 								<Stack align="center" gap="0">
-									<Text>BREWING HOURS</Text>
+									<Text>HOLIDAY HOURS</Text>
 
 									<Flex gap="md">
 										<Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
-											{storeInfo.opening_hours.map(({ label }) => (
+											{storeInfo?.holiday_opening_hours?.map(({ label }) => (
 												<Text key={label}>{label}</Text>
 											))}
 										</Stack>
 
 										<Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
-											{storeInfo.opening_hours.map(({ label, hours }) => (
-												<Text key={label}>
-													{hours.from} - {hours.to}
-												</Text>
-											))}
+											{storeInfo?.holiday_opening_hours?.map(
+												({ label, hours }) => (
+													<Text key={label}>
+														{hours.from} - {hours.to}
+													</Text>
+												),
+											)}
 										</Stack>
 									</Flex>
 								</Stack>
-								{!isMobile && <Divider orientation="vertical" />}
-								{storeInfo.holiday_opening_hours?.length &&
-									storeInfo.holiday_opening_hours.length > 0 && (
-										<Stack align="center" gap="0">
-											<Text>HOLIDAY HOURS</Text>
-
-											<Flex gap="md">
-												<Stack
-													align={isMobile ? "flex-end" : "flex-start"}
-													gap="0"
-												>
-													{storeInfo.holiday_opening_hours.map(({ label }) => (
-														<Text key={label}>{label}</Text>
-													))}
-												</Stack>
-
-												<Stack
-													align={isMobile ? "flex-start" : "flex-end"}
-													gap="0"
-												>
-													{storeInfo.holiday_opening_hours.map(
-														({ label, hours }) => (
-															<Text key={label}>
-																{hours.from} - {hours.to}
-															</Text>
-														),
-													)}
-												</Stack>
-											</Flex>
-										</Stack>
-									)}
-							</Flex>
-						)}
+							)}
+						</Flex>
+					)}
 
 					<Flex
 						w="100%"
