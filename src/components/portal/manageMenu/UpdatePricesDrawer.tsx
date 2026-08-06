@@ -59,7 +59,10 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		() =>
 			menu.map((section) => ({
 				...section,
-				items: menuItems.filter((item) => item.section.id === section.id),
+				items:
+					menuItems.length > 0
+						? menuItems.filter((item) => item.section.id === section.id)
+						: section.items,
 			})),
 		[menu, menuItems],
 	);
