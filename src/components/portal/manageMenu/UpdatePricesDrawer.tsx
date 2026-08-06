@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { notifications } from "@mantine/notifications";
 
 import {
@@ -20,9 +20,17 @@ import {
 import StyledButton from "../../StyledButton";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
-import { upsertMenuItems } from "../../../state/menuItems/menuItemsThunks";
-import { fetchMenu } from "../../../state/menu/menuThunks";
 import { selectMenu } from "../../../state/menu/menuSlice";
+
+import {
+	fetchMenuItems,
+	upsertMenuItems,
+} from "../../../state/menuItems/menuItemsThunks";
+
+import {
+	selectMenuItems,
+	selectMenuItemStatus,
+} from "../../../state/menuItems/menuItemsSlice";
 
 import type {
 	MenuItemType,
@@ -38,7 +46,23 @@ interface UpdatePricesDrawerProps {
 function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 	const dispatch = useAppDispatch();
 	const menu: MenuSection[] = useAppSelector(selectMenu);
-	const menuItems = menu.flatMap((menuSection) => menuSection.items);
+	const menuItemsStatus = useAppSelector(selectMenuItemStatus);
+	const menuItems: MenuItemType[] = useAppSelector(selectMenuItems);
+
+	useEffect(() => {
+		if (menuItemsStatus === "idle") {
+			dispatch(fetchMenuItems());
+		}
+	}, [dispatch, menuItemsStatus]);
+
+	const menuItemsMenu = useMemo(
+		() =>
+			menu.map((section) => ({
+				...section,
+				items: menuItems.filter((item) => item.section.id === section.id),
+			})),
+		[menu, menuItems],
+	);
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [hasLarge, setHasLarge] = useState(false);
@@ -47,7 +71,15 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 	);
 	const [itemsToEdit, setItemsToEdit] = useState<MenuItemType[]>([]);
 	const [showPriceEdit, setShowPriceEdit] = useState(false);
-	const [editedMenu, setEditedMenu] = useState(menu);
+	const [editedMenu, setEditedMenu] = useState<MenuSection[]>([]);
+
+	if (
+		(menuItems.length ?? 0) > 0 &&
+		(menuItemsMenu.length ?? 0) > 0 &&
+		editedMenu[0].items?.length === 0
+	) {
+		setEditedMenu(menuItemsMenu);
+	}
 
 	const [newPrices, setNewPrices] = useState<{
 		base: number;
@@ -56,7 +88,8 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 	const firstItem = itemsToEdit[0];
 
-	if (menu.length > 0 && editedMenu.length === 0) setEditedMenu(menu);
+	if (menuItemsMenu.length > 0 && editedMenu.length === 0)
+		setEditedMenu(menuItemsMenu);
 
 	const onClearSelection = () => {
 		setShowPriceEdit(false);
@@ -68,12 +101,12 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		setHasLarge(false);
 		setMenuView("Edit All");
 		setItemsToEdit([]);
-		setEditedMenu(menu);
 	};
 
 	const onCloseDrawer = () => {
 		props.onClose();
 		onClearDrawer();
+		setEditedMenu(menuItemsMenu);
 	};
 
 	const onSelectItemToEdit = (itemIds: string[]) =>
@@ -161,7 +194,6 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 						position: "bottom-right",
 						color: "green",
 					});
-					dispatch(fetchMenu());
 					onClearDrawer();
 				}
 			})
@@ -180,7 +212,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 		setIsSubmitting(true);
 
 		if (menuView === "Edit All") {
-			const allItems = menu.flatMap(({ items }) => items);
+			const allItems = menuItems;
 			const allEditableItems = editedMenu.flatMap(({ items }) => items);
 
 			const filterEditedItems = allEditableItems.filter((item) => {
@@ -372,8 +404,8 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 						<Stack w="100%" gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
 							{menuView === "Edit Selection" && (
-								<Accordion defaultValue={menu[0].id}>
-									{menu.map((section) => (
+								<Accordion defaultValue={menuItemsMenu[0].id}>
+									{menuItemsMenu.map((section) => (
 										<Accordion.Item key={section.id} value={section.id}>
 											<Accordion.Control>{section.label}</Accordion.Control>
 
