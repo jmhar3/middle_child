@@ -79,7 +79,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 	if (
 		(menuItems.length ?? 0) > 0 &&
 		(menuItemsMenu.length ?? 0) > 0 &&
-		editedMenu[0].items?.length === 0
+		editedMenu.length === 0
 	) {
 		setEditedMenu(menuItemsMenu);
 	}
