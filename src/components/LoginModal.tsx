@@ -28,6 +28,10 @@ interface LoginModalProps {
 	onModalClose: () => void;
 }
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const passwordRegex =
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$&+,:;=?@#|'<>.^*()%!-])[A-Za-z\d$&+,:;=?@#|'<>.^*()%!-]{8,}$/;
+
 const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 	const dispatch = useAppDispatch();
 	const [showSignUp, { toggle: toggleShowSignUp }] = useDisclosure(false);
@@ -66,9 +70,6 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 
 	const onSubmit = async () => {
 		setIsSubmitting(true);
-		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		const passwordRegex =
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 		if (!emailRegex.test(email)) {
 			setErrorMessage("Please provide a valid email.");
@@ -92,7 +93,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 		}
 
 		if (!passwordRegex.test(password)) {
-			setErrorMessage("Please provide a valid email and password.");
+			setErrorMessage("Please provide a valid password.");
 			setIsSubmitting(false);
 			return;
 		}
@@ -146,8 +147,6 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 	const resendVerificationEmail = () => {
 		setIsSubmitting(true);
 
-		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
 		if (!emailRegex.test(email)) {
 			setErrorMessage("Please provide a valid email.");
 			setIsSubmitting(false);
@@ -183,7 +182,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 				},
 			}}
 		>
-			{resetPasswordSent && (
+			{resetPasswordSent && !signUpSuccess && (
 				<Stack align="center" gap="xs" pt="xl">
 					<Text fw="bold">Reset password link has been sent</Text>
 
@@ -207,7 +206,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 				</Stack>
 			)}
 
-			{signUpSuccess && (
+			{signUpSuccess && !resetPasswordSent && (
 				<Stack align="center" gap="xs" pt="xl">
 					<Text fw="bold">You have successfully signed up!</Text>
 
