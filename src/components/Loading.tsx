@@ -13,9 +13,9 @@ function Loading({ message }: { message: string }) {
 				blur: 3,
 			}}
 		>
-			<Stack align="center" justify="center" py="lg" gap="lg">
-				<Loader color="darkslategray" />
-				<Title size="1.5em">{message}...</Title>
+			<Stack align="center" justify="center" py="xs" gap="xs">
+				<Loader color="darkslategray" size="lg" type="dots" />
+				<Title size="1.2em">{message}...</Title>
 			</Stack>
 		</Modal>
 	);
