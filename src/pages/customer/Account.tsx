@@ -30,6 +30,7 @@ import {
 	updateUser,
 } from "../../state/user/userThunks";
 import LoyaltyPoints from "../../components/customer/LoyaltyPoints";
+import Loading from "../../components/Loading";
 
 function Account() {
 	const navigate = useNavigate();
@@ -71,6 +72,9 @@ function Account() {
 					onModalClose={() => (user ? navigate("/account") : navigate("/"))}
 				/>
 			)}
+
+			{isLoading && <Loading message="Fetching user profile" />}
+
 			{user && (
 				<Stack w="100%" p="sm">
 					<StyledButton
