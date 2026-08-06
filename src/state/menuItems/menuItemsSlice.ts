@@ -90,7 +90,7 @@ const menuItemsSlice = createSlice({
 export const { menuItemAdded, menuItemRemoved } = menuItemsSlice.actions;
 export default menuItemsSlice.reducer;
 
-export const selectMenuItems = (state: RootState) => state.menu.data;
+export const selectMenuItems = (state: RootState) => state.menuItems.data;
 
 export const selectMenuItemById = (state: RootState, menuItemId: string) =>
 	state.menuItems.data.find((menuItem) => menuItem.id === menuItemId);
