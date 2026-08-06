@@ -163,7 +163,7 @@ function Portal() {
 					</Stack>
 				</Flex>
 
-				<Stack pt={isMobile ? "4em" : "5.2em"} pb="lg" w="100vw">
+				<Stack pt={isMobile ? "4em" : "5em"} pb="lg" w="100vw">
 					{isLoading ? (
 						<Loading message="Loading orders" />
 					) : (

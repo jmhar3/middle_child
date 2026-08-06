@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { useEffect, useMemo, useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { Group, Stack, Text } from "@mantine/core";
 
 import fartSound from "/assets/fart1.mp3";
 
@@ -119,30 +119,21 @@ function Orders(props: OrdersProps) {
 			)}
 
 			{storeInfo && orderTimes && (
-				<Box px="sm">
-					<Group
-						grow
-						p="sm"
-						w="100%"
-						bdrs="sm"
-						bg="white"
-						style={{ zIndex: 0 }}
-					>
-						{orderTimes.map((orderTime) => (
-							<StyledButton
-								key={orderTime.label}
-								label={`${orderTime.label}: ${orderTime.short}+ mins`}
-								onClick={() => onUpdateCurrentOrderTime(orderTime)}
-								isLoading={isUpdatingOrderTime}
-								variant={
-									orderTime.id === storeInfo.current_order_time.id
-										? "filled"
-										: "outline"
-								}
-							/>
-						))}
-					</Group>
-				</Box>
+				<Group grow p="sm" w="100%" bdrs="sm" bg="white" style={{ zIndex: 0 }}>
+					{orderTimes.map((orderTime) => (
+						<StyledButton
+							key={orderTime.label}
+							label={`${orderTime.label}: ${orderTime.short}+ mins`}
+							onClick={() => onUpdateCurrentOrderTime(orderTime)}
+							isLoading={isUpdatingOrderTime}
+							variant={
+								orderTime.id === storeInfo.current_order_time.id
+									? "filled"
+									: "outline"
+							}
+						/>
+					))}
+				</Group>
 			)}
 
 			{storeIsOpen ? (
