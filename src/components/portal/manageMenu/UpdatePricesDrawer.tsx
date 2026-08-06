@@ -415,7 +415,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 													onChange={onSelectItemToEdit}
 												>
 													<Stack mt="xs">
-														{section.items.map((item) => (
+														{section.items?.map((item) => (
 															<Flex
 																key={item.id}
 																align="center"
@@ -448,7 +448,7 @@ function UpdatePricesDrawer(props: UpdatePricesDrawerProps) {
 
 											<Accordion.Panel>
 												<Stack gap="sm">
-													{section.items.map((item, index) => (
+													{section.items?.map((item, index) => (
 														<>
 															{index !== 0 && <Divider />}
 
