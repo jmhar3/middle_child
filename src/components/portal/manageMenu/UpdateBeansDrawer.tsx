@@ -59,7 +59,7 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 
 	const [batchBeanEdit, setBatchBeanEdit] = useState(batchBean);
 	const [editBatchBean, setEditBatchBean] = useState(false);
-	const [beanToEdit, setBeanToEdit] = useState<string | null>("");
+	const [beanToEdit, setBeanToEdit] = useState<string | null>(null);
 	const [editedBean, setEditedBean] = useState<Modifier | null>();
 	const [newBean, setNewBean] = useState<Modifier | null>();
 	const [beansToDelete, setBeansToDelete] = useState<Modifier[]>([]);
@@ -95,13 +95,21 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 	const onCloseDrawer = () => {
 		onClear();
 		setBeansToDelete([]);
+		setBeansToUpdate([]);
+		setBeansToSave([]);
 		props.onClose();
 	};
 
-	const onEditBean = () =>
-		setEditedBean(
-			beans?.modifiers.find((modifier) => modifier.id === beanToEdit),
-		);
+	const onEditBean = () => {
+		const existingUpdate = beansToUpdate.find((bean) => bean.id === beanToEdit);
+		if (existingUpdate) {
+			setEditedBean(existingUpdate);
+		} else {
+			setEditedBean(
+				beans?.modifiers.find((modifier) => modifier.id === beanToEdit),
+			);
+		}
+	};
 
 	const onAddNewBean = () =>
 		setNewBean({
@@ -135,11 +143,11 @@ function UpdateBeansDrawer(props: UpdateBeansDrawerProps) {
 		if (editedBean) {
 			setBeansToUpdate((prevBeans) => {
 				const findBean = prevBeans?.find(
-					(modifier) => modifier.id === beanToEdit,
+					(modifier) => modifier.id === editedBean.id,
 				);
 				if (findBean) {
 					const filterBeans = prevBeans?.filter(
-						(modifier) => modifier.id === beanToEdit,
+						(modifier) => modifier.id !== editedBean.id,
 					);
 					return [...filterBeans, editedBean];
 				}
