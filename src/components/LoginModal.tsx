@@ -112,7 +112,8 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 					name: name,
 				}),
 			)
-				.then(() => setSignUpSuccess(true))
+				// .then(() => setSignUpSuccess(true))
+				.then(() => onClose())
 				.catch((error) =>
 					notifications.show({
 						message: error,
