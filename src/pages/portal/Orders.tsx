@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { Group, Stack, Text } from "@mantine/core";
 
@@ -82,12 +82,6 @@ function Orders(props: OrdersProps) {
 		dayjs(order.due_at).isSame(dayjs(), "day"),
 	);
 
-	const sortedOrders = useMemo(() => {
-		const incompleteOrders = todaysOrders.filter((order) => !order.is_complete);
-		const completedOrders = todaysOrders.filter((order) => order.is_complete);
-		return [...incompleteOrders, ...completedOrders];
-	}, [todaysOrders]);
-
 	const onUpdateCurrentOrderTime = (selectedOrderTime: OrderTime) => {
 		setIsUpdatingOrderTime(true);
 		dispatch(
@@ -140,7 +134,7 @@ function Orders(props: OrdersProps) {
 				todaysOrders &&
 				todaysOrders.length > 0 && (
 					<Stack w="100%" px="sm">
-						{sortedOrders.map((order) => (
+						{todaysOrders.map((order) => (
 							<Order key={order.id} order={order} />
 						))}
 					</Stack>
