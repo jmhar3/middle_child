@@ -73,8 +73,8 @@ function MenuItemModal(props: MenuItemModalProps) {
 
 	const [selection, setSelection] = useState<OrderItem>({
 		...orderItem,
-		is_large: menuItem.has_large ? false : undefined,
-		modifiers: fullCream ? [fullCream] : undefined,
+		is_large: orderItem.is_large ?? (menuItem.has_large ? false : undefined),
+		modifiers: orderItem.modifiers ?? (fullCream ? [fullCream] : undefined),
 	});
 
 	const sortedOptions =
