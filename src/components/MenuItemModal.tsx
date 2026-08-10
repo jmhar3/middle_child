@@ -50,7 +50,6 @@ function MenuItemModal(props: MenuItemModalProps) {
 	);
 
 	const [showErrors, setShowErrors] = useState(false);
-	const [note, setNote] = useState<string | undefined>(orderItem.note);
 
 	const dispatch = useAppDispatch();
 	const modifiersStatus = useAppSelector(selectModifiersStatus);
@@ -153,7 +152,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 		) {
 			setShowErrors(true);
 		} else {
-			onAddToOrder({ ...selection, note: note, quantity: quantity });
+			onAddToOrder({ ...selection, quantity: quantity });
 			onModalClose();
 		}
 	};
@@ -230,7 +229,13 @@ function MenuItemModal(props: MenuItemModalProps) {
 					/>
 				)}
 
-				<NoteInput label="Notes" note={note} setNote={setNote} />
+				<NoteInput
+					label="Notes"
+					note={selection.note}
+					setNote={(note) =>
+						setSelection((prevSelection) => ({ ...prevSelection, note: note }))
+					}
+				/>
 
 				<Button.Group w="100%" pt="3">
 					<Button
