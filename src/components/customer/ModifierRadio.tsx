@@ -64,8 +64,9 @@ function ModifierRadio(props: ModifierRadioProps) {
 			>
 				<Button.Group w="100%" orientation="vertical">
 					{sortedModifiers.map((modifier, index) => {
-						const selectedModifier = selectedModifiers?.[0];
-						const isSelected = selectedModifier === modifier;
+						const isSelected = selectedModifiers?.some(
+							({ id }) => modifier.id === id,
+						);
 						const formattedPrice =
 							modifier.price && formatPrice(modifier.price);
 

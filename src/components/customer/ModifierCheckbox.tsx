@@ -58,7 +58,9 @@ function ModifierCheckbox(props: ModifierCheckboxProps) {
 			>
 				<Button.Group w="100%" orientation="vertical">
 					{sortedModifiers.map((modifier, index) => {
-						const isSelected = selectedModifiers?.includes(modifier);
+						const isSelected = selectedModifiers?.some(
+							({ id }) => modifier.id === id,
+						);
 						const formattedPrice =
 							modifier.price && formatPrice(modifier.price);
 

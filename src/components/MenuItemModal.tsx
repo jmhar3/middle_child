@@ -102,11 +102,6 @@ function MenuItemModal(props: MenuItemModalProps) {
 		}
 	};
 
-	const filterSelectedModifiers = (modifierOptions: Modifier[]) =>
-		selection.modifiers?.filter((selectedModifier) =>
-			modifierOptions.includes(selectedModifier),
-		);
-
 	const menuItemPrice = useMemo(
 		() =>
 			calculateOrderItemPrice(
@@ -221,9 +216,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 							showErrors &&
 							missingSections?.some(({ id }) => id === modifierCategory.id)
 						}
-						selectedModifiers={filterSelectedModifiers(
-							modifierCategory.modifiers,
-						)}
+						selectedModifiers={selection.modifiers}
 						onModifierSelect={onModifierSelect}
 					/>
 				))}
@@ -232,7 +225,7 @@ function MenuItemModal(props: MenuItemModalProps) {
 					<ModifierCheckbox
 						isRequired={false}
 						modifiers={menuItem.modifiers}
-						selectedModifiers={filterSelectedModifiers(menuItem.modifiers)}
+						selectedModifiers={selection.modifiers}
 						onModifierSelect={onModifierSelect}
 					/>
 				)}
