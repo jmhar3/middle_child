@@ -295,7 +295,10 @@ function Menu() {
 				{loyaltyPoints && pointsRemaining ? (
 					<>
 						{pointsRemaining > 0 && pointsRemaining < loyaltyPoints && (
-							<Text>You're {pointsRemaining} coffees away from a freebie!</Text>
+							<Text>
+								You're {pointsRemaining} coffee
+								{pointsRemaining === 1 ? "" : "s"} away from a freebie!
+							</Text>
 						)}
 
 						{loyaltyPoints && pointsRemaining === loyaltyPoints && (

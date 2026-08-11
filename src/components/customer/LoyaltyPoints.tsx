@@ -94,7 +94,8 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 				remainingPointsRequired > 0 &&
 				remainingPointsRequired < pointsRequired && (
 					<Text>
-						You're {remainingPointsRequired} coffees away from a freebie!
+						You're {remainingPointsRequired} coffee
+						{remainingPointsRequired === 1 ? "" : "s"} away from a freebie!
 					</Text>
 				)}
 
