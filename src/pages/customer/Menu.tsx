@@ -290,19 +290,23 @@ function Menu() {
 					Pick up time from {storeInfo?.current_order_time.short} minutes
 				</Text>
 
-				{pointsRemaining ? (
-					<>
-						<Divider w="100%" />
+				<Divider w="100%" />
 
-						{pointsRemaining > 0 ? (
+				{loyaltyPoints && pointsRemaining ? (
+					<>
+						{pointsRemaining > 0 && pointsRemaining < loyaltyPoints && (
 							<Text>You're {pointsRemaining} coffees away from a freebie!</Text>
-						) : (
-							<Text>You've unlocked a free coffee!</Text>
+						)}
+
+						{loyaltyPoints && pointsRemaining === loyaltyPoints && (
+							<Text>Start drinking to earn free coffee!</Text>
 						)}
 					</>
 				) : (
-					<Text>Start drinking to earn free coffee!</Text>
+					<> </>
 				)}
+
+				{pointsRemaining === 0 && <Text>You've unlocked a free coffee!</Text>}
 			</Stack>
 
 			<Divider w="100%" />

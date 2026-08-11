@@ -48,10 +48,9 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 	}, [dispatch, userStatus, storeInfoStatus]);
 
 	const remainingPointsRequired = useMemo(() => {
-		if (pointsRequired) {
-			return pointsRequired - (existingPoints || 0) - (additionalPoints || 0);
-		}
-		return pointsRequired;
+		return (
+			(pointsRequired || 0) - (existingPoints || 0) - (additionalPoints || 0)
+		);
 	}, [pointsRequired, existingPoints, additionalPoints]);
 
 	return (
@@ -64,45 +63,47 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 			align="center"
 			bd="lightslategray solid 1px"
 		>
-			{remainingPointsRequired && (
-				<Flex w="100%" gap="sm" align="center" justify="space-evenly">
-					{[...new Array(existingPoints)].map((point) => (
-						<Center key={point} c="yellow" h="30px" w="30px">
-							<StarFilledIcon />
-						</Center>
-					))}
+			<Flex w="100%" gap="sm" align="center" justify="space-evenly">
+				{[...new Array(existingPoints)].map((point) => (
+					<Center key={point} c="yellow" h="30px" w="30px">
+						<StarFilledIcon />
+					</Center>
+				))}
 
-					{[...new Array(additionalPoints)].map((point) => (
-						<Center key={point} c="gold" h="30px" w="30px">
-							<StarOutlineIcon />
-						</Center>
-					))}
+				{[...new Array(additionalPoints)].map((point) => (
+					<Center key={point} c="gold" h="30px" w="30px">
+						<StarOutlineIcon />
+					</Center>
+				))}
 
-					{[...new Array(remainingPointsRequired)].map((point) => (
-						<Center key={point} c="lightgray" h="30px" w="30px">
-							<CoffeeIcon />
-						</Center>
-					))}
+				{[...new Array(remainingPointsRequired || 0)].map((point) => (
+					<Center key={point} c="lightgray" h="30px" w="30px">
+						<CoffeeIcon />
+					</Center>
+				))}
 
-					{/*<Center c="gold" h="30px" w="30px">
+				{/*<Center c="gold" h="30px" w="30px">
             <CoffeeIcon />
           </Center>*/}
-					<Title c="yellow" size="xl">
-						FREE
-					</Title>
-				</Flex>
-			)}
+				<Title c="yellow" size="xl">
+					FREE
+				</Title>
+			</Flex>
 
-			{remainingPointsRequired ? (
-				remainingPointsRequired > 0 ? (
+			{pointsRequired &&
+				remainingPointsRequired > 0 &&
+				remainingPointsRequired < pointsRequired && (
 					<Text>
 						You're {remainingPointsRequired} coffees away from a freebie!
 					</Text>
-				) : (
-					<Text>You've unlocked a free coffee!</Text>
-				)
-			) : (
+				)}
+
+			{pointsRequired && remainingPointsRequired === pointsRequired && (
 				<Text>Start drinking to earn free coffee!</Text>
+			)}
+
+			{remainingPointsRequired === 0 && (
+				<Text>You've unlocked a free coffee!</Text>
 			)}
 
 			{!user && <LoginButton />}
