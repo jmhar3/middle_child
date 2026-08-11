@@ -26,9 +26,8 @@ import {
 } from "../../state/storeInfo/storeInfoSlice";
 
 import {
-	selectRecentlyOrderedItems,
-	selectUserLoyaltyPoints,
 	selectUserStatus,
+	selectRecentlyOrderedItems,
 } from "../../state/user/userSlice";
 
 import {
@@ -42,6 +41,7 @@ import type {
 	OrderItem,
 	PlacedOrderType,
 } from "../../state/types";
+import LoyaltyPoints from "../../components/customer/LoyaltyPoints";
 
 function Menu() {
 	const navigate = useNavigate();
@@ -53,7 +53,6 @@ function Menu() {
 	const storeInfo = useAppSelector(selectStoreInfo);
 	const userStatus = useAppSelector(selectUserStatus);
 	const recentlyOrderedItems = useAppSelector(selectRecentlyOrderedItems);
-	const loyaltyPoints = useAppSelector(selectUserLoyaltyPoints);
 
 	const isLoading =
 		menuStatus === "pending" ||
@@ -93,39 +92,12 @@ function Menu() {
 			localStorage.setItem("cart", stringifyCart);
 	}, [localStorageCart, orderItems]);
 
-	const pointsRemaining = useMemo(() => {
-		const additionalLoyaltyPoints = orderItems
+	const additionalLoyaltyPoints = useMemo(() => {
+		return orderItems
 			?.filter((item) => item.item.is_applicable_loyalty_item)
 			.map(({ quantity }) => quantity)
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-		if (loyaltyPoints === undefined || loyaltyPoints === 0) {
-			if (
-				additionalLoyaltyPoints === undefined ||
-				additionalLoyaltyPoints === 0
-			) {
-				return null;
-			}
-			return (
-				storeInfo?.loyalty_points &&
-				storeInfo.loyalty_points - additionalLoyaltyPoints
-			);
-		}
-
-		if (
-			additionalLoyaltyPoints === undefined ||
-			additionalLoyaltyPoints === 0
-		) {
-			return (
-				storeInfo?.loyalty_points && storeInfo.loyalty_points - loyaltyPoints
-			);
-		}
-
-		return (
-			storeInfo?.loyalty_points &&
-			storeInfo.loyalty_points - loyaltyPoints - additionalLoyaltyPoints
-		);
-	}, [storeInfo, orderItems, loyaltyPoints]);
+	}, [orderItems]);
 
 	const totalItemsInOrder = useMemo(
 		() =>
@@ -292,24 +264,10 @@ function Menu() {
 
 				<Divider w="100%" />
 
-				{loyaltyPoints && pointsRemaining ? (
-					<>
-						{pointsRemaining > 0 && pointsRemaining < loyaltyPoints && (
-							<Text>
-								You're {pointsRemaining} coffee
-								{pointsRemaining === 1 ? "" : "s"} away from a freebie!
-							</Text>
-						)}
-
-						{loyaltyPoints && pointsRemaining === loyaltyPoints && (
-							<Text>Start drinking to earn free coffee!</Text>
-						)}
-					</>
-				) : (
-					<> </>
-				)}
-
-				{pointsRemaining === 0 && <Text>You've unlocked a free coffee!</Text>}
+				<LoyaltyPoints
+					additionalPoints={additionalLoyaltyPoints}
+					showProgress={false}
+				/>
 			</Stack>
 
 			<Divider w="100%" />

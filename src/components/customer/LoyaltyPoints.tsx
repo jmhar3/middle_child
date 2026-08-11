@@ -24,10 +24,11 @@ import {
 
 interface LoyaltyPointsProps {
 	additionalPoints?: number;
+	showProgress?: boolean;
 }
 
 function LoyaltyPoints(props: LoyaltyPointsProps) {
-	const { additionalPoints = 0 } = props;
+	const { additionalPoints = 0, showProgress = true } = props;
 
 	const dispatch = useAppDispatch();
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
@@ -47,11 +48,28 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 		}
 	}, [dispatch, userStatus, storeInfoStatus]);
 
+	const totalPoints = useMemo(
+		() => (existingPoints || 0) + (additionalPoints || 0),
+		[existingPoints, additionalPoints],
+	);
+
 	const remainingPointsRequired = useMemo(() => {
-		return (
-			(pointsRequired || 0) - (existingPoints || 0) - (additionalPoints || 0)
-		);
-	}, [pointsRequired, existingPoints, additionalPoints]);
+		if (pointsRequired) {
+			if (totalPoints <= pointsRequired) {
+				return pointsRequired - totalPoints;
+			}
+			return 0;
+		}
+	}, [pointsRequired, totalPoints]);
+
+	const additionalPointsToDisplay = useMemo(() => {
+		if (pointsRequired) {
+			if (totalPoints > pointsRequired) {
+				return pointsRequired - (existingPoints || 0);
+			}
+		}
+		return additionalPoints || 0;
+	}, [pointsRequired, totalPoints, existingPoints, additionalPoints]);
 
 	return (
 		<Stack
@@ -63,48 +81,56 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 			align="center"
 			bd="lightslategray solid 1px"
 		>
-			<Flex w="100%" gap="sm" align="center" justify="space-evenly">
-				{[...new Array(existingPoints)].map((point) => (
-					<Center key={point} c="yellow" h="30px" w="30px">
-						<StarFilledIcon />
-					</Center>
-				))}
+			{showProgress && (
+				<Flex w="100%" gap="sm" align="center" justify="space-evenly">
+					{[...new Array(existingPoints)].map((point) => (
+						<Center key={point} c="yellow" h="30px" w="30px">
+							<StarFilledIcon />
+						</Center>
+					))}
 
-				{[...new Array(additionalPoints)].map((point) => (
-					<Center key={point} c="gold" h="30px" w="30px">
-						<StarOutlineIcon />
-					</Center>
-				))}
+					{[...new Array(additionalPointsToDisplay)].map((point) => (
+						<Center key={point} c="gold" h="30px" w="30px">
+							<StarOutlineIcon />
+						</Center>
+					))}
 
-				{[...new Array(remainingPointsRequired || 0)].map((point) => (
-					<Center key={point} c="lightgray" h="30px" w="30px">
-						<CoffeeIcon />
-					</Center>
-				))}
+					{[...new Array(remainingPointsRequired)].map((point) => (
+						<Center key={point} c="lightgray" h="30px" w="30px">
+							<CoffeeIcon />
+						</Center>
+					))}
 
-				{/*<Center c="gold" h="30px" w="30px">
+					{/*<Center c="gold" h="30px" w="30px">
             <CoffeeIcon />
           </Center>*/}
-				<Title c="yellow" size="xl">
-					FREE
-				</Title>
-			</Flex>
-
-			{pointsRequired &&
-				remainingPointsRequired > 0 &&
-				remainingPointsRequired < pointsRequired && (
-					<Text>
-						You're {remainingPointsRequired} coffee
-						{remainingPointsRequired === 1 ? "" : "s"} away from a freebie!
-					</Text>
-				)}
-
-			{pointsRequired && remainingPointsRequired === pointsRequired && (
-				<Text>Start drinking to earn free coffee!</Text>
+					<Title c="yellow" size="xl">
+						FREE
+					</Title>
+				</Flex>
 			)}
 
-			{remainingPointsRequired === 0 && (
-				<Text>You've unlocked a free coffee!</Text>
+			{typeof pointsRequired === "number" &&
+			typeof remainingPointsRequired === "number" ? (
+				<>
+					{remainingPointsRequired > 0 &&
+						remainingPointsRequired < pointsRequired && (
+							<Text>
+								You're {remainingPointsRequired} coffee
+								{remainingPointsRequired === 1 ? "" : "s"} away from a freebie!
+							</Text>
+						)}
+
+					{pointsRequired && remainingPointsRequired === pointsRequired && (
+						<Text>Start drinking to earn free coffee!</Text>
+					)}
+
+					{remainingPointsRequired === 0 && (
+						<Text>You've unlocked a free coffee!</Text>
+					)}
+				</>
+			) : (
+				<> </>
 			)}
 
 			{!user && <LoginButton />}
