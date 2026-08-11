@@ -72,15 +72,7 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 	}, [pointsRequired, totalPoints, existingPoints, additionalPoints]);
 
 	return (
-		<Stack
-			p="sm"
-			gap="sm"
-			w="100%"
-			bdrs="sm"
-			bg="white"
-			align="center"
-			bd="lightslategray solid 1px"
-		>
+		<Stack gap="sm" w="100%" align="center">
 			{showProgress && (
 				<Flex w="100%" gap="sm" align="center" justify="space-evenly">
 					{[...new Array(existingPoints)].map((point) => (

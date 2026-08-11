@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button, Divider, Modal, Stack, Text } from "@mantine/core";
+import { Box, Button, Divider, Modal, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCounter } from "@mantine/hooks";
 
@@ -271,7 +271,15 @@ function CartModal(props: CartModalProps) {
 				}}
 			>
 				<Stack mih="100%" align="center">
-					<LoyaltyPoints additionalPoints={additionalLoyaltyPoints} />
+					<Box
+						p="sm"
+						w="100%"
+						bdrs="sm"
+						bg="white"
+						bd="lightslategray solid 1px"
+					>
+						<LoyaltyPoints additionalPoints={additionalLoyaltyPoints} />
+					</Box>
 
 					<Stack w="100%">
 						{!items && <Text>Your cart is empty.</Text>}
