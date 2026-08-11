@@ -35,7 +35,7 @@ export const fetchOrders = createAsyncThunk("menu/fetchOrders", async () => {
         )
       )`,
 		)
-		.order("due_at");
+		.order("due_at", { ascending: false });
 
 	if (error) {
 		console.error(error);
