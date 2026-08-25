@@ -130,17 +130,8 @@ function Orders(props: OrdersProps) {
 				</Group>
 			)}
 
-			{storeIsOpen ? (
-				todaysOrders &&
-				todaysOrders.length > 0 && (
-					<Stack w="100%" px="sm">
-						{todaysOrders.map((order) => (
-							<Order key={order.id} order={order} />
-						))}
-					</Stack>
-				)
-			) : (
-				<Stack align="center" gap="sm" pt="3em">
+			{!storeIsOpen && (
+				<Stack align="center" gap="sm" py="3em">
 					<Text ta="center" mb="sm" size="1.6em" fw="600">
 						Middle Child is currently closed
 					</Text>
@@ -149,6 +140,14 @@ function Orders(props: OrdersProps) {
 						label="Start Accepting Orders"
 						onClick={props.openToggleStoreOpenModal}
 					/>
+				</Stack>
+			)}
+
+			{todaysOrders && todaysOrders.length > 0 && (
+				<Stack w="100%" px="sm">
+					{todaysOrders.map((order) => (
+						<Order key={order.id} order={order} />
+					))}
 				</Stack>
 			)}
 		</>
