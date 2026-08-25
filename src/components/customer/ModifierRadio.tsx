@@ -29,10 +29,12 @@ function ModifierRadio(props: ModifierRadioProps) {
 	}, [modifiers]);
 
 	const onSelection = (newSelection: Modifier) => {
-		const previousSelection = selectedModifiers?.[0];
+		const previousSelection = modifiers.find((modifier) =>
+			selectedModifiers?.some(({ id }) => modifier.id === id),
+		);
 		// unselect old modifier
 		if (previousSelection) onModifierSelect(previousSelection, false);
-		// select old modifier
+		// select new modifier
 		onModifierSelect(newSelection, true);
 	};
 
