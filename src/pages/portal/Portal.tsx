@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -9,6 +8,7 @@ import Orders from "./Orders";
 import Loading from "../../components/Loading";
 import LoginModal from "../../components/LoginModal";
 import StyledButton from "../../components/StyledButton";
+import Stats from "../../components/portal/orders/Stats";
 import ManageMenu from "../../components/portal/manageMenu/ManageMenu";
 
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
@@ -111,19 +111,8 @@ function Portal() {
 
 	if (userStatus === "idle" || userStatus === "pending")
 		return <Loading message="Loading... Please wait" />;
+
 	if (!user) return <LoginModal isModalOpen={true} onModalClose={() => {}} />;
-
-	const todaysOrders = orders.filter((order) =>
-		dayjs(order.due_at).isSame(dayjs(), "day"),
-	);
-
-	const todaysTotal = todaysOrders.reduce((acc, order) => acc + order.total, 0);
-
-	const weeksOrders = orders.filter((order) =>
-		dayjs(order.due_at).isSame(dayjs(), "isoWeek"),
-	);
-
-	const weeklyTotal = weeksOrders.reduce((acc, order) => acc + order.total, 0);
 
 	if (user.is_admin)
 		return (
@@ -151,16 +140,7 @@ function Portal() {
 						)}
 					</Group>
 
-					<Stack gap="0">
-						<Flex justify="space-between" gap="xs">
-							<Text>Today:</Text>
-							<Text>${todaysTotal.toFixed(2)}</Text>
-						</Flex>
-						<Flex justify="space-between" gap="xs">
-							<Text>This Week:</Text>
-							<Text>${weeklyTotal.toFixed(2)}</Text>
-						</Flex>
-					</Stack>
+					<Stats />
 				</Flex>
 
 				<Stack pt={isMobile ? "4em" : "5em"} pb="lg" w="100vw">
