@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Flex, Text, Stack, Divider } from "@mantine/core";
+import { Flex, Text, Stack, Divider, Badge } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 import StyledButton from "../../StyledButton";
@@ -41,6 +41,10 @@ function Order(props: OrderProps) {
 			.finally(() => setIsCompletingOrder(false));
 	};
 
+	const freebiesSum = order.items
+		.flatMap((item) => item.contains_freebie)
+		.reduce((a, b) => (a || 0) + (b || 0), 0);
+
 	return (
 		<Stack
 			gap="0"
@@ -64,9 +68,19 @@ function Order(props: OrderProps) {
 					justify="space-between"
 					w={is_complete ? "100%" : "76%"}
 				>
-					<Text fw="700" size="1.2em">
-						{user?.name}
-					</Text>
+					<Flex gap="sm" align="center">
+						<Text fw="700" size="1.2em">
+							{user?.name}
+						</Text>
+
+						{freebiesSum ? (
+							<Badge color="green" variant="dot">
+								{`${freebiesSum} Freebie${freebiesSum > 1 ? "s" : ""} Claimed`}
+							</Badge>
+						) : (
+							""
+						)}
+					</Flex>
 
 					<OrderBadge {...order} />
 				</Flex>
