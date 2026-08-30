@@ -276,7 +276,13 @@ function MenuItemModal(props: MenuItemModalProps) {
 					<ButtonWithPrice
 						isDisabled={!menuItem.is_in_stock}
 						price={formattedPrice}
-						label={menuItem.is_in_stock ? "Add to order" : "Out of stock"}
+						label={
+							menuItem.is_in_stock
+								? orderItem
+									? "Update Order"
+									: "Add to Order"
+								: "Out of Stock"
+						}
 						onClick={onAddToCart}
 					/>
 				</Box>
