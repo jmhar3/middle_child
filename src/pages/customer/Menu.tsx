@@ -28,6 +28,7 @@ import {
 import {
 	selectUserStatus,
 	selectRecentlyOrderedItems,
+	selectUser,
 } from "../../state/user/userSlice";
 
 import {
@@ -52,6 +53,7 @@ function Menu() {
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
 	const userStatus = useAppSelector(selectUserStatus);
+	const user = useAppSelector(selectUser);
 	const recentlyOrderedItems = useAppSelector(selectRecentlyOrderedItems);
 
 	const isLoading =
@@ -133,7 +135,34 @@ function Menu() {
 		setIsMenuItemModalOpen(true);
 	};
 
-	const addItemToOrder = (item: OrderItem) => {
+	const calculateNumItemsLeftToClaim = (newPoints: number) => {
+		const totalPoints =
+			(user?.loyalty_points || 0) + (additionalLoyaltyPoints || 0) + newPoints;
+		const freebiesUnlocked = Math.floor(
+			totalPoints / (storeInfo?.loyalty_points || 12),
+		);
+		const numOfClaimedFreeItems =
+			(orderItems || [])
+				.flatMap((item) => item.contains_freebie)
+				.reduce((item, currentValue) => (item || 0) + (currentValue || 0), 0) ||
+			0;
+
+		return freebiesUnlocked - numOfClaimedFreeItems;
+	};
+
+	const addItemToOrder = (orderItem: OrderItem) => {
+		const numItemsLeftToClaim = orderItem.item.is_applicable_loyalty_item
+			? calculateNumItemsLeftToClaim(orderItem.quantity)
+			: 0;
+
+		const item =
+			numItemsLeftToClaim > 0
+				? {
+						...orderItem,
+						contains_freebie: Math.min(orderItem.quantity, numItemsLeftToClaim),
+					}
+				: orderItem;
+
 		setOrderItems((items) => {
 			if (items) {
 				const existingOrderItem = items.find((existingItem) => {
@@ -162,6 +191,10 @@ function Menu() {
 						...filteredOrderItems,
 						{
 							...existingOrderItem,
+							contains_freebie: Math.min(
+								orderItem.quantity,
+								(existingOrderItem.contains_freebie || 0) + numItemsLeftToClaim,
+							),
 							quantity: existingOrderItem.quantity + item.quantity,
 						},
 					];
@@ -184,11 +217,24 @@ function Menu() {
 		oldOrderItem: OrderItem,
 		newOrderItem: OrderItem,
 	) => {
+		const numItemsLeftToClaim = newOrderItem.item.is_applicable_loyalty_item
+			? calculateNumItemsLeftToClaim(newOrderItem.quantity)
+			: 0;
+
 		setOrderItems((items) => {
 			if (items) {
 				const filteredOrderItems = filterItemFromOrder(items, oldOrderItem);
 
-				return [...filteredOrderItems, newOrderItem];
+				return [
+					...filteredOrderItems,
+					{
+						...newOrderItem,
+						contains_freebie: Math.min(
+							newOrderItem.quantity,
+							numItemsLeftToClaim + (newOrderItem.contains_freebie || 0),
+						),
+					},
+				];
 			} else {
 				return null;
 			}
@@ -302,7 +348,9 @@ function Menu() {
 												key={orderItem.item.label}
 												isPrevOrder={true}
 												note={orderItem.note}
-												onClick={() => addItemToOrder(orderItem)}
+												onClick={() =>
+													addItemToOrder({ ...orderItem, quantity: 1 })
+												}
 												{...orderItem}
 											/>
 										</>

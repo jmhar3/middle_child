@@ -88,6 +88,7 @@ export interface OrderItem {
 	quantity: number;
 	note?: string;
 	is_large?: boolean;
+	contains_freebie?: number;
 }
 
 export interface Cart {

@@ -12,29 +12,28 @@ interface OrderListItem extends OrderItem {
 }
 
 interface CartItemProps {
-	isFreeItem: boolean;
 	orderItem: OrderListItem;
 	onEditClick: () => void;
 	onDeleteClick: () => void;
 }
 
 function CartItem(props: CartItemProps) {
-	const { isFreeItem, orderItem, onEditClick, onDeleteClick } = props;
+	const { orderItem, onEditClick, onDeleteClick } = props;
 	const { modifiers, item, quantity, note } = orderItem;
 
 	const discountedItemPrice =
-		isFreeItem &&
+		orderItem.contains_freebie &&
 		calculateOrderItemPrice(item, modifiers, orderItem.is_large) *
-			(quantity - 1);
+			(quantity - orderItem.contains_freebie);
 	const orderItemPrice =
 		calculateOrderItemPrice(item, modifiers, orderItem.is_large) * quantity;
 	const formattedPrice = formatPrice(orderItemPrice);
 
 	return (
 		<Stack gap="3">
-			{isFreeItem && (
+			{orderItem.contains_freebie && (
 				<Text fs="italic" c="darkslategray">
-					Your 13th coffee is free!
+					Your 7th coffee is free!
 				</Text>
 			)}
 			<Flex key={item.label} justify="space-between" align="center">

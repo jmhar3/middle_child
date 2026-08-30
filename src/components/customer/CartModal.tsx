@@ -86,36 +86,24 @@ function CartModal(props: CartModalProps) {
 
 	const pointsTotal = (loyaltyPoints || 0) + additionalLoyaltyPoints;
 
-	const freeItem = useMemo(() => {
-		if (storeInfo?.loyalty_points && pointsTotal >= storeInfo.loyalty_points) {
-			let quantity = loyaltyPoints || 0;
-			for (const item of applicableLoyaltyItems) {
-				if (quantity + item.quantity >= storeInfo?.loyalty_points) {
-					return item;
-				}
-				quantity += item.quantity;
-			}
-		}
-		return null;
-	}, [storeInfo, pointsTotal, loyaltyPoints, applicableLoyaltyItems]);
+	const numOfClaimedFreebies = useMemo(
+		() =>
+			items
+				.flatMap((item) => item.contains_freebie)
+				.reduce((item, currentValue) => (item || 0) + (currentValue || 0), 0) ||
+			0,
+		[items],
+	);
 
 	const orderTotal = useMemo(() => {
 		return items
-			.map((item) => {
-				if (freeItem?.id === item.id) {
-					if (item.quantity === 1) return 0;
-					return (
-						calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
-						(item.quantity - 1)
-					);
-				}
-				return (
+			.map(
+				(item) =>
 					calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
-					item.quantity
-				);
-			})
+					(item.quantity - (item.contains_freebie || 0)),
+			)
 			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-	}, [items, freeItem]);
+	}, [items]);
 
 	const pickUpTimeFromNow = useMemo(() => {
 		const hasLongPrepTime = items.find(
@@ -140,12 +128,15 @@ function CartModal(props: CartModalProps) {
 
 	if (pickUpTimeFromNow > pickUpTime) increment();
 
-	const order: PendingOrderType = {
-		items: items,
-		total: orderTotal,
-		due_at: dayjs().add(pickUpTime, "minute").toISOString(),
-		is_complete: false,
-	};
+	const order: PendingOrderType = useMemo(
+		() => ({
+			items: items,
+			total: orderTotal,
+			due_at: dayjs().add(pickUpTime, "minute").toISOString(),
+			is_complete: false,
+		}),
+		[items, orderTotal, pickUpTime],
+	);
 
 	const formattedPrice = formatPrice(order.total);
 
@@ -159,8 +150,8 @@ function CartModal(props: CartModalProps) {
 			updateUser({
 				id: user.id,
 				loyalty_points:
-					storeInfo?.loyalty_points && freeItem
-						? pointsTotal - storeInfo?.loyalty_points
+					storeInfo?.loyalty_points && numOfClaimedFreebies > 0
+						? pointsTotal - storeInfo.loyalty_points * numOfClaimedFreebies
 						: pointsTotal,
 			}),
 		)
@@ -287,7 +278,6 @@ function CartModal(props: CartModalProps) {
 							<>
 								{index === 0 && <Divider />}
 								<CartItem
-									isFreeItem={orderItem.id === freeItem?.id}
 									orderItem={orderItem}
 									onDeleteClick={() => onDeleteOrderItem(orderItem)}
 									onEditClick={() => {
