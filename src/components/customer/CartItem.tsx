@@ -23,18 +23,28 @@ function CartItem(props: CartItemProps) {
 
 	const discountedItemPrice =
 		orderItem.contains_freebie &&
+		orderItem.contains_freebie > 0 &&
 		calculateOrderItemPrice(item, modifiers, orderItem.is_large) *
 			(quantity - orderItem.contains_freebie);
+
 	const orderItemPrice =
 		calculateOrderItemPrice(item, modifiers, orderItem.is_large) * quantity;
+
 	const formattedPrice = formatPrice(orderItemPrice);
+
+	const hasFreebiePricing =
+		orderItem.contains_freebie &&
+		orderItem.contains_freebie > 0 &&
+		typeof discountedItemPrice === "number";
 
 	return (
 		<Stack gap="3">
-			{orderItem.contains_freebie && (
+			{hasFreebiePricing ? (
 				<Text fs="italic" c="darkslategray">
-					Your 7th coffee is free!
+					Your 13th coffee is free!
 				</Text>
+			) : (
+				""
 			)}
 			<Flex key={item.label} justify="space-between" align="center">
 				<Text>
@@ -43,16 +53,12 @@ function CartItem(props: CartItemProps) {
 				</Text>
 
 				<Flex align="center" gap="sm">
-					{typeof discountedItemPrice === "number" && (
+					{hasFreebiePricing ? (
 						<Text>${discountedItemPrice.toFixed(2)}</Text>
+					) : (
+						""
 					)}
-					<Text
-						td={
-							typeof discountedItemPrice === "number"
-								? "line-through"
-								: undefined
-						}
-					>
+					<Text td={hasFreebiePricing ? "line-through" : undefined}>
 						{formattedPrice}
 					</Text>
 

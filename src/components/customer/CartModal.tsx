@@ -41,7 +41,7 @@ interface CartModalProps {
 	items: OrderItem[];
 	isOpen: boolean;
 	onClose: () => void;
-	onEditOrderItem: (oldOrderItem: OrderItem, newOrderItem: OrderItem) => void;
+	onEditOrderItem: (newOrderItem: OrderItem) => void;
 	onDeleteOrderItem: (orderItem: OrderItem) => void;
 	onSuccess: (order: PlacedOrderType) => void;
 }
@@ -95,16 +95,6 @@ function CartModal(props: CartModalProps) {
 		[items],
 	);
 
-	const orderTotal = useMemo(() => {
-		return items
-			.map(
-				(item) =>
-					calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
-					(item.quantity - (item.contains_freebie || 0)),
-			)
-			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-	}, [items]);
-
 	const pickUpTimeFromNow = useMemo(() => {
 		const hasLongPrepTime = items.find(
 			(orderItem) => orderItem.item.has_long_prep_time || false,
@@ -128,15 +118,50 @@ function CartModal(props: CartModalProps) {
 
 	if (pickUpTimeFromNow > pickUpTime) increment();
 
-	const order: PendingOrderType = useMemo(
-		() => ({
-			items: items,
+	const freebieItem = useMemo(() => {
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			const prevItemsPoints = items
+				.slice(0, i + 1)
+				.flatMap((item) =>
+					item.item.is_applicable_loyalty_item ? item.quantity : [],
+				)
+				.reduce((x, y) => x + y, 0);
+
+			if (
+				(storeInfo?.loyalty_points || 12) <
+				prevItemsPoints + (loyaltyPoints || 0)
+			)
+				return item;
+		}
+	}, [items, storeInfo, loyaltyPoints]);
+
+	const order: PendingOrderType = useMemo(() => {
+		const dueAt = dayjs().add(pickUpTime, "minute").toISOString();
+
+		const itemsWithFreebies = items.map((item) => {
+			if (item.id === freebieItem?.id) {
+				return { ...item, contains_freebie: 1 };
+			}
+
+			return item;
+		});
+
+		const orderTotal = itemsWithFreebies
+			.map(
+				(item) =>
+					calculateOrderItemPrice(item.item, item.modifiers, item.is_large) *
+					(item.quantity - (item.contains_freebie || 0)),
+			)
+			.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+		return {
+			items: itemsWithFreebies,
 			total: orderTotal,
-			due_at: dayjs().add(pickUpTime, "minute").toISOString(),
+			due_at: dueAt,
 			is_complete: false,
-		}),
-		[items, orderTotal, pickUpTime],
-	);
+		};
+	}, [items, pickUpTime, freebieItem]);
 
 	const formattedPrice = formatPrice(order.total);
 
@@ -218,7 +243,7 @@ function CartModal(props: CartModalProps) {
 					menuItem={oldOrderItem.item}
 					orderItem={oldOrderItem}
 					onAddToOrder={(newOrderItem: OrderItem) =>
-						onEditOrderItem(oldOrderItem, newOrderItem)
+						onEditOrderItem(newOrderItem)
 					}
 				/>
 			)}
@@ -273,8 +298,8 @@ function CartModal(props: CartModalProps) {
 					</Box>
 
 					<Stack w="100%">
-						{!items && <Text>Your cart is empty.</Text>}
-						{items?.map((orderItem, index) => (
+						{!order.items && <Text>Your cart is empty.</Text>}
+						{order.items?.map((orderItem, index) => (
 							<>
 								{index === 0 && <Divider />}
 								<CartItem

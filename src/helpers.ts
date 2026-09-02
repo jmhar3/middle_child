@@ -1,5 +1,23 @@
 import type { MenuItemType, Modifier, OrderItem } from "./state/types";
 
+export const calculateNumItemsLeftToClaim = (
+	orderItems: OrderItem[],
+	pointsRequired: number,
+	userPoints: number,
+	orderLoyaltyPoints: number,
+	itemPoints: number,
+) => {
+	const totalPoints = userPoints + orderLoyaltyPoints + itemPoints;
+	const freebiesUnlocked = Math.floor(totalPoints / pointsRequired);
+	const numOfClaimedFreeItems =
+		orderItems
+			.flatMap((item) => item.contains_freebie)
+			.reduce((item, currentValue) => (item || 0) + (currentValue || 0), 0) ||
+		0;
+
+	return freebiesUnlocked - numOfClaimedFreeItems;
+};
+
 export const calculateOrderItemPrice = (
 	menuItem: MenuItemType,
 	modifiers?: Modifier[],

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Stack, Text, Flex, Title, Center } from "@mantine/core";
+import { Stack, Text, Center, SimpleGrid } from "@mantine/core";
 
 import LoginButton from "../Login";
 
@@ -74,7 +74,7 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 	return (
 		<Stack gap="sm" w="100%" align="center">
 			{showProgress && (
-				<Flex w="100%" gap="sm" align="center" justify="space-evenly">
+				<SimpleGrid cols={6} w="100%">
 					{[...new Array(existingPoints)].map((point) => (
 						<Center key={point} c="yellow" h="30px" w="30px">
 							<StarFilledIcon />
@@ -92,35 +92,24 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 							<CoffeeIcon />
 						</Center>
 					))}
-
-					{/*<Center c="gold" h="30px" w="30px">
-            <CoffeeIcon />
-          </Center>*/}
-					<Title c="yellow" size="xl">
-						FREE
-					</Title>
-				</Flex>
+				</SimpleGrid>
 			)}
 
 			{typeof pointsRequired === "number" &&
 			typeof remainingPointsRequired === "number" ? (
-				<>
+				<Text fs="italic" c="darkslategray">
 					{remainingPointsRequired > 0 &&
-						remainingPointsRequired < pointsRequired && (
-							<Text>
-								You're {remainingPointsRequired} coffee
-								{remainingPointsRequired === 1 ? "" : "s"} away from a freebie!
-							</Text>
-						)}
+						remainingPointsRequired < pointsRequired &&
+						"You're on your way to a freebie!"}
 
-					{pointsRequired && remainingPointsRequired === pointsRequired && (
-						<Text>Start drinking to earn free coffee!</Text>
-					)}
+					{pointsRequired &&
+						remainingPointsRequired === pointsRequired &&
+						"Start drinking to earn free coffee!"}
 
-					{remainingPointsRequired === 0 && (
-						<Text>You've unlocked a free coffee!</Text>
-					)}
-				</>
+					{pointsRequired - totalPoints === 0 && "You're next coffee is free!"}
+
+					{pointsRequired - totalPoints < 0 && "You've unlocked a free coffee!"}
+				</Text>
 			) : (
 				<> </>
 			)}

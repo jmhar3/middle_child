@@ -53,7 +53,6 @@ function Menu() {
 	const storeInfoStatus = useAppSelector(selectStoreInfoStatus);
 	const storeInfo = useAppSelector(selectStoreInfo);
 	const userStatus = useAppSelector(selectUserStatus);
-	const user = useAppSelector(selectUser);
 	const recentlyOrderedItems = useAppSelector(selectRecentlyOrderedItems);
 
 	const isLoading =
@@ -71,7 +70,7 @@ function Menu() {
 		if (userStatus === "idle") {
 			dispatch(fetchUser());
 		}
-		if (storeInfo?.id && !storeInfo.is_open) navigate("/");
+		// if (storeInfo?.id && !storeInfo.is_open) navigate("/");
 	}, [dispatch, menuStatus, storeInfoStatus, userStatus, navigate, storeInfo]);
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -135,34 +134,7 @@ function Menu() {
 		setIsMenuItemModalOpen(true);
 	};
 
-	const calculateNumItemsLeftToClaim = (newPoints: number) => {
-		const totalPoints =
-			(user?.loyalty_points || 0) + (additionalLoyaltyPoints || 0) + newPoints;
-		const freebiesUnlocked = Math.floor(
-			totalPoints / (storeInfo?.loyalty_points || 12),
-		);
-		const numOfClaimedFreeItems =
-			(orderItems || [])
-				.flatMap((item) => item.contains_freebie)
-				.reduce((item, currentValue) => (item || 0) + (currentValue || 0), 0) ||
-			0;
-
-		return freebiesUnlocked - numOfClaimedFreeItems;
-	};
-
-	const addItemToOrder = (orderItem: OrderItem) => {
-		const numItemsLeftToClaim = orderItem.item.is_applicable_loyalty_item
-			? calculateNumItemsLeftToClaim(orderItem.quantity)
-			: 0;
-
-		const item =
-			numItemsLeftToClaim > 0
-				? {
-						...orderItem,
-						contains_freebie: Math.min(orderItem.quantity, numItemsLeftToClaim),
-					}
-				: orderItem;
-
+	const addItemToOrder = (item: OrderItem) => {
 		setOrderItems((items) => {
 			if (items) {
 				const existingOrderItem = items.find((existingItem) => {
@@ -183,25 +155,15 @@ function Menu() {
 					return matchingItemId && matchingModifiers && matchingNote;
 				});
 
-				const filteredOrderItems =
-					existingOrderItem && filterItemFromOrder(items, existingOrderItem);
-
-				if (existingOrderItem && filteredOrderItems) {
-					const newOrderItems = [
-						...filteredOrderItems,
-						{
-							...existingOrderItem,
-							contains_freebie: Math.min(
-								orderItem.quantity,
-								(existingOrderItem.contains_freebie || 0) + numItemsLeftToClaim,
-							),
-							quantity: existingOrderItem.quantity + item.quantity,
-						},
-					];
-
-					return existingOrderItem && filteredOrderItems
-						? newOrderItems
-						: [...items, item];
+				if (existingOrderItem) {
+					return items.map((orderItem) =>
+						orderItem.id === existingOrderItem.id
+							? {
+									...orderItem,
+									quantity: orderItem.quantity + item.quantity,
+								}
+							: orderItem,
+					);
 				}
 
 				return [...items, item];
@@ -213,28 +175,12 @@ function Menu() {
 		setIsMenuItemModalOpen(false);
 	};
 
-	const onEditOrderItem = (
-		oldOrderItem: OrderItem,
-		newOrderItem: OrderItem,
-	) => {
-		const numItemsLeftToClaim = newOrderItem.item.is_applicable_loyalty_item
-			? calculateNumItemsLeftToClaim(newOrderItem.quantity)
-			: 0;
-
+	const onEditOrderItem = (newOrderItem: OrderItem) => {
 		setOrderItems((items) => {
 			if (items) {
-				const filteredOrderItems = filterItemFromOrder(items, oldOrderItem);
-
-				return [
-					...filteredOrderItems,
-					{
-						...newOrderItem,
-						contains_freebie: Math.min(
-							newOrderItem.quantity,
-							numItemsLeftToClaim + (newOrderItem.contains_freebie || 0),
-						),
-					},
-				];
+				return items.map((orderItem) =>
+					orderItem.id === newOrderItem.id ? newOrderItem : orderItem,
+				);
 			} else {
 				return null;
 			}
@@ -349,7 +295,11 @@ function Menu() {
 												isPrevOrder={true}
 												note={orderItem.note}
 												onClick={() =>
-													addItemToOrder({ ...orderItem, quantity: 1 })
+													addItemToOrder({
+														...orderItem,
+														quantity: 1,
+														contains_freebie: 0,
+													})
 												}
 												{...orderItem}
 											/>
