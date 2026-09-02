@@ -81,13 +81,9 @@ function Stats() {
 	);
 
 	const formatStat = (item: OrderItem) => {
-		const quantity = item.is_large
-			? 0
-			: item.quantity - (item.contains_freebie || 0);
+		const quantity = item.is_large ? 0 : item.quantity;
 
-		const largeQuantity = item.is_large
-			? item.quantity - (item.contains_freebie || 0)
-			: 0;
+		const largeQuantity = item.is_large ? item.quantity : 0;
 
 		const modifiersPrice =
 			item.modifiers
@@ -239,7 +235,7 @@ function Stats() {
 			</Button>
 
 			<Drawer
-				size="100%"
+				size="md"
 				offset={12}
 				radius="sm"
 				position="right"
@@ -265,12 +261,14 @@ function Stats() {
 							<Accordion.Panel>
 								<Box p="sm" bd="solid 1px lightgray" bdrs="md">
 									<Table stickyHeader>
+										<Table.Caption>
+											Quantity is inclusive of freebies
+										</Table.Caption>
+
 										<Table.Thead>
 											<Table.Tr>
 												<Table.Th>Item</Table.Th>
-												<Table.Th>Paid Quantity</Table.Th>
-												<Table.Th>Freebie Quantity</Table.Th>
-												<Table.Th>Total</Table.Th>
+												<Table.Th ta="right">Quantity</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 
@@ -278,14 +276,12 @@ function Stats() {
 											{todaysStats.map((stat) => (
 												<Table.Tr key={stat.item.id}>
 													<Table.Td>{stat.item.label}</Table.Td>
-													<Table.Td>
+													<Table.Td ta="right">
 														{stat.quantity}
 														{stat.largeQuantity
 															? ` / ${stat.largeQuantity}`
 															: ""}
 													</Table.Td>
-													<Table.Td>{stat.freebies}</Table.Td>
-													<Table.Td>{stat.total}</Table.Td>
 												</Table.Tr>
 											))}
 										</Table.Tbody>
@@ -301,12 +297,14 @@ function Stats() {
 							<Accordion.Panel>
 								<Box p="sm" bd="solid 1px lightgray" bdrs="md">
 									<Table stickyHeader>
+										<Table.Caption>
+											Quantity is inclusive of freebies
+										</Table.Caption>
+
 										<Table.Thead>
 											<Table.Tr>
 												<Table.Th>Item</Table.Th>
-												<Table.Th>Paid Quantity</Table.Th>
-												<Table.Th>Freebie Quantity</Table.Th>
-												<Table.Th>Total</Table.Th>
+												<Table.Th ta="right">Quantity</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 
@@ -314,14 +312,12 @@ function Stats() {
 											{yesterdaysStats.map((stat) => (
 												<Table.Tr key={stat.item.id}>
 													<Table.Td>{stat.item.label}</Table.Td>
-													<Table.Td>
+													<Table.Td ta="right">
 														{stat.quantity}
 														{stat.largeQuantity
 															? ` / ${stat.largeQuantity}`
 															: ""}
 													</Table.Td>
-													<Table.Td>{stat.freebies}</Table.Td>
-													<Table.Td>{stat.total}</Table.Td>
 												</Table.Tr>
 											))}
 										</Table.Tbody>
@@ -338,12 +334,14 @@ function Stats() {
 							<Accordion.Panel>
 								<Box p="sm" bd="solid 1px lightgray" bdrs="md">
 									<Table stickyHeader>
+										<Table.Caption>
+											Quantity is inclusive of freebies
+										</Table.Caption>
+
 										<Table.Thead>
 											<Table.Tr>
 												<Table.Th>Item</Table.Th>
-												<Table.Th>Paid Quantity</Table.Th>
-												<Table.Th>Freebie Quantity</Table.Th>
-												<Table.Th>Total</Table.Th>
+												<Table.Th ta="right">Quantity</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 
@@ -351,14 +349,12 @@ function Stats() {
 											{weeksStats.map((stat) => (
 												<Table.Tr key={stat.item.id}>
 													<Table.Td>{stat.item.label}</Table.Td>
-													<Table.Td>
+													<Table.Td ta="right">
 														{stat.quantity}
 														{stat.largeQuantity
 															? ` / ${stat.largeQuantity}`
 															: ""}
 													</Table.Td>
-													<Table.Td>{stat.freebies}</Table.Td>
-													<Table.Td>{stat.total}</Table.Td>
 												</Table.Tr>
 											))}
 										</Table.Tbody>
