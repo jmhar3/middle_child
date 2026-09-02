@@ -94,14 +94,19 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 				</Text>
 
 				{outOfStock.length > 0 ? (
-					<Stack p="sm" my="xs" bdrs="md" bd="1px solid crimson">
+					<Stack p="sm" my="xs" bg="white" bdrs="md" bd="1px solid crimson">
 						<Text ta="center" c="crimson" fs="initial">
 							Warning: Items are marked out of stock
 						</Text>
 
 						<Group gap="sm">
 							{outOfStock.map((item) => (
-								<Badge key={item.id} size="lg" color="white" c="darkslategray">
+								<Badge
+									key={item.id}
+									size="lg"
+									variant="light"
+									color="darkslategray"
+								>
 									{item.label}
 								</Badge>
 							))}
