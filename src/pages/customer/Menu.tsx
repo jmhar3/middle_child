@@ -28,7 +28,6 @@ import {
 import {
 	selectUserStatus,
 	selectRecentlyOrderedItems,
-	selectUser,
 } from "../../state/user/userSlice";
 
 import {
@@ -70,7 +69,7 @@ function Menu() {
 		if (userStatus === "idle") {
 			dispatch(fetchUser());
 		}
-		// if (storeInfo?.id && !storeInfo.is_open) navigate("/");
+		if (storeInfo?.id && !storeInfo.is_open) navigate("/");
 	}, [dispatch, menuStatus, storeInfoStatus, userStatus, navigate, storeInfo]);
 
 	const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
