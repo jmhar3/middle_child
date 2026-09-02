@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { Group, Modal, Stack, Text } from "@mantine/core";
+import { Badge, Group, Modal, Stack, Text } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
+import UpdateStockDrawer from "../manageMenu/UpdateStockDrawer";
 
 import { useAppDispatch, useAppSelector } from "../../../state/hooks";
 import { updateStoreInfo } from "../../../state/storeInfo/storeInfoThunks";
+import { selectAllIngredients } from "../../../state/modifiers/modifiersSlice";
+import { selectMenu } from "../../../state/menu/menuSlice";
 
 import {
 	selectStoreInfo,
@@ -23,8 +27,33 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 	const dispatch = useAppDispatch();
 	const storeInfo = useAppSelector(selectStoreInfo);
 	const storeIsOpen = useAppSelector(selectStoreIsOpen);
+	const menu = useAppSelector(selectMenu);
+	const ingredients = useAppSelector(selectAllIngredients);
+	const menuItems = menu.flatMap((menuSection) => menuSection.items);
+
+	const [
+		showUpdateStockDrawer,
+		{ open: openUpdateStockDrawer, close: closeUpdateStockDrawer },
+	] = useDisclosure(false);
 
 	const [isUpdatingStore, setIsUpdatingStore] = useState(false);
+
+	// existing stock
+	const existingOutOfStockSections = menu.filter(
+		(section) => !section.is_in_stock,
+	);
+	const existingOutOfStockIngredients = ingredients.filter(
+		(ingredient) => !ingredient.is_in_stock,
+	);
+	const existingOutOfStockMenuItems = menuItems.filter(
+		(item) => !item.is_in_stock,
+	);
+
+	const outOfStock = [
+		existingOutOfStockSections,
+		existingOutOfStockIngredients,
+		existingOutOfStockMenuItems,
+	].flat();
 
 	const onUpdateStore = () => {
 		setIsUpdatingStore(true);
@@ -48,20 +77,50 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 			pt="6em"
 			centered
 			radius="sm"
+			opened={isOpen}
 			onClose={onClose}
 			withCloseButton={false}
-			opened={isOpen}
+			size={outOfStock.length > 0 ? "lg" : "md"}
 			transitionProps={{ transition: "fade", duration: 200 }}
 			styles={{
 				content: { background: "whitesmoke" },
 			}}
 		>
 			<Stack>
-				<Text ta="center" mb="sm" size="1.6em" c="red.9" fw="600">
+				<Text size="1.2em" c="darkslategray" fw="600">
 					{storeIsOpen
 						? "Are you sure you want to stop accepting orders?"
-						: "Are you sure you're ready to start accepting orders?"}
+						: "Are you ready to start accepting orders?"}
 				</Text>
+
+				{outOfStock.length > 0 ? (
+					<Stack p="sm" my="xs" bdrs="md" bd="1px solid crimson">
+						<Text ta="center" c="crimson" fs="initial">
+							Warning: Items are marked out of stock
+						</Text>
+
+						<Group gap="sm">
+							{outOfStock.map((item) => (
+								<Badge key={item.id} size="lg" color="white" c="darkslategray">
+									{item.label}
+								</Badge>
+							))}
+						</Group>
+
+						<StyledButton
+							label="Manage Stock"
+							onClick={openUpdateStockDrawer}
+							isDisabled={isUpdatingStore}
+						/>
+
+						<UpdateStockDrawer
+							isOpen={showUpdateStockDrawer}
+							onClose={closeUpdateStockDrawer}
+						/>
+					</Stack>
+				) : (
+					""
+				)}
 
 				<Group grow>
 					<StyledButton
