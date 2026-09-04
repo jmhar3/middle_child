@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { Badge, Group, Modal, Stack, Text } from "@mantine/core";
@@ -38,22 +38,22 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 
 	const [isUpdatingStore, setIsUpdatingStore] = useState(false);
 
-	// existing stock
-	const existingOutOfStockSections = menu.filter(
-		(section) => !section.is_in_stock,
-	);
-	const existingOutOfStockIngredients = ingredients.filter(
-		(ingredient) => !ingredient.is_in_stock,
-	);
-	const existingOutOfStockMenuItems = menuItems.filter(
-		(item) => !item.is_in_stock,
-	);
-
-	const outOfStock = [
-		existingOutOfStockSections,
-		existingOutOfStockIngredients,
-		existingOutOfStockMenuItems,
-	].flat();
+	const outOfStock = useMemo(() => {
+		const existingOutOfStockSections = menu.filter(
+			(section) => !section.is_in_stock,
+		);
+		const existingOutOfStockIngredients = ingredients.filter(
+			(ingredient) => !ingredient.is_in_stock,
+		);
+		const existingOutOfStockMenuItems = menuItems.filter(
+			(item) => !item.is_in_stock,
+		);
+		return [
+			existingOutOfStockSections,
+			existingOutOfStockIngredients,
+			existingOutOfStockMenuItems,
+		].flat();
+	}, [menu, ingredients, menuItems]);
 
 	const onUpdateStore = () => {
 		setIsUpdatingStore(true);
