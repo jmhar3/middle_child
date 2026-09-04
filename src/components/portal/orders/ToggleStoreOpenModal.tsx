@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { Badge, Group, Modal, Stack, Text } from "@mantine/core";
+import { Badge, Divider, Group, Modal, Stack, Text } from "@mantine/core";
 
 import StyledButton from "../../StyledButton";
 import UpdateStockDrawer from "../manageMenu/UpdateStockDrawer";
@@ -29,7 +29,6 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 	const storeIsOpen = useAppSelector(selectStoreIsOpen);
 	const menu = useAppSelector(selectMenu);
 	const ingredients = useAppSelector(selectAllIngredients);
-	const menuItems = menu.flatMap((menuSection) => menuSection.items);
 
 	const [
 		showUpdateStockDrawer,
@@ -38,22 +37,31 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 
 	const [isUpdatingStore, setIsUpdatingStore] = useState(false);
 
+	const existingOutOfStockSections = useMemo(() => {
+		return menu.filter((section) => !section.is_in_stock);
+	}, [menu]);
+
+	const existingOutOfStockMenuItems = useMemo(() => {
+		return menu
+			.flatMap((menuSection) => menuSection.items)
+			.filter((item) => !item.is_in_stock);
+	}, [menu]);
+
+	const existingOutOfStockIngredients = useMemo(() => {
+		return ingredients.filter((ingredient) => !ingredient.is_in_stock);
+	}, [ingredients]);
+
 	const outOfStock = useMemo(() => {
-		const existingOutOfStockSections = menu.filter(
-			(section) => !section.is_in_stock,
-		);
-		const existingOutOfStockIngredients = ingredients.filter(
-			(ingredient) => !ingredient.is_in_stock,
-		);
-		const existingOutOfStockMenuItems = menuItems.filter(
-			(item) => !item.is_in_stock,
-		);
 		return [
 			existingOutOfStockSections,
 			existingOutOfStockIngredients,
 			existingOutOfStockMenuItems,
 		].flat();
-	}, [menu, ingredients, menuItems]);
+	}, [
+		existingOutOfStockSections,
+		existingOutOfStockIngredients,
+		existingOutOfStockMenuItems,
+	]);
 
 	const onUpdateStore = () => {
 		setIsUpdatingStore(true);
@@ -94,23 +102,82 @@ function ToggleStoreOpenModal(props: ToggleStoreOpenModalProps) {
 				</Text>
 
 				{outOfStock.length > 0 ? (
-					<Stack p="sm" my="xs" bg="white" bdrs="md" bd="1px solid crimson">
+					<Stack
+						p="sm"
+						my="xs"
+						gap="sm"
+						bdrs="md"
+						bg="white"
+						bd="1px solid crimson"
+					>
 						<Text ta="center" c="crimson" fs="initial">
 							Warning: Items are marked out of stock
 						</Text>
 
-						<Group gap="sm">
-							{outOfStock.map((item) => (
-								<Badge
-									key={item.id}
-									size="lg"
-									variant="light"
-									color="darkslategray"
-								>
-									{item.label}
-								</Badge>
-							))}
-						</Group>
+						{existingOutOfStockSections.length > 0 && (
+							<>
+								<Divider />
+								<Stack gap="xs">
+									<Text>Sections:</Text>
+									<Group gap="sm">
+										{existingOutOfStockSections.map((item) => (
+											<Badge
+												key={item.id}
+												size="lg"
+												variant="light"
+												color="darkslategray"
+											>
+												{item.label}
+											</Badge>
+										))}
+									</Group>
+								</Stack>
+							</>
+						)}
+
+						{existingOutOfStockIngredients.length > 0 && (
+							<>
+								<Divider />
+								<Stack gap="xs">
+									<Text>Ingredients:</Text>
+									<Group gap="sm">
+										{existingOutOfStockIngredients.map((item) => (
+											<Badge
+												key={item.id}
+												size="lg"
+												variant="light"
+												color="darkslategray"
+											>
+												{item.label}
+											</Badge>
+										))}
+									</Group>
+								</Stack>
+							</>
+						)}
+
+						{existingOutOfStockMenuItems.length > 0 && (
+							<>
+								<Divider />
+								<Stack gap="xs">
+									<Text>Menu Items:</Text>
+									<Group gap="sm">
+										{existingOutOfStockMenuItems.map((item) => (
+											<Badge
+												key={item.id}
+												size="lg"
+												variant="light"
+												color="darkslategray"
+											>
+												{item.label}
+											</Badge>
+										))}
+									</Group>
+								</Stack>
+							</>
+						)}
+
+						<Divider />
 
 						<StyledButton
 							label="Manage Stock"
