@@ -65,17 +65,28 @@ function LoyaltyPoints(props: LoyaltyPointsProps) {
 	const additionalPointsToDisplay = useMemo(() => {
 		if (pointsRequired) {
 			if (totalPoints > pointsRequired) {
-				return pointsRequired - (existingPoints || 0);
+				const points = pointsRequired - (existingPoints || 0);
+				return points >= 0 ? points : 0;
 			}
 		}
-		return additionalPoints || 0;
+
+		const points = additionalPoints || 0;
+		return points >= 0 ? points : 0;
 	}, [pointsRequired, totalPoints, existingPoints, additionalPoints]);
 
 	return (
 		<Stack gap="sm" w="100%" align="center">
 			{showProgress && (
 				<SimpleGrid cols={6} w="100%">
-					{[...new Array(existingPoints)].map((point) => (
+					{[
+						...new Array(
+							existingPoints &&
+								storeInfo?.loyalty_points &&
+								existingPoints <= storeInfo?.loyalty_points
+								? existingPoints
+								: 12,
+						),
+					].map((point) => (
 						<Center key={point} c="yellow" h="30px" w="30px">
 							<StarFilledIcon />
 						</Center>
