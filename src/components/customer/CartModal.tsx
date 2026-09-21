@@ -86,15 +86,6 @@ function CartModal(props: CartModalProps) {
 
 	const pointsTotal = (loyaltyPoints || 0) + additionalLoyaltyPoints;
 
-	const numOfClaimedFreebies = useMemo(
-		() =>
-			items
-				.flatMap((item) => item.contains_freebie)
-				.reduce((item, currentValue) => (item || 0) + (currentValue || 0), 0) ||
-			0,
-		[items],
-	);
-
 	const pickUpTimeFromNow = useMemo(() => {
 		const hasLongPrepTime = items.find(
 			(orderItem) => orderItem.item.has_long_prep_time || false,
@@ -162,6 +153,15 @@ function CartModal(props: CartModalProps) {
 			is_complete: false,
 		};
 	}, [items, pickUpTime, freebieItem]);
+
+	const numOfClaimedFreebies = useMemo(
+		() =>
+			order.items
+				.flatMap((item) => item.contains_freebie)
+				.reduce((item, currentValue) => (item || 0) + (currentValue || 0), 0) ||
+			0,
+		[order.items],
+	);
 
 	const formattedPrice = formatPrice(order.total);
 
