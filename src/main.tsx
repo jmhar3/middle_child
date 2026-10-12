@@ -6,7 +6,7 @@ import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
 import { Analytics } from "@vercel/analytics/react";
 
-import Auth from "./pages/Auth.js";
+// import Auth from "./pages/Auth.js";
 import Portal from "./pages/portal/Portal.js";
 import AboutUs from "./pages/customer/AboutUs.js";
 import Partners from "./pages/customer/Partners.js";
@@ -34,7 +34,7 @@ createRoot(document.getElementById("root")!).render(
 				<Analytics />
 				<BrowserRouter>
 					<Routes>
-						<Route path="*" element={<Auth />} />
+						{/*<Route path="*" element={<Auth />} />*/}
 
 						{/* Customer Routes */}
 						<Route index element={<Home />} />
