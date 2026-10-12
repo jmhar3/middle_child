@@ -2,7 +2,7 @@
   "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "headers": [
     {
-      "source": "/(.*html)?",
+      "source": "/.well-known/apple-developer-merchantid-domain-association",
       "headers": [
         {
           "key": "Cache-Control",
@@ -11,11 +11,11 @@
       ]
     },
     {
-      "source": "/assets/(.*)",
+      "source": "/public/.well-known/apple-developer-merchantid-domain-association",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "no-cache, no-store, must-revalidate"
         }
       ]
     }
