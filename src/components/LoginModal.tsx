@@ -145,28 +145,6 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 			.finally(() => setIsSubmitting(false));
 	};
 
-	const resendVerificationEmail = () => {
-		setIsSubmitting(true);
-
-		if (!emailRegex.test(email)) {
-			setErrorMessage("Please provide a valid email.");
-			setIsSubmitting(false);
-			return;
-		}
-
-		dispatch(resetPassword({ email: email }))
-			.then(() => setResetPasswordSent(true))
-			.catch((error) =>
-				notifications.show({
-					message: error,
-					withCloseButton: false,
-					position: "bottom-right",
-					color: "red",
-				}),
-			)
-			.finally(() => setIsSubmitting(false));
-	};
-
 	return (
 		<Modal
 			fullScreen
@@ -211,10 +189,6 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 				<Stack align="center" gap="xs" pt="xl">
 					<Text fw="bold">You have successfully signed up!</Text>
 
-					<Text ta="center">
-						Please check your email to verify your account.
-					</Text>
-
 					<Button
 						fullWidth
 						radius="md"
@@ -226,18 +200,7 @@ const LoginModal = ({ isModalOpen, onModalClose }: LoginModalProps) => {
 						}}
 						loading={isSubmitting}
 					>
-						Already verified your email? Sign In
-					</Button>
-
-					<Button
-						fullWidth
-						radius="md"
-						variant="outline"
-						color="darkslategray"
-						onClick={resendVerificationEmail}
-						loading={isSubmitting}
-					>
-						Resend verification email
+						Sign In
 					</Button>
 				</Stack>
 			)}
