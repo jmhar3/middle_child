@@ -63,15 +63,24 @@ function Home() {
 	return (
 		<PageLayout>
 			<Stack w="100%" gap="3" p="3">
-				<NavButton
-					path="/menu"
-					isDisabled={menuIsDisabled}
-					label={
-						menuIsDisabled
-							? "Online Ordering Closed for the Day"
-							: "Order Here for Pick Up"
-					}
-				/>
+				{dayjs().isAfter(dayjs("2026-12-10")) &&
+				dayjs().isBefore(dayjs("2026-12-22")) ? (
+					<NavButton
+						path="/menu"
+						isDisabled={true}
+						label="Reopens December 23nd"
+					/>
+				) : (
+					<NavButton
+						path="/menu"
+						isDisabled={menuIsDisabled}
+						label={
+							menuIsDisabled
+								? "Online Ordering Closed for the Day"
+								: "Order Here for Pick Up"
+						}
+					/>
+				)}
 
 				<Flex w="100%" gap="3">
 					<NavButton label="About Us" path="/about-us" />
