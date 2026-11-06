@@ -216,20 +216,20 @@ function Stats() {
 			<Button
 				px="5"
 				w="fit-content"
-				variant="outline"
+				variant="transparent"
 				color="darkslategray"
 				size={isMobile ? "md" : "lg"}
 				onClick={open}
 			>
 				<Stack gap="0">
-					<Flex justify="space-between" gap="xs">
+					<Flex justify="space-between" align="center" gap="xs">
 						<Text>Today:</Text>
-						<Text>${todaysTotal.toFixed(2)}</Text>
+						<Text size="lg">${todaysTotal.toFixed(2)}</Text>
 					</Flex>
 
-					<Flex justify="space-between" gap="xs">
+					<Flex justify="space-between" align="center" gap="xs">
 						<Text>This Week:</Text>
-						<Text>${weeklyTotal.toFixed(2)}</Text>
+						<Text size="lg">${weeklyTotal.toFixed(2)}</Text>
 					</Flex>
 				</Stack>
 			</Button>
