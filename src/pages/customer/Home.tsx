@@ -21,6 +21,7 @@ import {
 import MapPinIcon from "../../icons/MapPinIcon";
 import InstagramIcon from "../../icons/InstagramIcon";
 import EmailIcon from "../../icons/EmailIcon";
+import dayjs from "dayjs";
 
 function Home() {
 	const isMobile = useMediaQuery("(max-width: 960px)");
@@ -111,7 +112,6 @@ function Home() {
 							gap={isMobile ? "sm" : "xl"}
 							direction={isMobile ? "column" : "row"}
 						>
-							{" "}
 							<Stack align="center" gap="0">
 								<Text>BREWING HOURS</Text>
 
@@ -131,19 +131,29 @@ function Home() {
 									</Stack>
 								</Flex>
 							</Stack>
+
 							{!isMobile && <Divider orientation="vertical" />}
+
 							{(storeInfo?.holiday_opening_hours?.length ?? 0) > 0 && (
 								<Stack align="center" gap="0">
 									<Text>HOLIDAY HOURS</Text>
 
 									<Flex gap="md">
 										<Stack align={isMobile ? "flex-end" : "flex-start"} gap="0">
+											{dayjs().isBefore(dayjs("2026-12-23")) && (
+												<Text>Dec 10 - Dec 22</Text>
+											)}
+
 											{storeInfo?.holiday_opening_hours?.map(({ label }) => (
 												<Text key={label}>{label}</Text>
 											))}
 										</Stack>
 
 										<Stack align={isMobile ? "flex-start" : "flex-end"} gap="0">
+											{dayjs().isBefore(dayjs("2026-12-23")) && (
+												<Text>Closed</Text>
+											)}
+
 											{storeInfo?.holiday_opening_hours?.map(
 												({ label, hours }) => (
 													<Text key={label}>
