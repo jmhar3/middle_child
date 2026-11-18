@@ -2,16 +2,14 @@ import { Button, em, Menu } from "@mantine/core";
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
 
 import UpdateStockDrawer from "./UpdateStockDrawer";
-// import UpsertSectionModal from "./menu/sections/UpsertSectionModal";
-// import UpdateModifierDrawer from "./menu/modifiers/UpdateModifierDrawer";
-// import InsertModifierDrawer from "./menu/modifiers/InsertModifierDrawer";
-// import DeleteModifierModal from "./menu/modifiers/DeleteModifierModal";
-// import InsertOptionDrawer from "./menu/itemOptions/InsertOptionDrawer";
-// import UpdateOptionDrawer from "./menu/itemOptions/UpdateOptionDrawer";
 import UpdateOrderTimesModal from "./UpdateOrderTimesModal";
 import UpdateBeansDrawer from "./UpdateBeansDrawer";
 import UpdatePricesDrawer from "./UpdatePricesDrawer";
 import UpdateOpeningHoursModal from "./UpdateOpeningHoursDrawer";
+// import ManageItemsDrawer from "./ManageItemsDrawer";
+// import ManageModifiersDrawer from "./ManageModifiersDrawer";
+// import ManageOptionsDrawer from "./ManageOptionsDrawer";
+// import ManageSectionsDrawer from "./ManageSectionsDrawer";
 
 function ManageMenu() {
 	const isMobile = useMediaQuery(`(max-width: ${em(815)})`);
@@ -28,30 +26,6 @@ function ManageMenu() {
 		showUpdatePricesDrawer,
 		{ open: openUpdatePricesDrawer, close: closeUpdatePricesDrawer },
 	] = useDisclosure(false);
-	// const [
-	//   showUpsertSectionModal,
-	//   { open: openUpsertSectionModal, close: closeUpsertSectionModal },
-	// ] = useDisclosure(false);
-	// const [
-	//   showInsertModifierDrawer,
-	//   { open: openInsertModifierDrawer, close: closeInsertModifierDrawer },
-	// ] = useDisclosure(false);
-	// const [
-	//   showUpdateModifierDrawer,
-	//   { open: openUpdateModifierDrawer, close: closeUpdateModifierDrawer },
-	// ] = useDisclosure(false);
-	// const [
-	//   showDeleteModifierModal,
-	//   { open: openDeleteModifierModal, close: closeDeleteModifierModal },
-	// ] = useDisclosure(false);
-	// const [
-	//   showInsertOptionDrawer,
-	//   { open: openInsertOptionDrawer, close: closeInsertOptionDrawer },
-	// ] = useDisclosure(false);
-	// const [
-	//   showUpdateOptionDrawer,
-	//   { open: openUpdateOptionDrawer, close: closeUpdateOptionDrawer },
-	// ] = useDisclosure(false);
 	const [
 		showUpdateOrderTimesDrawer,
 		{ open: openUpdateOrderTimesDrawer, close: closeUpdateOrderTimesDrawer },
@@ -63,6 +37,22 @@ function ManageMenu() {
 			close: closeUpdateOpeningHoursDrawer,
 		},
 	] = useDisclosure(false);
+	// const [
+	// 	showManageItemsDrawer,
+	// 	{ open: openManageItemsDrawer, close: closeManageItemsDrawer },
+	// ] = useDisclosure(false);
+	// const [
+	// 	showManageModifiersDrawer,
+	// 	{ open: openManageModifiersDrawer, close: closeManageModifiersDrawer },
+	// ] = useDisclosure(false);
+	// const [
+	// 	showManageOptionsDrawer,
+	// 	{ open: openManageOptionsDrawer, close: closeManageOptionsDrawer },
+	// ] = useDisclosure(false);
+	// const [
+	// 	showManageSectionsDrawer,
+	// 	{ open: openManageSectionsDrawer, close: closeManageSectionsDrawer },
+	// ] = useDisclosure(false);
 
 	return (
 		<>
@@ -90,57 +80,19 @@ function ManageMenu() {
 					<Menu.Item onClick={openUpdateOpeningHoursDrawer}>
 						Opening Hours
 					</Menu.Item>
-
-					{/*<Menu.Divider />
-
-          <Menu.Label>Create / Edit</Menu.Label>
-
-          <Menu.Item onClick={() => {}}>Item</Menu.Item>*/}
 					{/*
-          <Menu.Divider />
+					<Menu.Divider />
 
-          <Menu.Sub openDelay={120} closeDelay={150}>
-            <Menu.Sub.Target>
-              <Menu.Sub.Item>Create</Menu.Sub.Item>
-            </Menu.Sub.Target>
+					<Menu.Label>Create/Edit/Delete</Menu.Label>
 
-            <Menu.Sub.Dropdown>
-              <Menu.Item onClick={() => {}}>Section</Menu.Item>
-              <Menu.Item onClick={() => {}}>Item</Menu.Item>
-              <Menu.Item onClick={() => {}}>Modifier</Menu.Item>
-              <Menu.Item onClick={() => {}}>Options</Menu.Item>
-            </Menu.Sub.Dropdown>
-          </Menu.Sub>
-
-          <Menu.Divider />
-
-          <Menu.Sub openDelay={120} closeDelay={150}>
-            <Menu.Sub.Target>
-              <Menu.Sub.Item>Edit</Menu.Sub.Item>
-            </Menu.Sub.Target>
-
-            <Menu.Sub.Dropdown>
-              <Menu.Item onClick={() => {}}>Section</Menu.Item>
-              <Menu.Item onClick={() => {}}>Item</Menu.Item>
-              <Menu.Item onClick={() => {}}>Modifier</Menu.Item>
-              <Menu.Item onClick={() => {}}>Options</Menu.Item>
-            </Menu.Sub.Dropdown>
-          </Menu.Sub>
-
-          <Menu.Divider />
-
-          <Menu.Sub openDelay={120} closeDelay={150}>
-            <Menu.Sub.Target>
-              <Menu.Sub.Item>Reorder</Menu.Sub.Item>
-            </Menu.Sub.Target>
-
-            <Menu.Sub.Dropdown>
-              <Menu.Item>Sections</Menu.Item>
-              <Menu.Item>Items</Menu.Item>
-              <Menu.Item>Modifiers</Menu.Item>
-              <Menu.Item>Options</Menu.Item>
-            </Menu.Sub.Dropdown>
-          </Menu.Sub>*/}
+					<Menu.Item onClick={openManageSectionsDrawer}>
+						Menu Sections
+					</Menu.Item>
+					<Menu.Item onClick={openManageItemsDrawer}>Menu Items</Menu.Item>
+					<Menu.Item onClick={openManageModifiersDrawer}>
+						Item Modifiers
+					</Menu.Item>
+					<Menu.Item onClick={openManageOptionsDrawer}>Item Options</Menu.Item>*/}
 				</Menu.Dropdown>
 			</Menu>
 
@@ -159,36 +111,6 @@ function ManageMenu() {
 				onClose={closeUpdatePricesDrawer}
 			/>
 
-			{/*<UpsertSectionModal
-        isOpen={showUpsertSectionModal}
-        onClose={closeUpsertSectionModal}
-      />
-
-      <UpdateModifierDrawer
-        isOpen={showUpdateModifierDrawer}
-        onClose={closeUpdateModifierDrawer}
-      />
-
-      <InsertModifierDrawer
-        isOpen={showInsertModifierDrawer}
-        onClose={closeInsertModifierDrawer}
-      />
-
-      <DeleteModifierModal
-        isOpen={showDeleteModifierModal}
-        onClose={closeDeleteModifierModal}
-      />
-
-      <InsertOptionDrawer
-        isOpen={showInsertOptionDrawer}
-        onClose={closeInsertOptionDrawer}
-      />
-
-      <UpdateOptionDrawer
-        isOpen={showUpdateOptionDrawer}
-        onClose={closeUpdateOptionDrawer}
-      />*/}
-
 			<UpdateOrderTimesModal
 				isOpen={showUpdateOrderTimesDrawer}
 				onClose={closeUpdateOrderTimesDrawer}
@@ -198,6 +120,26 @@ function ManageMenu() {
 				isOpen={showUpdateOpeningHoursDrawer}
 				onClose={closeUpdateOpeningHoursDrawer}
 			/>
+
+			{/*<ManageItemsDrawer
+				isOpen={showManageItemsDrawer}
+				onClose={closeManageItemsDrawer}
+			/>
+
+			<ManageModifiersDrawer
+				isOpen={showManageModifiersDrawer}
+				onClose={closeManageModifiersDrawer}
+			/>
+
+			<ManageOptionsDrawer
+				isOpen={showManageOptionsDrawer}
+				onClose={closeManageOptionsDrawer}
+			/>
+
+			<ManageSectionsDrawer
+				isOpen={showManageSectionsDrawer}
+				onClose={closeManageSectionsDrawer}
+			/>*/}
 		</>
 	);
 }
