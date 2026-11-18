@@ -147,7 +147,7 @@ function Weather() {
 		}
 	};
 
-	if (setWeather === null) {
+	if (weather === null) {
 		fetchWeather();
 	}
 
