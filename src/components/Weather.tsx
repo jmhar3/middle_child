@@ -1,5 +1,7 @@
 import { Flex, Image, Text } from "@mantine/core";
 import { fetchWeatherApi } from "openmeteo";
+import { VariablesWithTime } from "@openmeteo/sdk/variables-with-time";
+import { useState } from "react";
 
 interface WeatherCode {
 	code: string;
@@ -127,17 +129,32 @@ const params = {
 	current: ["temperature_2m", "weather_code", "apparent_temperature"],
 };
 
-const url = "https://api.open-meteo.com/v1/forecast";
-const responses = await fetchWeatherApi(url, params);
-
 function Weather() {
-	const response = responses ? responses[0] : null;
-	const current = response?.current();
+	const [weather, setWeather] = useState<VariablesWithTime | null>(null);
 
-	const weatherData = current && {
-		temperature: current.variables(0)?.value(),
-		weatherCode: current.variables(1)?.value(),
-		feelsLike: current.variables(2)?.value(),
+	const fetchWeather = async () => {
+		try {
+			const weatherData = await fetchWeatherApi(
+				"https://api.open-meteo.com/v1/forecast",
+				params,
+			);
+			console.log(weatherData);
+			const response = weatherData[0];
+			const current = response?.current();
+			setWeather(current);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	if (setWeather === null) {
+		fetchWeather();
+	}
+
+	const weatherData = weather && {
+		temperature: weather.variables(0)?.value(),
+		weatherCode: weather.variables(1)?.value(),
+		feelsLike: weather.variables(2)?.value(),
 	};
 
 	const weatherCode = weatherCodes.find(
@@ -163,6 +180,7 @@ function Weather() {
 				>
 					{Math.round(weatherData?.temperature)}°C
 				</Text>
+
 				<Image w="50px" p="0" src={weatherCode?.image} />
 			</Flex>
 		)
