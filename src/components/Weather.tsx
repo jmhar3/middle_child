@@ -131,8 +131,8 @@ const url = "https://api.open-meteo.com/v1/forecast";
 const responses = await fetchWeatherApi(url, params);
 
 function Weather() {
-	const response = responses[0];
-	const current = response.current();
+	const response = responses ? responses[0] : null;
+	const current = response?.current();
 
 	const weatherData = current && {
 		temperature: current.variables(0)?.value(),
