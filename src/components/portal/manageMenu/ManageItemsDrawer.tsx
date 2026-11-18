@@ -43,31 +43,11 @@ import type {
 interface ManageItemsDrawerProps {
 	isOpen: boolean;
 	onClose: () => void;
+	onCreateNew?: (item: MenuItemType) => void;
 }
 
 function ManageItemsDrawer(props: ManageItemsDrawerProps) {
-	const { isOpen, onClose } = props;
-
-	const dispatch = useAppDispatch();
-	const menu: MenuSection[] = useAppSelector(selectMenu);
-	const allModifiers = useAppSelector(selectAllModifiers);
-	const allOptions = useAppSelector(selectAllItemOptions);
-	const menuItems = menu.flatMap((menuSection) => menuSection.items);
-
-	const [showManageModifiersDrawer, setShowManageModifiersDrawer] =
-		useState(false);
-	const [showManageOptionsDrawer, setShowManageOptionsDrawer] = useState(false);
-	const [showMenuItemModal, setShowMenuItemModal] = useState(false);
-	const [isUpsertingItem, setIsUpsertingItem] = useState(false);
-	const [showItemInputs, setShowItemInputs] = useState(false);
-	const [showCodeInput, setShowCodeInput] = useState(false);
-	const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
-	const [editedItem, setEditedItem] = useState<MenuItemType | null>(null);
-	const [modifiers, setModifiers] = useState(allModifiers);
-	const [options, setOptions] = useState(allOptions);
-
-	if ((allModifiers?.length ?? 0) > 0 && !modifiers) setModifiers(allModifiers);
-	if ((allOptions?.length ?? 0) > 0 && !options) setOptions(allOptions);
+	const { isOpen, onClose, onCreateNew } = props;
 
 	const blankItem: MenuItemType = {
 		id: uuid(),
@@ -80,6 +60,29 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 		is_applicable_loyalty_item: false,
 		section: { id: "", label: "" },
 	};
+
+	const dispatch = useAppDispatch();
+	const menu: MenuSection[] = useAppSelector(selectMenu);
+	const allModifiers = useAppSelector(selectAllModifiers);
+	const allOptions = useAppSelector(selectAllItemOptions);
+	const menuItems = menu.flatMap((menuSection) => menuSection.items);
+
+	const [showManageModifiersDrawer, setShowManageModifiersDrawer] =
+		useState(false);
+	const [showManageOptionsDrawer, setShowManageOptionsDrawer] = useState(false);
+	const [showMenuItemModal, setShowMenuItemModal] = useState(false);
+	const [isUpsertingItem, setIsUpsertingItem] = useState(false);
+	const [showItemInputs, setShowItemInputs] = useState(!!onCreateNew);
+	const [showCodeInput, setShowCodeInput] = useState(false);
+	const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
+	const [editedItem, setEditedItem] = useState<MenuItemType | null>(
+		onCreateNew ? blankItem : null,
+	);
+	const [modifiers, setModifiers] = useState(allModifiers);
+	const [options, setOptions] = useState(allOptions);
+
+	if ((allModifiers?.length ?? 0) > 0 && !modifiers) setModifiers(allModifiers);
+	if ((allOptions?.length ?? 0) > 0 && !options) setOptions(allOptions);
 
 	const onCloseDrawer = () => {
 		setSelectedItem(null);
@@ -193,7 +196,13 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 		if (selectedItem) {
 			dispatch(deleteMenuItem(selectedItem.id))
 				.then((data) => {
-					if (data.payload) {
+					const payload = data.payload as MenuItemType[];
+
+					if (payload) {
+						if (onCreateNew) {
+							onCloseDrawer();
+							onCreateNew(payload[0]);
+						}
 						notifications.show({
 							withCloseButton: false,
 							message: "Options successfully updated",
@@ -269,58 +278,68 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 				<Stack align="flex-end">
 					<Flex w="100%" justify="space-between" align="center">
 						<Text size="1.4em" fw="600" ta="left" w="100%">
-							MANAGE ITEMS
+							{onCreateNew ? "CREATE ITEM" : "MANAGE ITEMS"}
 						</Text>
 
 						<CloseButton onClick={onCloseDrawer} />
 					</Flex>
 
-					<Divider w="100%" />
+					{!onCreateNew && (
+						<>
+							<Divider w="100%" />
 
-					<Stack w="100%" gap="xs" bd="solid 1px lightgray" bdrs="sm" p="sm">
-						<Select
-							w="100%"
-							size="md"
-							searchable
-							disabled={showItemInputs}
-							label="Select Item to Edit"
-							nothingFoundMessage="No sections found matching your search"
-							value={selectedItem?.id}
-							onChange={onSelectItem}
-							data={menuItems?.map((item) => ({
-								value: item.id,
-								label: item.label,
-							}))}
-						/>
+							<Stack
+								w="100%"
+								gap="xs"
+								bd="solid 1px lightgray"
+								bdrs="sm"
+								p="sm"
+							>
+								<Select
+									w="100%"
+									size="md"
+									searchable
+									disabled={showItemInputs}
+									label="Select Item to Edit"
+									nothingFoundMessage="No sections found matching your search"
+									value={selectedItem?.id}
+									onChange={onSelectItem}
+									data={menuItems?.map((item) => ({
+										value: item.id,
+										label: item.label,
+									}))}
+								/>
 
-						<Group gap="sm" grow>
-							<StyledButton
-								label="Delete"
-								onClick={onDeleteItem}
-								isDisabled={!selectedItem || showItemInputs}
-								isLoading={isUpsertingItem}
-							/>
+								<Group gap="sm" grow>
+									<StyledButton
+										label="Delete"
+										onClick={onDeleteItem}
+										isDisabled={!selectedItem || showItemInputs}
+										isLoading={isUpsertingItem}
+									/>
 
-							<StyledButton
-								label="Edit"
-								onClick={onEditItem}
-								isDisabled={!selectedItem || showItemInputs}
-								isLoading={isUpsertingItem}
-							/>
-						</Group>
+									<StyledButton
+										label="Edit"
+										onClick={onEditItem}
+										isDisabled={!selectedItem || showItemInputs}
+										isLoading={isUpsertingItem}
+									/>
+								</Group>
 
-						<Text ta="center">OR</Text>
+								<Text ta="center">OR</Text>
 
-						<Group gap="sm" grow>
-							<StyledButton
-								variant="outline"
-								label="Create New Item"
-								onClick={onAddNewItem}
-								isDisabled={showItemInputs}
-								isLoading={isUpsertingItem}
-							/>
-						</Group>
-					</Stack>
+								<Group gap="sm" grow>
+									<StyledButton
+										variant="outline"
+										label="Create New Item"
+										onClick={onAddNewItem}
+										isDisabled={showItemInputs}
+										isLoading={isUpsertingItem}
+									/>
+								</Group>
+							</Stack>
+						</>
+					)}
 
 					{showItemInputs && editedItem && (
 						<Stack w="100%">
@@ -559,9 +578,13 @@ function ManageItemsDrawer(props: ManageItemsDrawerProps) {
 								<StyledButton
 									label="Cancel"
 									variant="outline"
-									onClick={() => setShowItemInputs(false)}
+									onClick={() => {
+										setShowItemInputs(false);
+										if (onCreateNew) onCloseDrawer();
+									}}
 									isLoading={isUpsertingItem}
 								/>
+
 								<StyledButton
 									label="Preview"
 									onClick={() => setShowMenuItemModal(true)}
