@@ -16,6 +16,7 @@ import {
 	MultiSelect,
 } from "@mantine/core";
 
+import OptionSelect from "../../OptionSelect";
 import StyledButton from "../../StyledButton";
 import ManageModifiersDrawer from "./ManageModifiersDrawer";
 
@@ -29,7 +30,6 @@ import {
 } from "../../../state/itemOptions/itemOptionThunks";
 
 import type { ItemOptions, Modifier } from "../../../state/types";
-import OptionSelect from "../../OptionSelect";
 
 interface ManageOptionsDrawerProps {
 	isOpen: boolean;
