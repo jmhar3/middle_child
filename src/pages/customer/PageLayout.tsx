@@ -53,18 +53,18 @@ function PageLayout({ children, image, title, hideImage }: PageLayoutProps) {
 				{isMenu && <Weather />}
 
 				{isMobile ? (
-					<Title lts="1.6px" ff="Bangers" c="darkslategray">
+					<Title lts="1.6px" ff="Bangers" c="darkslategray" pt="md" pb="xs">
 						{title || "Middle Child"}
 					</Title>
 				) : (
-					<Flex style={{ zIndex: 1 }} w="100%" pos="fixed" justify="center">
+					<Flex style={{ zIndex: 1 }} w="100%" justify="center">
 						<Title
 							pr="lg"
 							lts="1.6px"
 							ff="Bangers"
 							c="darkslategray"
-							pt={isMobile ? "md" : "lg"}
-							pb={isMobile ? "xs" : "md"}
+							pt="lg"
+							pb="md"
 						>
 							{title || "Middle Child"}
 						</Title>
