@@ -14,6 +14,7 @@ import {
 	Button,
 	Accordion,
 	CloseButton,
+	Divider,
 } from "@mantine/core";
 
 import Loading from "../../Loading";
@@ -221,17 +222,23 @@ function Stats() {
 				size={isMobile ? "md" : "lg"}
 				onClick={open}
 			>
-				<Stack gap="0">
+				<Flex gap="sm">
 					<Flex justify="space-between" align="center" gap="xs">
-						<Text>Today:</Text>
-						<Text size="lg">${todaysTotal.toFixed(2)}</Text>
+						<Text size="lg">Today:</Text>
+						<Text size="lg" fw="bold">
+							${todaysTotal.toFixed(2)}
+						</Text>
 					</Flex>
 
+					<Divider orientation="vertical" />
+
 					<Flex justify="space-between" align="center" gap="xs">
-						<Text>This Week:</Text>
-						<Text size="lg">${weeklyTotal.toFixed(2)}</Text>
+						<Text size="lg">This Week:</Text>
+						<Text size="lg" fw="bold">
+							${weeklyTotal.toFixed(2)}
+						</Text>
 					</Flex>
-				</Stack>
+				</Flex>
 			</Button>
 
 			<Drawer
